@@ -1,4 +1,12 @@
 {
+    "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
+        "psr-4": {
+            "PHPCore\\": "src/"
+        }
+    },
     "require": {
         "filp/whoops": "^2.14"
     }
