@@ -33,19 +33,29 @@
  */
 function parse_dsn(string $dsn): array
 {
+    if (strpos($dsn, ':') === false) {
+        throw new InvalidArgumentException(
+            'parse_dsn function only accepts valid dsn strings'
+        );
+    }
     try {
-        list($driver, $params) = explode(':', $dsn);
+        $dsn_parts = explode(':', $dsn);
+        $driver = $dsn_parts[0];
+        $params = $dsn_parts[1] ?? '';
+        $output['driver'] = $driver;
+        foreach(explode(';', $params) as $item) {
+            if (empty($item) === true) {
+                continue;
+            }
+            list($name, $value) = explode('=', $item);
+            $output[$name] = $value;
+        }
+        return $output;
     } catch (Exception  $e) {
         throw new InvalidArgumentException(
             'parse_dsn function only accepts valid dsn strings'
         );
     }
-    $output['driver'] = $driver;
-    foreach(explode(';', $params) as $item) {
-        list($name, $value) = explode('=', $item);
-        $output[$name] = $value;
-    }
-    return $output;
 }
 
 // EOF /////////////////////////////////////////////////////////////////////////

@@ -71,18 +71,12 @@ final class Test extends TestCase
 
     /**
      * @covers ::parse_dsn
+     * @dataProvider dataProvidertestParseDsn
      */
-    public function testParseDsn(): void
+    public function testParseDsn(string $dsn, array $validResp): void
     {
-        $dsn_str = 'mysql:host=localhost;dbname=my_database;charset=utf8mb4';
-        $dsn_arr = [
-            'driver'  => 'mysql',
-            'host'    => 'localhost',
-            'dbname'  => 'my_database',
-            'charset' => 'utf8mb4',
-        ];
         $this->assertEquals(
-            parse_dsn($dsn_str), $dsn_arr
+            parse_dsn($dsn), $validResp
         );
     }
 
@@ -94,6 +88,29 @@ final class Test extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $dsn_str = 'host=localhost;dbname=my_database;charset=utf8mb4';
         parse_dsn($dsn_str);
+    }
+
+    // -----------------------------------------------------------------------------------------
+
+    public function dataProvidertestParseDsn(): array
+    {
+        return [
+            [
+                'mysql:host=localhost;dbname=my_database;charset=utf8mb4',
+                [
+                    'driver'  => 'mysql',
+                    'host'    => 'localhost',
+                    'dbname'  => 'my_database',
+                    'charset' => 'utf8mb4',
+                ]
+            ],
+            [
+                'sqlite:',
+                [
+                    'driver'  => 'sqlite',
+                ]
+            ],
+        ];
     }
 }
 
