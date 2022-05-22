@@ -96,18 +96,31 @@ final class Test extends TestCase
     {
         return [
             [
+                'sqlite:',
+                [
+                    'driver'  => 'sqlite',
+                ]
+            ],
+            [
+                'sqlite:/opt/databases/mydb.sq3',
+                [
+                    'driver'  => 'sqlite',
+                    'path'    => '/opt/databases/mydb.sq3',
+                ]
+            ],
+            [
+                'sqlite::memory:',
+                [
+                    'driver'  => 'sqlite',
+                ]
+            ],
+            [
                 'mysql:host=localhost;dbname=my_database;charset=utf8mb4',
                 [
                     'driver'  => 'mysql',
                     'host'    => 'localhost',
                     'dbname'  => 'my_database',
                     'charset' => 'utf8mb4',
-                ]
-            ],
-            [
-                'sqlite:',
-                [
-                    'driver'  => 'sqlite',
                 ]
             ],
         ];

@@ -47,6 +47,12 @@ function parse_dsn(string $dsn): array
             if (empty($item) === true) {
                 continue;
             }
+            switch ($driver) {
+                case 'sqlite':
+                    $output['path'] = $item;
+                    return $output;
+                    break;
+            }
             list($name, $value) = explode('=', $item);
             $output[$name] = $value;
         }
