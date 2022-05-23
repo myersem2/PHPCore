@@ -17,14 +17,15 @@ use \Exception;
 /**
  * Database Class
  *
- * This class is used to interface with a database using a PDO driver
+ * This class is used to interface with a database using a PDO driver.
+ *
+ * @see https://manual.phpcore.org/class/database
  */
 final class Database
 {
     /**
      * PDO default options
      *
-     * @see https://www.php.net/manual/en/pdo.setattribute.php
      * @cont array
      */
     const OPTIONS = [
@@ -104,6 +105,7 @@ final class Database
     public static function &getInstance(string $name = 'main')
     {
         if (empty(self::$Instances[$name]) === true) {
+            // TODO: Load from config and 
             throw new Exception(
                 "The instance $name could not be found or has not been constructed."
             );
@@ -139,6 +141,53 @@ final class Database
             throw new PDOException($err->getMessage(), intval($err->getCode()));
         }
     }
+
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Create Record
+     *
+     * This method is used to create a new record in the database. If the flag
+     * ON_DUPLICATE_UPDATE is used then you can update a record if a duplicate is
+     * found using the $dupUpdate parameter.
+     *
+     * @param string $table Table name the record will be created in
+     * @param array $data Array consiting of data to create record from
+     * @param int $flags Bitwise flags for this method
+     * @param array $dupUpdate Array consiting of update criteria if duplicate
+     *
+     * @throws Exception(4000) ON_DUPLICATE_UPDATE flag used without $dupUpdate
+     * @throws Exception(...) Various (if flag THROW_ON_ERROR)
+     * @return int | bool
+     */
+    public function createRecord(string $table, array $data, int $flags = 0, array $dupUpdate = null): mixed
+    {
+        // TODO: build
+        return false;
+    }
+
+    /**
+     * Get Last Insert ID
+     *
+     * Returns the ID of the last inserted row, or the last value from a
+     * sequence object, depending on the underlying driver.
+     */
+    public function getLastInsertId(): int
+    {
+        return $this->LastInsertId;
+    }
+
+    /**
+     * Get Rows Affected
+     *
+     * This method returns the number of rows affected by the last statement
+     * executed.
+     */
+    public function getRowsAffected(): int
+    {
+        return $this->RowsAffected;
+    }
+
 }
 
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////

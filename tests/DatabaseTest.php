@@ -19,6 +19,11 @@ use PHPCore\Database;
 final class DatabaseTest extends TestCase
 {
     /**
+     * Name for Database connection to use for tests
+     */
+    protected $dbConnectionName = 'temp';
+
+    /**
      * Holder for Database config from JSON
      */
     protected $databaseConfig = null;
@@ -76,10 +81,22 @@ final class DatabaseTest extends TestCase
         );
     }
 
+    /**
+     * @covers \PHPCore\Database
+     * @depends testDatabaseClassExists
+     * @dataProvider dataProviderMethodsExist
+     */
+    public function testMethodsExist(string $method): void
+    {
+        $this->assertTrue(
+            method_exists('\PHPCore\Database', $method),
+            "Method `$method` was not found in the Database class."
+        );
+    }
 
     /**
      * @covers ::parse_dsn
-     * $depends testDatabaseClassExists
+     * @depends testDatabaseClassExists
      */
     public function testDatabaseConfig(): void
     {
@@ -87,17 +104,41 @@ final class DatabaseTest extends TestCase
         $config = json_decode(file_get_contents($path));
         $this->assertNotNull(
             $config,
-            "Config JSON missing or not valid. ($path)"
+            "PHPCore config missing or not valid. ($path)"
         );
-
         $this->assertTrue(
             isset($config->database),
-            "Config JSON missing database parameter. ($path)"
+            "PHPCore config missing database parameter. ($path)"
         );
-        foreach (['dsn', 'usr', 'pwd'] as $index) {
-            $this->assertTrue(
-                isset($config->database->$index),
-                "Config JSON missing database:$index parameter. ($path)"
+        $this->assertTrue(
+            isset($config->database->connections),
+            "PHPCore database config missing connections parameter. ($path)"
+        );
+        $connection = null;
+        $connName = $this->dbConnectionName;
+        foreach ($config->database->connections as $connItem) {
+            if (isset($connItem->name) === false) {
+                continue;
+            }
+            if ($connName === $connItem->name) {
+                $connection = $connItem;
+            }
+        }
+        $this->assertIsObject(
+            $connection,
+            "Database connection `$connName` was not found in PHPCore config. ($path)"
+        );
+        $this->assertTrue(
+            isset($connection->dsn),
+            "Database connection `$connName` is missing the dsn parameter. ($path)"
+        );
+        $dsn = parse_dsn($connection->dsn);
+        $required_params = ['usr', 'pwd'];
+        foreach ($required_params as $index) {
+            $this->assertObjectHasAttribute(
+                $index,
+                $connection,
+                "Database connection `$connName` is missing the `$index` parameter. ($path)"
             );
         }
     }
@@ -105,7 +146,7 @@ final class DatabaseTest extends TestCase
     /**
      * @covers \PHPCore\Database::__construct
      * @covers ::parse_dsn
-     * $depends testDatabaseClassExists
+     * @depends testDatabaseClassExists
      */
     public function testInvalidConstruct(): void
     {
@@ -119,16 +160,16 @@ final class DatabaseTest extends TestCase
     /**
      * @covers \PHPCore\Database::__construct
      * @covers ::parse_dsn
-     * $depends testDatabaseConfig
+     * @depends testDatabaseConfig
      */
     public function testValidConstruct(): void
     {
         $this->assertInstanceOf(
             Database::class,
             new Database(
-                $this->getDatabaseConfig('dsn'),
-                $this->getDatabaseConfig('usr'),
-                $this->getDatabaseConfig('pwd')
+                $this->getDbConnectionConfig('dsn'),
+                $this->getDbConnectionConfig('usr'),
+                $this->getDbConnectionConfig('pwd')
             )
         );
     }
@@ -142,11 +183,12 @@ final class DatabaseTest extends TestCase
     {
         $this->expectException(Exception::class);
         new Database(
-            $this->getDatabaseConfig('dsn'),
-            $this->getDatabaseConfig('usr'),
-            $this->getDatabaseConfig('pwd')
+            $this->getDbConnectionConfig('dsn'),
+            $this->getDbConnectionConfig('usr'),
+            $this->getDbConnectionConfig('pwd')
         );
     }
+
     /**
      * @covers \PHPCore\Database::getInstance
      * @depends testValidConstruct
@@ -159,19 +201,75 @@ final class DatabaseTest extends TestCase
         );
     }
 
+    /**
+     * @covers \PHPCore\Database::createRecord
+     * @covers \PHPCore\Database::getLastInsertId
+     * @depends testGetInstance
+     * @dataProvider dataProviderCreateRecord
+     */
+    public function testCreateRecord(string $table, array $data): void
+    {
+        
+        echo "\n\n";
+        var_dump($_CORE);
+        var_dump($GLOBALS['_CORE']);
+        echo "\n\n";        
+        
+        // TODO: Have not built this method yet
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+
+        $this->assertIsInt(
+            Database::getInstance()->createRecord($table, $data)
+        );
+    }
+
+    // -----------------------------------------------------------------------------------------
+
+    public function dataProviderMethodsExist(): array
+    {
+        return [
+            // Mthod names
+            ['__construct'],
+            ['getInstance'],
+            ['createRecord'],
+            ['getLastInsertId'],
+            ['getRowsAffected'],
+        ];
+    }
+
+    public function dataProviderCreateRecord(): array
+    {
+        return [
+            // table        data
+            ['User',        ['John', 'Doe']],
+            ['UserAccess',  [1, 'Guest']],
+        ];
+    }
+
     // -----------------------------------------------------------------------------------------
 
     /**
-     * Helper method to get Database Config
+     * Helper method to get Database Connection Config
      */
-    protected function getDatabaseConfig(string $key = null): mixed
+    protected function getDbConnectionConfig(string $key = null, string $connName = null): mixed
     {
         if (isset($this->databaseConfig) === false) {
             $path = realpath( __DIR__ . DIRECTORY_SEPARATOR . '../config.json' );
             $this->databaseConfig = json_decode(file_get_contents($path))->database;
-            
         }
-        return $this->databaseConfig->$key;
+        $connection = null;
+        $connName = $connName || $this->dbConnectionName;
+        foreach ($this->databaseConfig->connections as $connItem) {
+            if (isset($connItem->name) === false) {
+                continue;
+            }
+            if ($connItem->name == $connName) {
+                $connection = $connItem;
+            }
+        }
+        return $connection->$key;
     }
 }
 

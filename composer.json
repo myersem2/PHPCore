@@ -1,7 +1,8 @@
 {
     "autoload": {
         "files": [
-            "src/helpers.php"
+            "src/functions.php",
+            "src/bootstrap.php"
         ],
         "psr-4": {
             "PHPCore\\": "src/"

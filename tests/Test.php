@@ -20,7 +20,7 @@ final class Test extends TestCase
     /**
      * This method is used to perform any setup actions (e.g. connect to db) for
      * the entire test fixture. Method will only be executed once at the 
-     * begining of this test fixture stack.
+     * beginning of this test fixture stack.
      */
     public static function setUpBeforeClass(): void
     {
@@ -59,19 +59,52 @@ final class Test extends TestCase
 
     /**
      * @covers ::parse_dsn
+     * @covers ::core_ini_get
+     * @covers ::core_ini_get_all
+     * @covers ::core_ini_set
+     * @dataProvider dataProviderFunctionExists
      */
-    public function testParseDsnFunctionExists(): void
+    public function testFunctionExists(string $function): void
     {
         $this->assertTrue(
-            function_exists('parse_dsn'), 
-            'parse_dsn() function does not exist'
+            function_exists($function), 
+            "$function() function does not exist"
         );
-        
+    }
+
+    /**
+     * @covers ::core_ini_get
+     */
+    public function testCoreIniGet(): void
+    {
+      $this->markTestIncomplete(
+          'This test has not been implemented yet.'
+      );
+    }
+
+    /**
+     * @covers ::core_ini_get
+     */
+    public function testCoreIniGetAll(): void
+    {
+      $this->markTestIncomplete(
+          'This test has not been implemented yet.'
+      );
+    }
+    
+    /**
+     * @covers ::core_ini_get
+     */
+    public function testCoreIniSet(): void
+    {
+      $this->markTestIncomplete(
+          'This test has not been implemented yet.'
+      );
     }
 
     /**
      * @covers ::parse_dsn
-     * @dataProvider dataProvidertestParseDsn
+     * @dataProvider dataProviderParseDsn
      */
     public function testParseDsn(string $dsn, array $validResp): void
     {
@@ -92,7 +125,17 @@ final class Test extends TestCase
 
     // -----------------------------------------------------------------------------------------
 
-    public function dataProvidertestParseDsn(): array
+    public function dataProviderFunctionExists(): array
+    {
+      return [
+        ['parse_dsn'],
+        ['core_ini_get'],
+        ['core_ini_get_all'],
+        ['core_ini_set'],
+      ];
+    }
+
+    public function dataProviderParseDsn(): array
     {
         return [
             [
