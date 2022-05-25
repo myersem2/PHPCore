@@ -1,12 +1,8 @@
 {
     "autoload": {
         "files": [
-            "src/functions.php",
             "src/bootstrap.php"
-        ],
-        "psr-4": {
-            "PHPCore\\": "src/"
-        }
+        ]
     },
     "require": {
         "filp/whoops": "^2.14"
