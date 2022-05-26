@@ -11,13 +11,39 @@
 // -------------------------------------------------------------------------------------------------
 
 include __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php';
-$options = getopt('c:d:f:r:', [
+
+// =============================================================================
+// Check and get options
+// =============================================================================
+$options = getopt('c:d:f:r:ihv', [
     'atleast-version:',
+    'format:',
+    'ini-item:',
+    'format:',
     'information::',
-    'ini::',
+    'ini-paths::',
     'version::',
     'help::',
 ]);
+foreach ($argv as $opt) {
+    if (str_starts_with($opt, '--') === true) {
+        list($opt) = explode('=', $opt);
+        if (isset($options[substr($opt, 2)]) === false) {
+            trigger_error(
+                "'{$opt}' is not a valid phpcore option, see 'phpcore --help' for allowed options",
+                E_USER_ERROR
+            );    
+        }
+    } elseif (str_starts_with($opt, '-') == true) {
+        if (isset($options[substr($opt, 1)]) === false) {
+            trigger_error(
+                "'{$opt}' is not a valid phpcore option, see 'phpcore --help' for allowed options",
+                E_USER_ERROR
+            );    
+        }
+    }
+}
+unset($opt);
 
 // =============================================================================
 // OPTION: Version >> EXIT
@@ -49,14 +75,19 @@ if (in_array('-h', $argv) or in_array('--help', $argv)) {
     echo '  phpcore [options] [-r] <code> [args...]' . PHP_EOL;
     echo PHP_EOL;
     echo $section('Configuration:');
-    echo $option('-d').' '.$val('<sec>.<dir>=<value>').'  Define INI section directive with value'. PHP_EOL;
+    echo $option('-d').' '.$val('<sec>.<item>=<value>').' Define INI section directive with value'. PHP_EOL;
     echo $option('-c').' '.$val('<path>').'|'.$val('<file>').'        Use phpcore.ini file in this directory' . PHP_EOL;
     echo $option('-i|--information').'        PHPCore information' . PHP_EOL;
-    echo $option('--ini').'                   Show configuration file paths' . PHP_EOL;
+    echo $option('--ini-item=').$val('<sec>.<item>').' Return value of configuration item' . PHP_EOL;
+    echo $option('--ini-paths').'             Show configuration file paths' . PHP_EOL;
     echo PHP_EOL;
     echo $section('Execute:');
     echo $option('-f').' '.$val('<file>').'               Parse and execute <file> through PHPCore' . PHP_EOL;
     echo $option('-r').' '.$val('<code>').'               Run PHP <code> through PHPCore' . PHP_EOL;
+    echo PHP_EOL;
+    echo $section('Output Format:');
+    $format = $val('<format>');
+    echo $option('--format='.$format).'       Output format (if available)' . PHP_EOL;
     echo PHP_EOL;
     echo $section('Miscellaneous:');
     echo $option('-h|--help').'               Display this help and exit' . PHP_EOL;
@@ -80,15 +111,6 @@ if (empty($options['atleast-version']) === false) {
     if (isset($parts[2])) {
         if (CORE_RELEASE_VERSION < $parts[2]) exit(1);
     }
-    var_dump($parts);
-    exit;
-}
-
-// =============================================================================
-// OPTION: INI configurations >> EXIT
-// =============================================================================
-if (isset($options['ini']) === true) {
-    echo str_replace(',', PHP_EOL, $GLOBALS['_CORE']['CONFIG_FILES']) . PHP_EOL;
     exit;
 }
 
@@ -99,24 +121,21 @@ if (isset($options['c'])) {
     if (is_array($options['c']) === false) {
         $options['c'] = [$options['c']];
     }
-    foreach ($options['c'] as $value) {
-        if (is_file($value) === true) {
-            $alt_ini_file = realpath($value);
-        } elseif (is_dir($value)) {
-            $alt_ini_file = realpath($value) . DIRECTORY_SEPARATOR . 'phpcore.ini';
-            if (is_file($alt_ini_file) === false) {
-                unset($alt_ini_file);
-            }
+    foreach ($options['c'] as $alt_ini_file) {
+        if (is_file($alt_ini_file) === true) {
+            $alt_ini_file = realpath($alt_ini_file);
+        } elseif (is_dir($alt_ini_file)) {
+            $alt_ini_file = realpath($alt_ini_file) . DIRECTORY_SEPARATOR . 'phpcore.ini';
         }
-        if (empty($alt_ini_file)) {
+        if (is_readable($alt_ini_file) === false) {
             trigger_error(
-                "{$options['c']} is not a valid PHPCore ini file",
+                "{$alt_ini_file} is not a valid PHPCore ini file",
                 E_USER_ERROR
             );
         }
-        $merge_ini(parse_ini_file($alt_ini_file, true));
-        $config_paths[]  = $alt_ini_file;
-        $set_globals($ini_config, $alt_ini_file, $config_paths);
+        $GLOBALS['_CORE_INI'] = array_merge_recursive($GLOBALS['_CORE_INI'], parse_ini_file($alt_ini_file, true));
+        $GLOBALS['_CORE']['CONFIG_FILES'] .= ",$alt_ini_file";
+        $GLOBALS['_CORE']['CONFIG_FILE'] = $alt_ini_file;
     }
     foreach ($argv as $i=>$v) {
       if ($v === '-c') {
@@ -124,6 +143,17 @@ if (isset($options['c'])) {
         unset($argv[$i+1]);
       }
     }
+    unset($alt_ini_file);
+    unset($i);
+    unset($v);
+}
+
+// =============================================================================
+// OPTION: INI configuration paths >> EXIT
+// =============================================================================
+if (isset($options['ini-paths']) === true) {
+    echo str_replace(',', PHP_EOL, $GLOBALS['_CORE']['CONFIG_FILES']) . PHP_EOL;
+    exit;
 }
 
 // =============================================================================
@@ -149,8 +179,8 @@ if (isset($options['d'])) {
             $GLOBALS['_CORE_INI'][$section] = [];
         }
         $GLOBALS['_CORE_INI'][$section][$directive] = $value;
-        $merge_ini($GLOBALS['_CORE_INI']);
-        $set_globals($GLOBALS['_CORE_INI']);
+        $GLOBALS['_CORE']['DISABLE_FUNCTIONS'] = $GLOBALS['_CORE_INI']['PHPCore']['disable_functions'];
+        $GLOBALS['_CORE']['DISABLE_CLASSES']   = $GLOBALS['_CORE_INI']['PHPCore']['disable_classes'];
     }
     foreach ($argv as $i=>$v) {
       if ($v === '-d') {
@@ -158,6 +188,38 @@ if (isset($options['d'])) {
         unset($argv[$i+1]);
       }
     }
+    unset($parts);
+    unset($directive_parts);
+    unset($section);
+    unset($directive);
+    unset($value);
+    unset($i);
+    unset($v);
+}
+
+// =============================================================================
+// OPTION: Set format
+// =============================================================================
+if (empty($options['format']) === false) {
+    $format = $GLOBALS['_CORE']['FORMAT'] = trim($options['format']);
+    if (in_array($format, explode(',', core_ini_get('supported_formats'))) === false) {
+        trigger_error(
+            "Format '{$format}' is not supported",
+            E_USER_ERROR
+        ); 
+    }
+    unset($format);
+}
+
+// =============================================================================
+// OPTION: Get INI Item >> EXIT
+// =============================================================================
+if (empty($options['ini-item']) === false) {
+    $parts = explode('.', $options['ini-item']);
+    $section = array_shift($parts);
+    $directive = implode('.', $parts);
+    echo core_ini_get($directive, $section);
+    exit;
 }
 
 // =============================================================================
@@ -178,14 +240,15 @@ if (isset($options['f'])) {
             E_USER_ERROR
         );
     }
-    $file = realpath($options['f']);
-    if (is_readable($file) === false) {
+    $_file = realpath($options['f']);
+    if (is_readable($_file) === false) {
         trigger_error(
             "File {$options['f']} is not readable",
             E_USER_ERROR
         );
     }
-    include $file;
+    unset($options);
+    include $_file;
     exit;
 }
 
@@ -199,33 +262,39 @@ if (isset($options['r'])) {
             E_USER_ERROR
         );
     }
-    eval($options['r']);
+    $_code = $options['r'];
+    unset($options);
+    eval($_code);
     exit;
 }
 
 // =============================================================================
-// Process Code String of File
+// Process Code String of File >> EXIT
 // =============================================================================
-if (realpath(end($argv)) !== __FILE__) {
-  $file_name = end($argv);
-  $file = realpath($file_name);
-  if (is_readable($file) === false) {
+$last_argv = end($argv);
+if (realpath($last_argv) !== __FILE__ and str_starts_with($last_argv, '-') === false) {
+    $file_name = $last_argv;
+    $_file = realpath($file_name);
+    if (is_readable($_file) === false) {
       trigger_error(
           "File $file_name is not readable",
           E_USER_ERROR
       );
-  }
-  include $file;
-  exit;
+    }
+    unset($file_name);
+    unset($options);
+    include $_file;
+    exit;
 }
+unset($last_argv);
 
 // =============================================================================
 // Process Piped Code String
 // =============================================================================
-$php_code = stream_get_contents(STDIN);
-if (substr($php_code, 0, 5) === '<?php') {
-    $php_code = substr($php_code, 5);
+$_code = stream_get_contents(STDIN);
+if (substr($_code, 0, 5) === '<?php') {
+    $_code = substr($_code, 5);
 }
-eval($php_code);
+eval($_code);
 
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////

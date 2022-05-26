@@ -14,6 +14,39 @@ if (empty($GLOBALS['_CORE']['DISABLE_FUNCTIONS']) === false) {
 }
 
 /**
+ * Returns the XML representation of a array 
+ *
+ * @param array $array Array to be encoded as XML
+ * @return string Returns a string containing the XML representation of the supplied array.
+ */
+if (in_array('xml_encode', $disabled_functions) === false) {
+    define('XML_ENCODE_AS_XML_OBJ', 1);
+    define('XML_ENCODE_PRETTY_PRINT', 2);
+    function xml_encode(array $array, int $flags = 0, string $root = '<root/>', $xml = null)
+    {
+        $xml = $xml ?? new SimpleXMLElement($root);
+        foreach ($array as $k=>$v) {
+            if (is_array($v) === true) {
+                xml_encode($v, XML_ENCODE_AS_XML_OBJ, $k, $xml->addChild($k));
+            } else {
+                $xml->addChild($k, $v);
+            }
+        }
+        //if ($flags ^ XML_ENCODE_AS_STRING) {
+        if ($flags & XML_ENCODE_AS_XML_OBJ) {
+            return $xml;
+        }
+        if ($flags & XML_ENCODE_PRETTY_PRINT) {
+            $dom = dom_import_simplexml($xml)->ownerDocument;
+            $dom->formatOutput = true;
+            return $dom->saveXML();
+        } else {
+            return $xml->asXML();
+        }
+    }
+}
+
+/**
  * Gets PHPCore Information
  *
  * @todo: Build HTML pretty output 
@@ -24,24 +57,79 @@ if (in_array('coreinfo', $disabled_functions) === false) {
     function coreinfo(): string
     {
         $output = '';
-        if (php_sapi_name() == 'cli') {
-            $output .= str_color('PHPCore', 'light_blue') . ' ' . str_color(CORE_VERSION, 'cyan') . ' (cli)' . PHP_EOL;
-            foreach ($GLOBALS['_CORE_INI'] as $sesion=>$directives) {
-                $output .= PHP_EOL . str_color(str_style($sesion, 'underline'), 'brown') . PHP_EOL;
-                foreach ($directives as $directive=>$value) {
-                    $output .= str_color($directive, 'green')." => $value" . PHP_EOL;
+        $version = CORE_VERSION;
+        $eol = PHP_EOL;
+        $format = $GLOBALS['_CORE']['FORMAT'];
+        switch ($format) {
+            default:
+                trigger_error(
+                    "coreinfo() does not support the '$format' format.",
+                    E_USER_WARNING
+                );
+            break;
+            case 'text':
+                $output .= str_color('PHPCore ', 'light_blue') . ' ' . str_color($version, 'cyan') . ' (cli)' . $eol;
+                foreach ($GLOBALS['_CORE_INI'] as $section=>$directives) {
+                    $output .= PHP_EOL . str_color(str_style($section, 'underline'), 'brown') . $eol;
+                    foreach ($directives as $directive=>$value) {
+                        $output .= str_color($directive, 'green')." => $value" . $eol;
+                    }
+                } 
+                $output .= PHP_EOL;
+                $output .= str_color(str_style('$_CORE', 'underline'), 'brown') . $eol;
+                foreach ($GLOBALS['_CORE'] as $name=>$value) {
+                    $output .= "\$_CORE['".str_color($name, 'green')."'] => $value" . $eol;
                 }
-            }
-            $output .= PHP_EOL;
-            $output .= str_color(str_style('$_CORE', 'underline'), 'brown') . PHP_EOL;
-            foreach ($GLOBALS['_CORE'] as $name=>$value) {
-                $output .= "\$_CORE['".str_color($name, 'green')."'] => $value" . PHP_EOL;
-            }
-            $output .= PHP_EOL;
-        } else {
-            echo 'This function is available in CLI only at this time.';
+                $output .= PHP_EOL;
+            break;
+            case 'html':
+                $output .= "<h1>PHPCore $version</h1>$eol";
+                $output .= "<h3>Core Configuration</h3>$eol";
+                $output .= "<table>$eol";
+                $output .= "    <thead>$eol";
+                $output .= "        <tr>$eol";
+                $output .= "            <td>Directive</td>$eol";
+                $output .= "            <td>Value</td>$eol";
+                $output .= "        </tr>$eol";
+                $output .= "    </thead>$eol";
+                $output .= "    <tbody>$eol";
+                foreach ($GLOBALS['_CORE_INI'] as $section=>$directives) {
+                    $output .= "        <tr><td colSPan=\"2\" style=\"font-weight:bold;\">$section</td></tr>$eol";
+                    foreach ($directives as $directive=>$value) {
+                        $output .= "        <tr><td>$directive</td><td>$value</td></tr>$eol";
+                    }
+                }
+                $output .= "    </tbody>$eol";
+                $output .= "</table>$eol";
+                $output .= "<hr>$eol";
+                $output .= "<h3>Core Variables</h3>$eol";
+                $output .= "<table>$eol";
+                $output .= "    <thead>$eol";
+                $output .= "        <tr>$eol";
+                $output .= "            <td>Item</td>$eol";
+                $output .= "            <td>Value</td>$eol";
+                $output .= "        </tr>$eol";
+                $output .= "    </thead>$eol";
+                $output .= "    <tbody>$eol";
+                foreach ($GLOBALS['_CORE'] as $name=>$value) {
+                    $output .= "        <tr><td>$name</td><td>$value</td></tr>$eol";
+                }
+                $output .= "    </tbody>$eol";
+                $output .= "</table>$eol";
+            break;
+            case 'json':
+            case 'xml':
+                $data = ['PHPCoreVersion'=>$version];
+                $data['configuration'] = $GLOBALS['_CORE_INI'];
+                $data['variables'] = $GLOBALS['_CORE'];
+                if ($format === 'json') {
+                    $output = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+                } elseif ($format === 'xml') {
+                    $output = xml_encode($data, XML_ENCODE_PRETTY_PRINT);
+                }
+            break;
         }
-        return $output;
+        return $output ?? '';
     }
 }
 
@@ -150,7 +238,7 @@ if (in_array('parse_dsn', $disabled_functions) === false) {
                     case 'sqlite':
                         $output['path'] = $item;
                         return $output;
-                        break;
+                    break;
                 }
                 list($name, $value) = explode('=', $item);
                 $output[$name] = $value;
@@ -184,7 +272,7 @@ if (in_array('str_color', $disabled_functions) === false) {
                     E_USER_WARNING
                 );
                 $text_color = '0;39';
-                break;
+            break;
             case 'black':         $text_color = '0;30'; break;
             case 'dark_grey':     $text_color = '1;30'; break;
             case 'red':           $text_color = '0;31'; break;
@@ -209,7 +297,7 @@ if (in_array('str_color', $disabled_functions) === false) {
                     E_USER_WARNING
                 );
                 $bkgd_color = '49';
-                break;
+            break;
             case 'black':   $bkgd_color = '40'; break;
             case 'red':     $bkgd_color = '41'; break;
             case 'green':   $bkgd_color = '42'; break;
@@ -253,9 +341,11 @@ if (in_array('str_style', $disabled_functions) === false) {
                     E_USER_WARNING
                 );
                 return $string;
-                break;
+            break;
         }
     }
 }
+
+unset($disabled_functions);
 
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////
