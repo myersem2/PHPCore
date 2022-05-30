@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * PHPCore - Functions
  *
@@ -14,35 +14,78 @@ if (empty($GLOBALS['_CORE']['DISABLE_FUNCTIONS']) === false) {
 }
 
 /**
- * Returns the XML representation of a array 
+ * Gets the value of a PHPCore configuration directive
  *
- * @param array $array Array to be encoded as XML
- * @return string Returns a string containing the XML representation of the supplied array.
+ * Returns the value of the PHPCore configuration directive on success. If
+ * section is not passed 'the [PHPCore] section will be used.
+ *
+ * @param string $directive The configuration directive name.
+ * @param string $section The configuration section name.
+ * @return string|false Returns the value of the configuration option as a
+ *                      string on success, or an empty string for null values.
+ *                      Returns false if the configuration option doesn't exist.
  */
-if (in_array('xml_encode', $disabled_functions) === false) {
-    define('XML_ENCODE_AS_XML_OBJ', 1);
-    define('XML_ENCODE_PRETTY_PRINT', 2);
-    function xml_encode(array $array, int $flags = 0, string $root = '<root/>', $xml = null)
+if (in_array('core_ini_get', $disabled_functions) === false) {
+    function core_ini_get(string $directive, string $section = 'PHPCore'): string|false
     {
-        $xml = $xml ?? new SimpleXMLElement($root);
-        foreach ($array as $k=>$v) {
-            if (is_array($v) === true) {
-                xml_encode($v, XML_ENCODE_AS_XML_OBJ, $k, $xml->addChild($k));
-            } else {
-                $xml->addChild($k, $v);
-            }
-        }
-        //if ($flags ^ XML_ENCODE_AS_STRING) {
-        if ($flags & XML_ENCODE_AS_XML_OBJ) {
-            return $xml;
-        }
-        if ($flags & XML_ENCODE_PRETTY_PRINT) {
-            $dom = dom_import_simplexml($xml)->ownerDocument;
-            $dom->formatOutput = true;
-            return $dom->saveXML();
+		//print_r($GLOBALS['_CORE_INI'][$section]);      
+		return $GLOBALS['_CORE_INI'][$section][$directive] ?? false;
+    }
+}
+
+/**
+ * Gets all configuration options
+ *
+ * Returns all the registered configuration options.
+ *
+ * @param string $section An optional section name. If not empty, the function
+ *                        returns only options specific for that section.
+ * @return array Returns an associative array with directive name as the array
+ *               key. Returns false and raises an E_WARNING level error if the
+ *               section doesn't exist.
+ */
+if (in_array('core_ini_get_all', $disabled_functions) === false) {
+    function core_ini_get_all(string|null $section = null, string|null $sub_section = null): array|false
+    {
+        if (empty($section)) {
+            return $GLOBALS['_CORE_INI'] ?? false;
+        } elseif(empty($sub_section)) {
+            return $GLOBALS['_CORE_INI'][$section] ?? false;
         } else {
-            return $xml->asXML();
+            $sub_directives = [];
+            if (empty($GLOBALS['_CORE_INI'][$section]) === false) {
+                foreach ($GLOBALS['_CORE_INI'][$section] as $directive=>$value) {
+                    if (preg_match('/(\w*)\.(\w*)/', $directive, $matches)) {
+                        $sub_directives[$matches[2]] = $value;
+                    }
+                }
+            }
+            return empty($sub_directives) ? false : $sub_directives;
         }
+    }
+}
+
+/**
+ * Sets the value of a configuration directive.
+ *
+ * Sets the value of the given PHPCore configuration directive. The configuration
+ * directive will keep this new value during the script's execution, and will be
+ * restored at the script's ending. This is similar to PHP ini_set() function.
+ *
+ * @param string $directive The configuration directive name.
+ * @param string $section The configuration section name.
+ * @param string $value The new value for the option.
+ * @return string|false Returns the old value on success, false on failure.
+ */
+if (in_array('core_ini_set', $disabled_functions) === false) {
+    function core_ini_set(string $directive, string|int|float|bool|null $value, string $section = 'PHPCore'): string|false
+    {
+        $oldValue =  $GLOBALS['_CORE_INI'][$section][$directive] ?? '';
+        if (isset($GLOBALS['_CORE_INI'][$section])) {
+          $GLOBALS['_CORE_INI'][$section] = [];
+        }  
+        $GLOBALS['_CORE_INI'][$section][$directive] = $value;
+        return $oldValue;
     }
 }
 
@@ -54,7 +97,7 @@ if (in_array('xml_encode', $disabled_functions) === false) {
  * @return string List or HTML formated PHPCore information.
  */
 if (in_array('coreinfo', $disabled_functions) === false) {
-    function coreinfo(): string
+    function coreinfo(): void
     {
         $output = '';
         $version = CORE_VERSION;
@@ -64,11 +107,10 @@ if (in_array('coreinfo', $disabled_functions) === false) {
             default:
                 trigger_error(
                     "coreinfo() does not support the '$format' format.",
-                    E_USER_WARNING
+                    E_USER_ERROR
                 );
-            break;
             case 'text':
-                $output .= str_color('PHPCore ', 'light_blue') . ' ' . str_color($version, 'cyan') . ' (cli)' . $eol;
+                $output .= str_color('PHPCore', 'light_blue') . ' ' . str_color($version, 'cyan') . $eol;
                 foreach ($GLOBALS['_CORE_INI'] as $section=>$directives) {
                     $output .= PHP_EOL . str_color(str_style($section, 'underline'), 'brown') . $eol;
                     foreach ($directives as $directive=>$value) {
@@ -82,6 +124,8 @@ if (in_array('coreinfo', $disabled_functions) === false) {
                 }
                 $output .= PHP_EOL;
             break;
+            /*
+            // TODO: clean this up with a function or library to output HTML
             case 'html':
                 $output .= "<h1>PHPCore $version</h1>$eol";
                 $output .= "<h3>Core Configuration</h3>$eol";
@@ -117,6 +161,7 @@ if (in_array('coreinfo', $disabled_functions) === false) {
                 $output .= "    </tbody>$eol";
                 $output .= "</table>$eol";
             break;
+            */
             case 'json':
             case 'xml':
                 $data = ['PHPCoreVersion'=>$version];
@@ -129,68 +174,7 @@ if (in_array('coreinfo', $disabled_functions) === false) {
                 }
             break;
         }
-        return $output ?? '';
-    }
-}
-
-/**
- * Gets the value of a PHPCore configuration directive
- *
- * Returns the value of the PHPCore configuration directive on success. If
- * section is not passed 'the [PHPCore] section will be used.
- *
- * @param string $directive The configuration directive name.
- * @param string $section The configuration section name.
- * @return string|false Returns the value of the configuration option as a
- *                      string on success, or an empty string for null values.
- *                      Returns false if the configuration option doesn't exist.
- */
-if (in_array('core_ini_get', $disabled_functions) === false) {
-    function core_ini_get(string $directive, string $section = 'PHPCore'): string|false
-    {
-        return $GLOBALS['_CORE_INI'][$section][$directive] ?? false;
-    }
-}
-
-/**
- * Gets all configuration options
- *
- * Returns all the registered configuration options.
- *
- * @param string $section An optional section name. If not null, the function
- *                        returns only options specific for that section.
- * @return array Returns an associative array with directive name as the array
- *               key. Returns false and raises an E_WARNING level error if the
- *               section doesn't exist.
- */
-if (in_array('core_ini_get_all', $disabled_functions) === false) {
-    function core_ini_get_all(string $section = null): array|false
-    {
-        return $GLOBALS['_CORE_INI'][$section] ?? false;
-    }
-}
-
-/**
- * Sets the value of a configuration directive.
- *
- * Sets the value of the given PHPCore configuration directive. The configuration
- * directive will keep this new value during the script's execution, and will be
- * restored at the script's ending. This is similar to PHP ini_set() function.
- *
- * @param string $directive The configuration directive name.
- * @param string $section The configuration section name.
- * @param string $value The new value for the option.
- * @return string|false Returns the old value on success, false on failure.
- */
-if (in_array('core_ini_set', $disabled_functions) === false) {
-    function core_ini_set(string $directive, string|int|float|bool|null $value, string $section = 'PHPCore'): string|false
-    {
-        $oldValue =  $GLOBALS['_CORE_INI'][$section][$directive] ?? '';
-        if (isset($GLOBALS['_CORE_INI'][$section])) {
-          $GLOBALS['_CORE_INI'][$section] = [];
-        }  
-        $GLOBALS['_CORE_INI'][$section][$directive] = $value;
-        return $oldValue;
+        echo $output;
     }
 }
 
@@ -225,30 +209,27 @@ if (in_array('parse_dsn', $disabled_functions) === false) {
                 'parse_dsn function only accepts valid dsn strings'
             );
         }
-        try {
-            $dsn_parts = explode(':', $dsn);
-            $driver = $dsn_parts[0];
-            $params = $dsn_parts[1] ?? '';
-            $output['driver'] = $driver;
-            foreach(explode(';', $params) as $item) {
-                if (empty($item) === true) {
-                    continue;
-                }
-                switch ($driver) {
-                    case 'sqlite':
-                        $output['path'] = $item;
-                        return $output;
-                    break;
-                }
-                list($name, $value) = explode('=', $item);
-                $output[$name] = $value;
+        $dsn_parts = explode(':', $dsn);
+        $driver = $dsn_parts[0];
+        $params = $dsn_parts[1] ?? '';
+        $output['driver'] = $driver;
+        foreach(explode(';', $params) as $item) {
+            if (empty($item)) {
+                continue;
             }
-            return $output;
-        } catch (Exception  $e) {
-            throw new InvalidArgumentException(
-                'parse_dsn function only accepts valid dsn strings'
-            );
+            switch ($driver) {
+                case 'sqlite':
+                    $output['path'] = $item;
+                    return $output;
+            }
+            list($name, $value) = explode('=', $item);
+            $output[$name] = match ($name) {
+                'port'   => intval($value),
+                'weight' => intval($value),
+                default  => $value
+            };
         }
+        return $output;
     }
 }
 
@@ -266,13 +247,6 @@ if (in_array('str_color', $disabled_functions) === false) {
     function str_color(string $string, string $str_color_name, string $bkg_color_name = 'black'): string
     {
         switch ($str_color_name) {
-            default:
-                trigger_error(
-                    "Unknown string color `$str_color_name` used for str_color()",
-                    E_USER_WARNING
-                );
-                $text_color = '0;39';
-            break;
             case 'black':         $text_color = '0;30'; break;
             case 'dark_grey':     $text_color = '1;30'; break;
             case 'red':           $text_color = '0;31'; break;
@@ -289,15 +263,13 @@ if (in_array('str_color', $disabled_functions) === false) {
             case 'light_cyan':    $text_color = '1;36'; break;
             case 'light_grey':    $text_color = '0;37'; break;
             case 'white':         $text_color = '1;37'; break;
-        }
-        switch ($bkg_color_name) {
             default:
                 trigger_error(
-                    "Unknown background color `$bkg_color_name` used for str_color()",
-                    E_USER_WARNING
+                    "Unknown string color '$str_color_name' used for str_color()",
+                    E_USER_ERROR
                 );
-                $bkgd_color = '49';
-            break;
+        }
+        switch ($bkg_color_name) {
             case 'black':   $bkgd_color = '40'; break;
             case 'red':     $bkgd_color = '41'; break;
             case 'green':   $bkgd_color = '42'; break;
@@ -306,6 +278,11 @@ if (in_array('str_color', $disabled_functions) === false) {
             case 'magenta': $bkgd_color = '45'; break;
             case 'cyan':    $bkgd_color = '46'; break;
             case 'white':   $bkgd_color = '47'; break;
+            default:
+                trigger_error(
+                    "Unknown background color '$bkg_color_name' used for str_color()",
+                    E_USER_ERROR
+                );
         }
         return "\e[{$text_color};{$bkgd_color}m{$string}\e[0m";
     }
@@ -338,10 +315,49 @@ if (in_array('str_style', $disabled_functions) === false) {
             default:
                 trigger_error(
                     "Unknown string style `$style_name` used for str_style()",
-                    E_USER_WARNING
+                    E_USER_ERROR
                 );
-                return $string;
-            break;
+        }
+    }
+}
+
+/**
+ * Returns the XML representation of a array 
+ *
+ * @param array $array Array to be encoded as XML
+ * @return string Returns a string containing the XML representation of the supplied array.
+ */
+if (in_array('xml_encode', $disabled_functions) === false) {
+    define('XML_ENCODE_AS_XML_OBJ', 1);
+    define('XML_ENCODE_PRETTY_PRINT', 2);
+    function xml_encode(array $array, int $flags = 0)
+    {
+        static $sub_func = null;
+        if (empty($sub_func)) {
+            $sub_func = function($arr, $str, $xml) use(&$sub_func) {
+                foreach ($arr as $key=>$val) {
+                    if(is_numeric($key)) {
+                        $key = 'item';
+                    }
+                    if (is_array($val)) {
+                        $sub_func($val, $key, $xml->addChild($key));
+                    } else {
+                        $xml->addChild($key, strval($val));
+                    }
+                }
+                return $xml;
+            };
+        }
+        $xml = $sub_func($array, '<root/>', new SimpleXMLElement('<root/>'));
+        if ($flags & XML_ENCODE_AS_XML_OBJ) {
+            return $xml;
+        }
+        if ($flags & XML_ENCODE_PRETTY_PRINT) {
+            $dom = dom_import_simplexml($xml)->ownerDocument;
+            $dom->formatOutput = true;
+            return $dom->saveXML();
+        } else {
+            return $xml->asXML();
         }
     }
 }

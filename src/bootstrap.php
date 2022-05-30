@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * PHPCore - Bootstrap
  *
@@ -25,8 +25,10 @@ define(
 // =============================================================================
 // Base variables
 // =============================================================================
-$config_paths[] = $config_path = $base_config = '/etc/phpcore/phpcore.ini';
 $ini_config = null;
+$interface = str_starts_with(php_sapi_name(), 'cli') ? 'cli' : 'www';
+$interface = str_starts_with(php_sapi_name(), 'apache2') ? 'apache2' : $interface;
+$config_paths[] = $config_path = $base_config = "/etc/phpcore/$interface/phpcore.ini";
 
 // =============================================================================
 // PHPCoreAutoloader
@@ -47,35 +49,10 @@ spl_autoload_register(function(string $class_name) {
 });
 
 // =============================================================================
-// Helper functions
-// =============================================================================
-
-/**
- * Merge INI helper function
- *
- * This helper function is used to add/override directives from alternate
- * PHPCore configuration sources.
- *
- * @param array $alt_ini_config Alternate PHPCore INI configuration
- * @return void
- *
-$merge_ini = function($alt_ini_config) use(&$ini_config) {
-    foreach ($alt_ini_config as $section=>$directives) {
-        foreach ($directives as $directive=>$value) {
-            if (isset($ini_config[$section]) === false) {
-                $ini_config[$section] = [];
-            }
-            $ini_config[$section][$directive] = $value;
-        }
-    }
-};
-/* */
-
-// =============================================================================
 // Load Base PHPCore configuration
 // =============================================================================
 if (is_readable($base_config) === true) {
-    $ini_config = parse_ini_file('/etc/phpcore/phpcore.ini', true);
+    $ini_config = parse_ini_file($base_config, true);
 } else {
     trigger_error(
         "Missing base PHPCore configuration file. ($base_config)",
@@ -88,14 +65,13 @@ unset($base_config);
 // Look for and load environment PHPCore configuration
 // =============================================================================
 $phpcorerc = getenv('PHPCORERC');
-if (isset($phpcorerc) === true) {
+if (empty($phpcorerc) === false) {
     if (is_readable($phpcorerc) === true) {
         $config_path = $phpcorerc;
         $config_paths[] = $config_path;
         $ini_config = array_merge_recursive($ini_config, parse_ini_file($phpcorerc, true), );
     }
 }
-unset($phpcorerc);
 
 // =============================================================================
 // Look for and load working path PHPCore configuration
@@ -130,8 +106,8 @@ $GLOBALS['_CORE'] = [
     'CONFIG_FILES'      => implode(',', $config_paths),
     'DISABLE_FUNCTIONS' => $GLOBALS['_CORE_INI']['PHPCore']['disable_functions'] ?? '',
     'DISABLE_CLASSES'   => $GLOBALS['_CORE_INI']['PHPCore']['disable_classes'] ?? '',
-    'INTERFACE'         => (str_starts_with(php_sapi_name(), 'cli')) ? 'cli' : 'http',
-    'FORMAT'            => (str_starts_with(php_sapi_name(), 'cli')) ? 'text' : $GLOBALS['_CORE_INI']['PHPCore']['format'],
+    'INTERFACE'         => $interface,
+    'FORMAT'            => ($interface === 'cli') ? 'text' : $GLOBALS['_CORE_INI']['PHPCore']['default_format'],
 ];
 unset($config_path);
 unset($ini_config);
@@ -141,5 +117,10 @@ unset($config_paths);
 // PHPCore functions
 // =============================================================================
 include $GLOBALS['_CORE']['PATH'] . DIRECTORY_SEPARATOR . 'functions.php';
+
+// =============================================================================
+// Look for auto starts like session
+// =============================================================================
+
 
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////
