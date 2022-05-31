@@ -120,7 +120,7 @@ final class SessionTest extends TestCase
         );
         
         //Session::getInstance()->flushAll();
-        print_r(Session::getInstance()->getAllKeys());
+        //print_r(Session::getInstance()->getAllKeys());
         
     }
 

@@ -119,8 +119,10 @@ unset($config_paths);
 include $GLOBALS['_CORE']['PATH'] . DIRECTORY_SEPARATOR . 'functions.php';
 
 // =============================================================================
-// Look for auto starts like session
+// Session Auto Start
 // =============================================================================
-
+if (core_ini_get('auto_start', 'Session')) {
+    \PHPCore\Session::getInstance();
+}
 
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////

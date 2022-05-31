@@ -26,15 +26,6 @@ use \SessionIdInterface;
 final class Session extends SessionHandler implements SessionHandlerInterface, SessionIdInterface
 {
     /**
-     * Constant flags
-     *
-     * @const int
-     */
-    const DEBUG_MODE                = 1;    // Return array with debug information
-
-    // -----------------------------------------------------------------------------------------
-
-    /**
      * Handler that have been created
      *
      * @var object
@@ -58,11 +49,18 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
     protected $Config = [];
 
     /**
-     * Data
+     * Flash Database
+     *
+     * @var array   
+     */
+    public $FlashData = [];
+
+    /**
+     * Session Meta Data
      *
      * @var array 
      */
-    protected $Data = null;
+    protected $sessionMetaData = null;
 
     // -----------------------------------------------------------------------------------------
 
@@ -106,40 +104,41 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
         self::$Instance =& $this;
         $this->Config = core_ini_get_all('Session');
 
-        foreach (['save_handler', 'save_path', 'name'] as $key) {
-            ini_set("session.$key", $this->Config[$key]);
+        $session_ini_overrides = [
+            'save_handler', 'save_path', 'name', 'cookie_lifetime', 'cookie_path',
+            'cookie_domain', 'cookie_httponly', 'cookie_samesite', 'gc_probability',
+            'gc_divisor', 'gc_maxlifetime'
+        ];
+        foreach ($session_ini_overrides as $key) {
+            if (isset($this->Config[$key])) {
+                ini_set("session.$key", $this->Config[$key]);
+            } else {
+                $this->Config[$key] = ini_get("session.$key");
+            }
         }
+        // Required due to "php" option not using serialize() and unserialize()
+        // function resulting in issues with offset erors
+        ini_set('session.serialize_handler', 'php_serialize');
 
         session_set_save_handler(self::$Instance, true);
 
-        // TODO: find session key vie $_COOKIE, $_ENV, ...
-        session_id('vi5re08mrh9qbe1di1obnov316');
-        // TODO: look for auto start and move to bootstrap
+        // Get Session ID
+        $session_id = $_COOKIE[session_name()] ?? null;
+        $session_id = (getenv(session_name()) !== false) ? getenv(session_name()) : $session_id;
+        session_id($session_id);
         session_start();
-
-        $_SESSION['test'] = 'SAT ENSURE OF 32 CHARS';
-
     }
-
     public function close(): bool
     {
-        $result = parent::close();
-        $result_str = ($result) ? 'TRUE' : 'FALSE';
-        echo "\n".str_color('close', 'red')."() => $result_str\n";
-        return $result;
+        return parent::close();
     }
     public function create_sid(): string
     {
-        $result = parent::create_sid();
-        echo "\n".str_color('create_sid', 'yellow')."() => $result\n";
-        return $result;
+        return parent::create_sid();
     }
     public function destroy(string $id): bool
     {
-        $result = parent::destroy($id);
-        $result_str = ($result) ? 'TRUE' : 'FALSE';
-        echo "\n".str_color('destroy', 'red')."($id) => $result_str\n";
-        return $result;
+        return parent::destroy($id);
     }
     public function flushAll(): bool
     {
@@ -156,10 +155,16 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
     }
     public function gc(int $max_lifetime): int|false
     {
-        $result = parent::gc($max_lifetime);
-        $result_str = ($result === FALSE) ? 'FALSE' : $result;
-        echo "\n".str_color('gc', 'light_grey')."($max_lifetime) => $result_str\n";
-        return $result;
+        return parent::gc($max_lifetime);
+    }
+    public function giveAccess(string|array $acl_group): void
+    {
+        $acl_groups = is_string($acl_group) ? [$acl_group] : $acl_group;
+        foreach ($acl_groups as $acl_group) {
+            if ( ! in_array($acl_group, $this->sessionMetaData['acl_groups']) ) {
+                $this->sessionMetaData['acl_groups'][] = $acl_group;
+            }
+        }
     }
     public function getAllKeys(): array
     {
@@ -174,41 +179,134 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
             break;
         }
     }
+    public function getFlash(string $key): mixed
+    {
+        return $this->FlashData['old'][$key] ?? null;
+    }
+    public function getMetaData(): array
+    {
+        return $this->sessionMetaData;
+    }
+    public function hasAccess(string $acl_group): bool
+    {
+        return in_array($acl_group, $this->sessionMetaData['acl_groups']);
+    }
+    public function isLoggedIn(): bool
+    {
+        $user_ident = $this->Config['user_identifier'];
+        return (empty($this->sessionMetaData[$user_ident]) === false);
+    }
+    public function keepFlash(string $key): bool
+    {
+        if (isset($this->FlashData['old'][$key]) === false) {
+            return false;
+        }
+        $this->FlashData['new'][$key] = $this->FlashData['old'][$key];
+        return true;
+    }
+    public function loggedIn(int $user_ident_value): void
+    {
+        $user_ident = $this->Config['user_identifier'];
+        $this->sessionMetaData[$user_ident] = $user_ident_value;
+        $this->sessionMetaData['started'] = time();
+    }
+    public function loggedOut(bool $keep_data = false): void
+    {
+        $user_ident = $this->Config['user_identifier'];
+        $this->sessionMetaData[$user_ident] = null;
+        if ($keep_data) {
+            $this->sessionMetaData['started'] = time();
+        } else {
+            $this->sessionMetaData['started'] = time();
+            $_SESSION = [];
+        }
+    }
     public function open(string $path, string $name): bool
     {
-        $result = parent::open($path, $name);
-        $result_str = ($result) ? 'TRUE' : 'FALSE';
-        echo "\n".str_color('open', 'green')."($path, $name) => $result_str\n";
-        return $result;
+        return parent::open($path, $name);;
     }
     public function read(string $id): string|false
     {
         try {
             $data = parent::read($id);
-        } Catch (Exception $e) {
+        } catch (ErrorException $e) {
             // TODO: Handel Locked session (last session did not close/write
             //       $e->getMessage() = "Unable to clear session lock record"
             //       $e->getCode() = 2
-            return '';
+            die('NEED TO FIX THIS');
         }
+
         if (empty($data) === false and $this->Config['encrypt']) {
             $key_phase = $this->Config['key_phase'];
             $data = $this->_decrypt($data, $key_phase);
         }
-        $result_str = ($data === false) ? 'FALSE' : $data;
-        echo "\n".str_color('read', 'light_blue')."($id) => $result_str\n";
+
+        $default = function() {
+            $acl_groups = explode(',', $this->Config['default_acl_groups']);
+            $user_ident = $this->Config['user_identifier'];
+            $method = isset($_COOKIE[session_name()]) ? 'cookie' : null;
+            $method = (getenv(session_name()) !== false) ? 'environment' : $method;
+            return [
+                'started'    => time(),
+                $user_ident  => null,
+                'acl_groups' => $acl_groups,
+                'method'     => $method,
+                'updated'    => time(),
+            ];
+        };
+
+        $clean_data = unserialize($data);
+
+        if (isset($clean_data['_META'])) {
+            $this->sessionMetaData = $clean_data['_META'];
+            unset($clean_data['_META']);
+        } else {
+            $this->sessionMetaData = $default();
+        }
+
+        if (isset($clean_data['_FLASH'])) {
+            $this->FlashData['old'] = $clean_data['_FLASH'];
+            unset($clean_data['_FLASH']);
+        }
+
+        $data = serialize($clean_data);
+
+        $this->sessionMetaData['timeleft'] = null;
+        $gc_maxlength = $this->Config['gc_maxlength'] ?? null;
+        if (empty($gc_maxlength) === false) {
+            $timeleft = $this->sessionMetaData['started'] + intval($gc_maxlength) - time();
+            $this->sessionMetaData['timeleft'] = $timeleft;
+            if ($timeleft < 0) {
+                $this->sessionMetaData = $default();
+                $data = '';
+                $this->sessionMetaData['timeleft'] = 0;
+            }
+        }
+
         return $data;
+    }
+    public function setFlash(string $key, mixed $value): void
+    {
+        $this->FlashData['new'][$key] = $value;
     }
     public function write(string $id, string $data): bool
     {
+        $this->sessionMetaData['updated'] = time();
+        $clean_data = unserialize($data);
+        $clean_data['_META'] = $this->sessionMetaData;
+
+        if (isset($this->FlashData['new'])) {
+            $clean_data['_FLASH'] = $this->FlashData['new'];
+        }
+        
+        $data = serialize($clean_data);
+
         $key_phase = $this->Config['key_phase'];
         if (empty($data) === false and $this->Config['encrypt']) {
             $data = $this->_encrypt($data, $key_phase);
         }
-        $result = parent::write($id, $data);
-        $result_str = ($result) ? 'TRUE' : 'FALSE';
-        echo "\n".str_color('write', 'light_magenta')."($id, $data) => $result_str\n";
-        return $result;
+
+        return parent::write($id, $data);
     }
     private function _decrypt(string $data, string $key_phase): string
     {
