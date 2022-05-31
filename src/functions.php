@@ -8,9 +8,12 @@
 
 // -------------------------------------------------------------------------------------------------
 
-$disabled_functions = [];
+$disabled_functions = $disable_classes = [];
 if (empty($GLOBALS['_CORE']['DISABLE_FUNCTIONS']) === false) {
     $disabled_functions = explode(',', $GLOBALS['_CORE']['DISABLE_FUNCTIONS']);
+}
+if (empty($GLOBALS['_CORE']['DISABLE_CLASSES']) === false) {
+    $disable_classes = explode(',', $GLOBALS['_CORE']['DISABLE_CLASSES']);
 }
 
 /**
@@ -25,7 +28,7 @@ if (empty($GLOBALS['_CORE']['DISABLE_FUNCTIONS']) === false) {
  *                      string on success, or an empty string for null values.
  *                      Returns false if the configuration option doesn't exist.
  */
-if (in_array('core_ini_get', $disabled_functions) === false) {
+if ( ! in_array('core_ini_get', $disabled_functions) ) {
     function core_ini_get(string $directive, string $section = 'PHPCore'): string|false
     {
 		//print_r($GLOBALS['_CORE_INI'][$section]);      
@@ -44,7 +47,7 @@ if (in_array('core_ini_get', $disabled_functions) === false) {
  *               key. Returns false and raises an E_WARNING level error if the
  *               section doesn't exist.
  */
-if (in_array('core_ini_get_all', $disabled_functions) === false) {
+if ( ! in_array('core_ini_get_all', $disabled_functions) ) {
     function core_ini_get_all(string|null $section = null, string|null $sub_section = null): array|false
     {
         if (empty($section)) {
@@ -77,7 +80,7 @@ if (in_array('core_ini_get_all', $disabled_functions) === false) {
  * @param string $value The new value for the option.
  * @return string|false Returns the old value on success, false on failure.
  */
-if (in_array('core_ini_set', $disabled_functions) === false) {
+if ( ! in_array('core_ini_set', $disabled_functions) ) {
     function core_ini_set(string $directive, string|int|float|bool|null $value, string $section = 'PHPCore'): string|false
     {
         $oldValue =  $GLOBALS['_CORE_INI'][$section][$directive] ?? '';
@@ -96,7 +99,7 @@ if (in_array('core_ini_set', $disabled_functions) === false) {
  *
  * @return string List or HTML formated PHPCore information.
  */
-if (in_array('coreinfo', $disabled_functions) === false) {
+if ( ! in_array('coreinfo', $disabled_functions) ) {
     function coreinfo(): void
     {
         $output = '';
@@ -201,7 +204,7 @@ if (in_array('coreinfo', $disabled_functions) === false) {
  * @param string $dsn Data Source Name (DSN) string to parse .
  * @return array Returns DSN elements as associated array.
  */
-if (in_array('parse_dsn', $disabled_functions) === false) {
+if ( ! in_array('parse_dsn', $disabled_functions) ) {
     function parse_dsn(string $dsn): array
     {
         if (strpos($dsn, ':') === false) {
@@ -234,16 +237,145 @@ if (in_array('parse_dsn', $disabled_functions) === false) {
 }
 
 /**
+ * Get session flash data item
+ *
+ * @param string $key The key of the flash data item to retrieve
+ * @return mixed
+ */
+if ( ! in_array('session_flash_get', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_flash_get(string $key): mixed
+    {
+        return \PHPCore\Session::getInstance()->flashGet($key);
+    }
+}
+
+/**
+ * Keep session flash data item for the next session. Return true on success and
+ * false if item was not found in flash data.
+ *
+ * @param string $key The key of the flash data item to retrieve
+ * @return boolean
+ */
+if ( ! in_array('session_flash_keep', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_flash_keep(string $key): bool
+    {
+        return \PHPCore\Session::getInstance()->flashKeep($key);
+    }
+}
+
+/**
+ * Set session flash data item for use in the next session
+ *
+ * @param string $key The key of the flash data item
+ * @param mixed $value The value of the flash data item
+ * @return void
+ */
+if ( ! in_array('session_flash_set', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_flash_set(string $key, mixed $value): void
+    {
+        \PHPCore\Session::getInstance()->flashSet($key, $value);
+    }
+}
+
+/**
+ * Returns all the session metadata
+ *
+ * If no key is passed the entire metadata array will be returned.
+ *
+ * @param string $key Metadata Key
+ * @return array Session Metadata
+ */
+if ( ! in_array('session_get_metadata', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_get_metadata(string $key = null): mixed
+    {
+        return \PHPCore\Session::getInstance()->getMetadata($key);
+    }
+}
+
+/**
+ * Grant session access to an ACL group
+ *
+ * @param string|array $groups ACL group or array of ACL groups to be granted
+ * @return void
+ */
+if ( ! in_array('session_grant', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_grant(string|array $groups): void
+    {
+        \PHPCore\Session::getInstance()->grant($groups);
+    }
+}
+
+/**
+ * Check if session has ACL group
+ *
+ * @param string $group ACL group to check access for
+ * @return boolean
+ */
+if ( ! in_array('session_has_access', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_has_access(string $group): bool
+    {
+        return \PHPCore\Session::getInstance()->hasAccess($group);
+    }
+}
+
+/**
+ * Revoke session access to an ACL group
+ *
+ * @param string|array $groups ACL group or array of ACL groups to be revoked
+ * @return void
+ */
+if ( ! in_array('session_revoke', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_revoke(string|array $groups): void
+    {
+        \PHPCore\Session::getInstance()->revoke($groups);
+    }
+}
+
+/**
+ * Returns time left in session
+ * 
+ * If the gc_maxlength directive is set it will return the difference in time
+ * since the session started. If directive is not used will return null.
+ *
+ * @return integer|null
+ */
+if ( ! in_array('session_time_left', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_time_left(): int|null
+    {
+        return \PHPCore\Session::getInstance()->timeLeft();
+    }
+}
+
+/**
+ * Get and/or set the current session user
+ *
+ * If the user parameter is used the acl_groups will be replaced with the ones
+ * declared in the acl_group.default_user directive. The session start time will
+ * also be reset.
+ *
+ * @param string|int $user The user to bind to the current session
+ * @return string|int|null
+ */
+if ( ! in_array('session_user', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_user(string|int $user = null): string|int|null
+    {
+        if ($user !== null) {
+            \PHPCore\Session::getInstance()->userBind($user);
+        }
+        $meta_data = \PHPCore\Session::getInstance()->getMetadata();
+        return $meta_data['user'] ?? null;
+    }
+}
+
+/**
  * String Color
  *
  * @param string $string         String to be colorized
  * @param string $str_color_name String color name
  * @param string $bkg_color_name Background color name
- *
- * @access public
  * @return void
  */
-if (in_array('str_color', $disabled_functions) === false) {
+if ( ! in_array('str_color', $disabled_functions) ) {
     function str_color(string $string, string $str_color_name, string $bkg_color_name = 'black'): string
     {
         switch ($str_color_name) {
@@ -293,11 +425,9 @@ if (in_array('str_color', $disabled_functions) === false) {
  *
  * @param string $string     String to be styled
  * @param string $style_name Style name
- *
- * @access public
  * @return void
  */
-if (in_array('str_style', $disabled_functions) === false) {
+if ( ! in_array('str_style', $disabled_functions) ) {
     function str_style(string $string, string $style_name): string
     {
         switch ($style_name) {
@@ -327,7 +457,7 @@ if (in_array('str_style', $disabled_functions) === false) {
  * @param array $array Array to be encoded as XML
  * @return string Returns a string containing the XML representation of the supplied array.
  */
-if (in_array('xml_encode', $disabled_functions) === false) {
+if ( ! in_array('xml_encode', $disabled_functions) ) {
     define('XML_ENCODE_AS_XML_OBJ', 1);
     define('XML_ENCODE_PRETTY_PRINT', 2);
     function xml_encode(array $array, int $flags = 0)
@@ -363,5 +493,6 @@ if (in_array('xml_encode', $disabled_functions) === false) {
 }
 
 unset($disabled_functions);
+unset($disable_classes);
 
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////

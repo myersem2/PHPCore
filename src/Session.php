@@ -56,11 +56,11 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
     public $FlashData = [];
 
     /**
-     * Session Meta Data
+     * Session Metadata
      *
      * @var array 
      */
-    protected $sessionMetaData = null;
+    protected $sessionMetadata = null;
 
     // -----------------------------------------------------------------------------------------
 
@@ -128,6 +128,8 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
         session_id($session_id);
         session_start();
     }
+    
+    
     public function close(): bool
     {
         return parent::close();
@@ -138,9 +140,22 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
     }
     public function destroy(string $id): bool
     {
+        $this->FlashData = [];
+        $this->sessionMetadata = $this->defaultMetadata();
+        unset($_SESSION['_META']);
+        unset($_SESSION['_FLASH']);
         return parent::destroy($id);
     }
-    public function flushAll(): bool
+
+
+    /**
+     * Destroy all session in handler.
+     *
+     * Note not all save handlers support this method.
+     *
+     * @return bool Returns true on success or false on failure.
+     */
+    public function destroyAll(): bool
     {
         $handler = $this->_getHandler();
         switch ($this->Config['save_handler']) {
@@ -153,50 +168,26 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
             break;
         }
     }
-    public function gc(int $max_lifetime): int|false
-    {
-        return parent::gc($max_lifetime);
-    }
-    public function giveAccess(string|array $acl_group): void
-    {
-        $acl_groups = is_string($acl_group) ? [$acl_group] : $acl_group;
-        foreach ($acl_groups as $acl_group) {
-            if ( ! in_array($acl_group, $this->sessionMetaData['acl_groups']) ) {
-                $this->sessionMetaData['acl_groups'][] = $acl_group;
-            }
-        }
-    }
-    public function getAllKeys(): array
-    {
-        $handler = $this->_getHandler();
-        switch ($this->Config['save_handler']) {
-            case 'memcached':
-                return $handler->getAllKeys();
-            break;
-            default:
-                $save_handler = $this->Config['save_handler'];
-                throw new Exception("Session::flushAll() is not supported for the '$save_handler' save handler");
-            break;
-        }
-    }
-    public function getFlash(string $key): mixed
+
+    /**
+     * Get session flash data item
+     *
+     * @param string $key The key of the flash data item to retrieve
+     * @return mixed
+     */
+    public function flashGet(string $key): mixed
     {
         return $this->FlashData['old'][$key] ?? null;
     }
-    public function getMetaData(): array
-    {
-        return $this->sessionMetaData;
-    }
-    public function hasAccess(string $acl_group): bool
-    {
-        return in_array($acl_group, $this->sessionMetaData['acl_groups']);
-    }
-    public function isLoggedIn(): bool
-    {
-        $user_ident = $this->Config['user_identifier'];
-        return (empty($this->sessionMetaData[$user_ident]) === false);
-    }
-    public function keepFlash(string $key): bool
+
+    /**
+     * Keep session flash data item for the next session. Return true on success and
+     * false if item was not found in flash data.
+     *
+     * @param string $key The key of the flash data item to retrieve
+     * @return bool
+     */
+    public function flashKeep(string $key): bool
     {
         if (isset($this->FlashData['old'][$key]) === false) {
             return false;
@@ -204,23 +195,146 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
         $this->FlashData['new'][$key] = $this->FlashData['old'][$key];
         return true;
     }
-    public function loggedIn(int $user_ident_value): void
+    
+    /**
+     * Set session flash data item for use in the next session
+     *
+     * @param string $key The key of the flash data item
+     * @param mixed $value The value of the flash data item
+     * @return void
+     */
+    public function flashSet(string $key, mixed $value): void
     {
-        $user_ident = $this->Config['user_identifier'];
-        $this->sessionMetaData[$user_ident] = $user_ident_value;
-        $this->sessionMetaData['started'] = time();
+        $this->FlashData['new'][$key] = $value;
     }
-    public function loggedOut(bool $keep_data = false): void
+
+    /**
+     * Get all current sessions in handler.
+     *
+     * Note not all save handlers support this method.
+     *
+     * @return array
+     */
+    public function getAllSessions(): array
     {
-        $user_ident = $this->Config['user_identifier'];
-        $this->sessionMetaData[$user_ident] = null;
-        if ($keep_data) {
-            $this->sessionMetaData['started'] = time();
-        } else {
-            $this->sessionMetaData['started'] = time();
+        $handler = $this->_getHandler();
+        switch ($this->Config['save_handler']) {
+            case 'memcached':
+                $session_ids = [];
+                $prefix = $this->Config['save_handler_id_prefix'];
+                foreach ($handler->getAllKeys() as $cached_key) {
+                    if (str_starts_with($cached_key, $prefix)) {
+                        $session_ids[] = substr($cached_key, strlen($prefix));
+                    }
+                }
+                return $session_ids;
+            break;
+            default:
+                $save_handler = $this->Config['save_handler'];
+                throw new Exception("Session::flushAll() is not supported for the '$save_handler' save handler");
+            break;
+        }
+    }
+
+
+    public function gc(int $max_lifetime): int|false
+    {
+        return parent::gc($max_lifetime);
+    }
+
+
+    /**
+     * Grant session access to an ACL group
+     *
+     * @param string|array $groups ACL group or array of ACL groups to be granted
+     * @return void
+     */
+    public function grant(string|array $groups): void
+    {
+        $groups = is_string($groups) ? [$groups] : $groups;
+        $acl_groups = array_merge($this->sessionMetadata['acl_groups'], $groups);
+        $this->sessionMetadata['acl_groups'] = array_unique($acl_groups);
+    }
+
+    /**
+     * Revoke session access to an ACL group
+     *
+     * @param string|array $groups ACL group or array of ACL groups to be revoked
+     * @return void
+     */
+    public function revoke(string|array $groups): void
+    {
+        $groups = is_string($groups) ? [$groups] : $groups;
+        $filtered_acl_groups = array_filter($this->sessionMetadata['acl_groups'], function($group) use(&$groups) {
+            return ! in_array($group, $groups);
+        });
+        $this->sessionMetadata['acl_groups'] = $filtered_acl_groups;
+    }
+
+    /**
+     * Returns all the session metadata
+     *
+     * If no key is passed the entire metadata array will be returned.
+     *
+     * @param string $key Metadata Key
+     * @return array Session Metadata
+     */
+    public function getMetadata(string $key = null): mixed
+    {
+        if ($key !== null) {
+            return $this->sessionMetadata[$key] ?? null;
+        }
+        return $this->sessionMetadata;
+    }
+
+    /**
+     * Check if session has ACL group
+     *
+     * @param string $group ACL group to check access for
+     * @return boolean
+     */
+    public function hasAccess(string $group): bool
+    {
+        return in_array($group, $this->sessionMetadata['acl_groups']);
+    }
+
+    /**
+     * Bind the current session user
+     *
+     * Note the acl_groups will be replaced with the ones declared in the
+     * acl_group.default_user directive. The session start time will also be
+     * reset.
+     *
+     * @param string|int $user The user to bind to the current session
+     * @return void
+     */
+    public function userBind(int|string $user): void
+    {
+        $this->sessionMetadata['user'] = $user;
+        $this->sessionMetadata['started'] = time();
+        $this->sessionMetadata['acl_groups'] = explode(',', $this->Config['acl_group.default_user']);
+    }
+
+    /**
+     * Unbind the current session user
+     *
+     * Note the acl_groups will be replaced with the ones declared in the
+     * acl_group.default_guest directive. The session start time will also be
+     * reset.
+     *
+     * @param boolean $keep_data Keep the session data
+     * @return void
+     */
+    public function userUnbind(bool $keep_data = false): void
+    {
+        $this->sessionMetadata['user']    = null;
+        $this->sessionMetadata['started'] = time();
+        $this->sessionMetadata['acl_groups'] = explode(',', $this->Config['acl_group.default_guest']);
+        if ( ! $keep_data ) {
             $_SESSION = [];
         }
     }
+
     public function open(string $path, string $name): bool
     {
         return parent::open($path, $name);;
@@ -240,65 +354,59 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
             $key_phase = $this->Config['key_phase'];
             $data = $this->_decrypt($data, $key_phase);
         }
-
-        $default = function() {
-            $acl_groups = explode(',', $this->Config['default_acl_groups']);
-            $user_ident = $this->Config['user_identifier'];
-            $method = isset($_COOKIE[session_name()]) ? 'cookie' : null;
-            $method = (getenv(session_name()) !== false) ? 'environment' : $method;
-            return [
-                'started'    => time(),
-                $user_ident  => null,
-                'acl_groups' => $acl_groups,
-                'method'     => $method,
-                'updated'    => time(),
-            ];
-        };
-
         $clean_data = unserialize($data);
 
         if (isset($clean_data['_META'])) {
-            $this->sessionMetaData = $clean_data['_META'];
-            unset($clean_data['_META']);
+            $this->sessionMetadata = $clean_data['_META'];
         } else {
-            $this->sessionMetaData = $default();
+            $clean_data['_META'] = $this->sessionMetadata = $this->defaultMetadata();
         }
 
         if (isset($clean_data['_FLASH'])) {
-            $this->FlashData['old'] = $clean_data['_FLASH'];
-            unset($clean_data['_FLASH']);
+            $clean_data['_FLASH'] = $this->FlashData['old'] = $clean_data['_FLASH'];
+        }
+
+        $this->sessionMetadata['timeleft'] = null;
+        $gc_maxlength = $this->Config['gc_maxlength'] ?? null;
+        if (empty($gc_maxlength) === false) {
+            $timeleft = $this->sessionMetadata['started'] + intval($gc_maxlength) - time();
+            $this->sessionMetadata['timeleft'] = $timeleft;
+            if ($timeleft < 0) {
+                $this->sessionMetadata = $this->defaultMetadata();
+                $data = '';
+                $this->sessionMetadata['timeleft'] = 0;
+            }
+            $clean_data['_META']['timeleft'] = $this->sessionMetadata['timeleft'];
         }
 
         $data = serialize($clean_data);
-
-        $this->sessionMetaData['timeleft'] = null;
-        $gc_maxlength = $this->Config['gc_maxlength'] ?? null;
-        if (empty($gc_maxlength) === false) {
-            $timeleft = $this->sessionMetaData['started'] + intval($gc_maxlength) - time();
-            $this->sessionMetaData['timeleft'] = $timeleft;
-            if ($timeleft < 0) {
-                $this->sessionMetaData = $default();
-                $data = '';
-                $this->sessionMetaData['timeleft'] = 0;
-            }
-        }
-
         return $data;
     }
-    public function setFlash(string $key, mixed $value): void
+
+    /**
+     * Returns time left in session
+     * 
+     * If the gc_maxlength directive is set it will return the difference in time
+     * since the session started. If directive is not used will return null.
+     *
+     * @return integer|null
+     */
+    public function timeLeft(): int|null
     {
-        $this->FlashData['new'][$key] = $value;
+        return $this->getMetadata()['timeleft'];
     }
+
     public function write(string $id, string $data): bool
     {
-        $this->sessionMetaData['updated'] = time();
         $clean_data = unserialize($data);
-        $clean_data['_META'] = $this->sessionMetaData;
+        $this->sessionMetadata['updated'] = time();
+        $clean_data['_META'] = $this->sessionMetadata;
 
+        unset($clean_data['_FLASH']);
         if (isset($this->FlashData['new'])) {
             $clean_data['_FLASH'] = $this->FlashData['new'];
         }
-        
+
         $data = serialize($clean_data);
 
         $key_phase = $this->Config['key_phase'];
@@ -307,6 +415,24 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
         }
 
         return parent::write($id, $data);
+    }
+
+    // -----------------------------------------------------------------------------------------
+
+    private function defaultMetadata(): array
+    {
+        $acl_groups = explode(',', $this->Config['acl_group.default_guest']);
+        $method = isset($_COOKIE[session_name()]) ? 'cookie' : null;
+        $method = (getenv(session_name()) !== false) ? 'environment' : $method;
+        return [
+            'acl_groups' => $acl_groups,
+            'method'     => $method,
+            'started'    => time(),
+            'session_id' => session_id(),
+            'timeleft'   => null,
+            'updated'    => time(),
+            'user'       => null,
+        ];
     }
     private function _decrypt(string $data, string $key_phase): string
     {
