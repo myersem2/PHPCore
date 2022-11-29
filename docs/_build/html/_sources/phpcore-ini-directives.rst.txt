@@ -1,0 +1,14 @@
+.. _phpcore_ini_directives:
+
+======================
+phpcore.ini directives
+======================
+
+Session Directives
+##################
+
+
+auto_start
+----------
+
+.. _phpcore_ini_directives_session_auto_start:

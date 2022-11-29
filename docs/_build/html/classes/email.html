@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Class &mdash; PHPCore dev-initial-build
+ Manual</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Model Class" href="model.html" />
+    <link rel="prev" title="Database Class" href="database.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PHPCore
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#a-simple-tutorial">A simple tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../install-config/index.html">Installing and Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/requirements.html">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/directives.html">Configuration Directives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../install-config/directives.html#session-directives">Session Directives</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#save-handler-id-prefix">save_handler_id_prefix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#auto-start">auto_start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#cookie-autodestroy">cookie_autodestroy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#gc-maxlength">gc_maxlength</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#encrypt">encrypt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#key-phase">key_phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#acl-group">acl_group</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/index.html#manual-installation">Manual Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/index.html#php-configuration">PHP Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../features/index.html">Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../features/session.html">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#metadata">Metadata</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#acl-groups">acl_groups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#started">started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#session-id">session_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#timeleft">timeleft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#updated">updated</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#user">user</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#user-and-acl-groups">User and ACL Groups</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#grant-revoke">grant &amp; revoke</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#setting-data-with-ttl">Setting Data with TTL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html">Database</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Email</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="request.html">Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session.html">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="session.html#class-synopsis">Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#class-methods">Class methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="view.html">View</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/index.html">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../functions/general.html">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/core.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/session.html">Session</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/string.html">String</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../annotations.html">Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core-trait.html">Core Trait</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core-trait.html#trait-synopsis">Trait synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core-trait.html#core-trait-methods">Core Trait methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../rst-sample.html">RST Sample</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#code-block">Code Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#glossary">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#seealso">Seealso</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PHPCore</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">PHPCore Built-In Classes</a> &raquo;</li>
+      <li>Email Class</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/myersem2/PHPCore/blob/dev-initial-build/docs/classes/email.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="email-class">
+<h1>Email Class<a class="headerlink" href="#email-class" title="Permalink to this headline"></a></h1>
+<p>Placeholder…</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="database.html" class="btn btn-neutral float-left" title="Database Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="model.html" class="btn btn-neutral float-right" title="Model Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Everett Myers.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

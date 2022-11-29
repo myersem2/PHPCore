@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core Trait &mdash; PHPCore dev-initial-build
+ Manual</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="RST Sample" href="../rst-sample.html" />
+    <link rel="prev" title="Bootstrap" href="../bootstrap.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PHPCore
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#a-simple-tutorial">A simple tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../install-config/index.html">Installing and Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/requirements.html">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/directives.html">Configuration Directives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../install-config/directives.html#session-directives">Session Directives</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#save-handler-id-prefix">save_handler_id_prefix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#auto-start">auto_start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#cookie-autodestroy">cookie_autodestroy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#gc-maxlength">gc_maxlength</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#encrypt">encrypt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#key-phase">key_phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#acl-group">acl_group</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/index.html#manual-installation">Manual Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/index.html#php-configuration">PHP Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../features/index.html">Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../features/session.html">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#metadata">Metadata</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#acl-groups">acl_groups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#started">started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#session-id">session_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#timeleft">timeleft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#updated">updated</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#user">user</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#user-and-acl-groups">User and ACL Groups</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#grant-revoke">grant &amp; revoke</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#setting-data-with-ttl">Setting Data with TTL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="email.html">Email</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="request.html">Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session.html">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="session.html#class-synopsis">Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#class-methods">Class methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="view.html">View</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/index.html">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../functions/general.html">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/core.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/session.html">Session</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/string.html">String</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../annotations.html">Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core Trait</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#trait-synopsis">Trait synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-trait-methods">Core Trait methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../rst-sample.html">RST Sample</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#code-block">Code Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#glossary">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#seealso">Seealso</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PHPCore</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Core Trait</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/myersem2/PHPCore/blob/dev-initial-build/docs/classes/core-trait.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="core-trait">
+<h1>Core Trait<a class="headerlink" href="#core-trait" title="Permalink to this headline"></a></h1>
+<section id="trait-synopsis">
+<h2>Trait synopsis<a class="headerlink" href="#trait-synopsis" title="Permalink to this headline"></a></h2>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">trait</span> <span class="nx">CoreClass</span> <span class="p">{</span>
+
+   <span class="sd">/**</span>
+<span class="sd">    * Reference Only</span>
+<span class="sd">    *</span>
+<span class="sd">    * The following are required to be set in class using this trait</span>
+<span class="sd">    *</span>
+<span class="sd">   const DEFAULT_INSTANCE_NAME = &#39;main&#39;;</span>
+<span class="sd">   protected static $Initialized = false;</span>
+<span class="sd">   protected static $Instances = [];</span>
+<span class="sd">   */</span>
+
+   <span class="cm">/* Static Methods */</span>
+   <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">destroyAllInstances</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+   <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">destroyInstance</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$name</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+   <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="o">&amp;</span><span class="nf">getInstance</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$name</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">object</span>
+   <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">isConstructed</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$name</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span>
+   <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">initialize</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+
+   <span class="cm">/* Properties */</span>
+   <span class="k">protected</span> <span class="nv">$Config</span> <span class="o">=</span> <span class="p">[];</span>
+   <span class="k">protected</span> <span class="nv">$Handler</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="core-trait-methods">
+<h2>Core Trait methods<a class="headerlink" href="#core-trait-methods" title="Permalink to this headline"></a></h2>
+<dl class="php trait">
+<dt class="sig sig-object php" id="CoreTrait">
+<em class="property"><span class="pre">trait</span> </em><span class="sig-name descname"><span class="pre">CoreTrait</span></span><a class="headerlink" href="#CoreTrait" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="php staticmethod">
+<dt class="sig sig-object php" id="CoreTrait::__destroyAllInstances">
+<em class="property"><span class="pre">static</span> </em><span class="sig-prename descclassname"><span class="pre">CoreTrait::</span></span><span class="sig-name descname"><span class="pre">__destroyAllInstances</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#CoreTrait::__destroyAllInstances" title="Permalink to this definition"></a></dt>
+<dd><p>Destroy all class instances</p>
+<p>Destructs all class instance that have been constructed.</p>
+</dd></dl>
+
+<dl class="php staticmethod">
+<dt class="sig sig-object php" id="CoreTrait::__destroyInstance">
+<em class="property"><span class="pre">static</span> </em><span class="sig-prename descclassname"><span class="pre">CoreTrait::</span></span><span class="sig-name descname"><span class="pre">__destroyInstance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$name</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoreTrait::__destroyInstance" title="Permalink to this definition"></a></dt>
+<dd><p>Destroy class instance</p>
+<p>Destructs class instance that has been constructed for a specified name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$name</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – Name of instance, if not specified, <code class="docutils literal notranslate"><span class="pre">static::DEFAULT_INSTANCE_NAME</span></code> will be used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="php staticmethod">
+<dt class="sig sig-object php" id="CoreTrait::getInstance">
+<em class="property"><span class="pre">static</span> </em><span class="sig-prename descclassname"><span class="pre">CoreTrait::</span></span><span class="sig-name descname"><span class="pre">getInstance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$name</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoreTrait::getInstance" title="Permalink to this definition"></a></dt>
+<dd><p>Get session class instance</p>
+<p>Returns the class instance for a specified name. This method will also invoke the <code class="docutils literal notranslate"><span class="pre">__construct()</span></code> method with the specified name as the first parameter if the specified instance has not been constructed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$name</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – Name of instance, if not specified, <code class="docutils literal notranslate"><span class="pre">static::DEFAULT_INSTANCE_NAME</span></code> will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">object</span></code> Session class instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="php staticmethod">
+<dt class="sig sig-object php" id="CoreTrait::__isConstructed">
+<em class="property"><span class="pre">static</span> </em><span class="sig-prename descclassname"><span class="pre">CoreTrait::</span></span><span class="sig-name descname"><span class="pre">__isConstructed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$name</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoreTrait::__isConstructed" title="Permalink to this definition"></a></dt>
+<dd><p>Is class instance constructed</p>
+<p>Checks if class instance for a specified name has been constructed.</p>
+</dd></dl>
+
+<dl class="php staticmethod">
+<dt class="sig sig-object php" id="CoreTrait::__initialize">
+<em class="property"><span class="pre">static</span> </em><span class="sig-prename descclassname"><span class="pre">CoreTrait::</span></span><span class="sig-name descname"><span class="pre">__initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#CoreTrait::__initialize" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize class</p>
+<p>Used to preform routines that are required only once during runtime.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../bootstrap.html" class="btn btn-neutral float-left" title="Bootstrap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../rst-sample.html" class="btn btn-neutral float-right" title="RST Sample" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Everett Myers.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

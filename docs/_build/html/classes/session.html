@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Session Class &mdash; PHPCore dev-initial-build
+ Manual</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="View Class" href="view.html" />
+    <link rel="prev" title="Request Class" href="request.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PHPCore
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#a-simple-tutorial">A simple tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../install-config/index.html">Installing and Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/requirements.html">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/directives.html">Configuration Directives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../install-config/directives.html#session-directives">Session Directives</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#save-handler-id-prefix">save_handler_id_prefix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#auto-start">auto_start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#cookie-autodestroy">cookie_autodestroy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#gc-maxlength">gc_maxlength</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#encrypt">encrypt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#key-phase">key_phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#acl-group">acl_group</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/index.html#manual-installation">Manual Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/index.html#php-configuration">PHP Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../features/index.html">Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../features/session.html">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#metadata">Metadata</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#acl-groups">acl_groups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#started">started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#session-id">session_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#timeleft">timeleft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#updated">updated</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#user">user</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#user-and-acl-groups">User and ACL Groups</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#grant-revoke">grant &amp; revoke</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#setting-data-with-ttl">Setting Data with TTL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="email.html">Email</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="request.html">Request</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#class-synopsis">Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class-methods">Class methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="view.html">View</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/index.html">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../functions/general.html">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/core.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/session.html">Session</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/string.html">String</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../annotations.html">Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core-trait.html">Core Trait</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core-trait.html#trait-synopsis">Trait synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core-trait.html#core-trait-methods">Core Trait methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../rst-sample.html">RST Sample</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#code-block">Code Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#glossary">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#seealso">Seealso</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PHPCore</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">PHPCore Built-In Classes</a> &raquo;</li>
+      <li>Session Class</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/myersem2/PHPCore/blob/dev-initial-build/docs/classes/session.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="session-class">
+<h1>Session Class<a class="headerlink" href="#session-class" title="Permalink to this headline"></a></h1>
+<p>The Session class is a special class that has been used to extend the built-in PHP SessionHandler for handling sessions. There are seven methods which wrap the seven internal session save handler callbacks (open, close, read, write, destroy, gc and create_sid). By default, this class will wrap whatever internal save handler is set as defined by the session.save_handler configuration directive which is usually files by default. Other internal session save handlers are provided by PHP extensions such as SQLite (as sqlite), Memcache (as memcache), and Memcached (as memcached).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference external" href="https://www.php.net/manual/en/ref.session.php">PHP Session Functions</a></dt><dd><p>Base PHP internal session functions that interface directly with the <a class="reference external" href="../classes/session.html">PHPCore Session Class</a>.</p>
+</dd>
+<dt><a class="reference external" href="https://www.php.net/manual/en/class.sessionhandler">PHP SessionHandler Class</a></dt><dd><p>Documentation for PHP internal SessionHandler Class.</p>
+</dd>
+<dt><a class="reference external" href="../features/session.html">PHPCore Session Feature</a></dt><dd><p>The PHPCore extended session handling features.</p>
+</dd>
+<dt><a class="reference external" href="../functions/session.html">PHPCore Session Functions</a></dt><dd><p>The PHPCore session handling functions.</p>
+</dd>
+</dl>
+</div>
+<section id="class-synopsis">
+<h2>Class synopsis<a class="headerlink" href="#class-synopsis" title="Permalink to this headline"></a></h2>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Session</span> <span class="k">extends</span> <span class="nx">\SessionHandler</span> <span class="p">{</span>
+
+   <span class="k">use</span> <span class="nx">CoreTrait</span><span class="p">;</span>
+
+   <span class="k">const</span> <span class="no">HAS_ACCESS_ANY</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// Has Access check true on ANY match</span>
+   <span class="k">const</span> <span class="no">HAS_ACCESS_ALL</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>  <span class="c1">// Has Access check true if ALL match</span>
+
+   <span class="cm">/* Methods */</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">()</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">close</span><span class="p">()</span><span class="o">:</span> <span class="nx">bool</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">create_sid</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">destroy</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$id</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">destroyAll</span><span class="p">()</span><span class="o">:</span> <span class="nx">bool</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">flashGet</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">flashKeep</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">flashSet</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="nx">mixed</span> <span class="nv">$value</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">get</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">getAllSessions</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">getMetadata</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">gc</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$max_lifetime</span><span class="p">)</span><span class="o">:</span> <span class="nx">int</span><span class="o">|</span><span class="k">false</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">grant</span><span class="p">(</span><span class="nx">string</span><span class="o">|</span><span class="k">array</span> <span class="nv">$groups</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">hasAccess</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$group</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">open</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$path</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$name</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">read</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$id</span><span class="p">)</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">revoke</span><span class="p">(</span><span class="nx">string</span><span class="o">|</span><span class="k">array</span> <span class="nv">$groups</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">set</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="nx">mixed</span> <span class="nv">$val</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$ttl</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">user</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$user</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">vstring</span><span class="o">|</span><span class="k">null</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="nf">write</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$data</span><span class="p">)</span><span class="o">:</span> <span class="nx">bool</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>There are some directives within the php.ini that <strong>MUST</strong> set for the PHPCore Session feature to work correctly.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">session.auto_start</span> <span class="pre">=</span> <span class="pre">0</span></code>  <em>this is the default value</em></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">session.serialize_handler</span> <span class="pre">=</span> <span class="pre">&quot;php_serialize&quot;</span></code> <em>The default is “php”</em></p></li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can use the phpcore.ini Session <a class="reference internal" href="../install-config/directives.html#configuration-directives-auto-start"><span class="std std-ref">save_handler_id_prefix</span></a> directive if you want the session to automatically start as</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#session-method-construct"><span class="std std-ref">Session::__construct</span></a> - Constructor</p></li>
+<li><p><a class="reference internal" href="#session-method-close"><span class="std std-ref">Session::close</span></a> - Close the session</p></li>
+<li><p><a class="reference internal" href="#session-method-create-sid"><span class="std std-ref">Session::create_sid</span></a> - Return a new session ID</p></li>
+<li><p><a class="reference internal" href="#session-method-destroy"><span class="std std-ref">Session::destroy</span></a> - Destroy a session</p></li>
+<li><p><a class="reference internal" href="#session-method-destroy-all"><span class="std std-ref">Session::destroyAll</span></a> - Destroy ALL sessions</p></li>
+<li><p><a class="reference internal" href="#session-method-flash-get"><span class="std std-ref">Session::flashGet</span></a> - Get session flash data item</p></li>
+<li><p><a class="reference internal" href="#session-method-flash-keep"><span class="std std-ref">Session::flashKeep</span></a> - Keep session flash data item</p></li>
+<li><p><a class="reference internal" href="#session-method-flash-set"><span class="std std-ref">Session::flashSet</span></a> - Set session flash data item</p></li>
+<li><p><a class="reference internal" href="#session-method-get"><span class="std std-ref">Session::get</span></a> - Get session data item</p></li>
+<li><p><a class="reference internal" href="#session-method-get-all-sessions"><span class="std std-ref">Session::getAllSessions</span></a> - Set session flash data item</p></li>
+<li><p><a class="reference internal" href="#session-method-get-metadata"><span class="std std-ref">Session::getMetadata</span></a> - Get session metadata</p></li>
+<li><p><a class="reference internal" href="#session-method-gc"><span class="std std-ref">Session::gc</span></a> - Cleanup old sessions</p></li>
+<li><p><a class="reference internal" href="#session-method-grant"><span class="std std-ref">Session::grant</span></a> - Grant session access</p></li>
+<li><p><a class="reference internal" href="#session-method-has-access"><span class="std std-ref">Session::hasAccess</span></a> - Check if has access</p></li>
+<li><p><a class="reference internal" href="#session-method-open"><span class="std std-ref">Session::open</span></a> - Initialize session</p></li>
+<li><p><a class="reference internal" href="#session-method-read"><span class="std std-ref">Session::read</span></a> - Read session data</p></li>
+<li><p><a class="reference internal" href="#session-method-revoke"><span class="std std-ref">Session::revoke</span></a> - Revoke session access</p></li>
+<li><p><a class="reference internal" href="#session-method-set"><span class="std std-ref">Session::set</span></a> - Set session data item</p></li>
+<li><p><a class="reference internal" href="#session-method-user"><span class="std std-ref">Session::user</span></a> - Get and/or set the current session user</p></li>
+<li><p><a class="reference internal" href="#session-method-write"><span class="std std-ref">Session::write</span></a> - Write session data</p></li>
+</ul>
+</section>
+<section id="class-methods">
+<h2>Class methods<a class="headerlink" href="#class-methods" title="Permalink to this headline"></a></h2>
+<dl class="php class">
+<dt class="sig sig-object php" id="Session">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Session</span></span><a class="headerlink" href="#Session" title="Permalink to this definition"></a></dt>
+<dd><p>This class is used to interface with a session using the built-in PHP <strong>session_set_save_handler()</strong>.</p>
+</dd></dl>
+
+<span class="target" id="session-method-construct"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::__construct">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">__construct</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Session::__construct" title="Permalink to this definition"></a></dt>
+<dd><p>Constructor</p>
+<p>This constructor connects this class instance to the PHP built-in session handler via the <strong>session_set_save_handler()</strong> and starts the session. If the session instance already exists an <strong>Exception</strong> will be thrown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><span><code class="xref php php-exc docutils literal notranslate"><span class="pre">Exception</span></code></span> – Session instance has already been constructed</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method should not be called directly, it should only be invoked by the session_handler.</p>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<blockquote>
+<div><p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</div></blockquote>
+<span class="target" id="session-method-close"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::close">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Session::close" title="Permalink to this definition"></a></dt>
+<dd><p>Close the session</p>
+<p>Closes the current session. Called internally by PHP SessionHandler.</p>
+<p>See <a class="reference external" href="https://www.php.net/manual/en/sessionhandler.close.php">PHP SessionHandler::close</a> for more information the PHP built-in functionality of the this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code> The return value (usually true on success, false on failure). Note this value is returned internally to PHP for processing.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method should not be called directly, it should only be invoked by the session_handler.</p>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<blockquote>
+<div><p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</div></blockquote>
+<span class="target" id="session-method-create-sid"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::create_sid">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">create_sid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Session::create_sid" title="Permalink to this definition"></a></dt>
+<dd><p>Return a new session ID</p>
+<p>Generates and returns a new session ID. Called internally by PHP SessionHandler.</p>
+<p>See <a class="reference external" href="https://www.php.net/manual/en/sessionhandler.create-sid.php">PHP SessionHandler::create_sid</a> for more information the PHP built-in functionality of the this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code> This function has no parameters.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method should not be called directly, it should only be invoked by the session_handler.</p>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<blockquote>
+<div><p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</div></blockquote>
+<span class="target" id="session-method-destroy"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::destroy">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">destroy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Session::destroy" title="Permalink to this definition"></a></dt>
+<dd><p>Destroy a session</p>
+<p>Destroys a session. Called internally by PHP SessionHandler. In addition to the built-in function PHP provides this method will also clear the <code class="docutils literal notranslate"><span class="pre">FlashData</span></code> and resets the session <code class="docutils literal notranslate"><span class="pre">SessionMetadata</span></code>. This method should normally be invoked by calling the <strong>session_destroy()</strong> function.</p>
+<p>See <a class="reference external" href="https://www.php.net/manual/en/sessionhandler.destroy.php">PHP SessionHandler::destroy</a> for more information the PHP built-in functionality of the this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$id</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The session ID being destroyed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code> The return value (usually true on success, false on failure). Note this value is returned internally to PHP for processing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<blockquote>
+<div><p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</div></blockquote>
+<span class="target" id="session-method-destroy-all"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::destroyAll">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">destroyAll</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Session::destroyAll" title="Permalink to this definition"></a></dt>
+<dd><p>Destroy all sessions</p>
+<p>Destroys <strong>ALL</strong> sessions if the save handlers supports this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><span><code class="xref php php-exc docutils literal notranslate"><span class="pre">Exception</span></code></span> – If save handler does not support this method.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code> Returns true on success or false on failure.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only the <code class="docutils literal notranslate"><span class="pre">memcached</span></code> save handler is supported at this time.</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-number">Example 10 </span><span class="caption-text">Destroy all sessions</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos"> 7</span><span class="c1">// Initial page load</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="k">echo</span> <span class="nb">session_id</span><span class="p">();</span>                 <span class="c1">// string &#39;s319vde2dtjf888clm3m12tdno&#39;</span>
+<span class="linenos">10</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">getAllSessions</span><span class="p">());</span> <span class="c1">// array [</span>
+<span class="linenos">11</span>                                   <span class="c1">//     &#39;7bh6us2i64eum0vueofbtnsfkl&#39;,</span>
+<span class="linenos">12</span>                                   <span class="c1">//     &#39;s319vde2dtjf888clm3m12tdno&#39;,</span>
+<span class="linenos">13</span>                                   <span class="c1">//     &#39;gj636nqn35ifkq9b6dr5ft11iv&#39;,</span>
+<span class="linenos">14</span>                                   <span class="c1">// ]</span>
+<span class="hll"><span class="linenos">15</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">destroyAll</span><span class="p">();</span>
+</span><span class="linenos">16</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">19</span><span class="c1">// 1st page refresh</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="k">echo</span> <span class="nb">session_id</span><span class="p">();</span>                 <span class="c1">// string &#39;am59ant4l8meialih84nmd5arv&#39;</span>
+<span class="linenos">22</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">getAllSessions</span><span class="p">());</span> <span class="c1">// array [ &#39;am59ant4l8meialih84nmd5arv&#39; ]</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-flash-get"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::flashGet">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">flashGet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Session::flashGet" title="Permalink to this definition"></a></dt>
+<dd><p>Get session flash data item</p>
+<p>This method will return the flash data item that matches the provided key. If a key is not provided the entire flash data array will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the flash data item to retrieve</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> Returns the flash data item</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-number">Example 11 </span><span class="caption-text">Get flash data</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos"> 6</span><span class="c1">// Initial page load</span>
+<span class="linenos"> 7</span>
+<span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span> <span class="c1">// null</span>
+</span><span class="linenos"> 9</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashSet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">,</span> <span class="mi">123</span><span class="p">);</span>
+<span class="hll"><span class="linenos">10</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span> <span class="c1">// null</span>
+</span><span class="linenos">11</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">14</span><span class="c1">// 1st page refresh</span>
+<span class="linenos">15</span>
+<span class="hll"><span class="linenos">16</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span> <span class="c1">// int 123</span>
+</span><span class="linenos">17</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">20</span><span class="c1">// 2nd page refresh</span>
+<span class="linenos">21</span>
+<span class="hll"><span class="linenos">22</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span> <span class="c1">// null</span>
+</span><span class="linenos">23</span>
+<span class="linenos">24</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-flash-keep"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::flashKeep">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">flashKeep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Session::flashKeep" title="Permalink to this definition"></a></dt>
+<dd><p>Keep session flash data item</p>
+<p>This method will keep a session flash data item for the next session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the flash data item to keep</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code> Return true on success and false if item was not found</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-number">Example 12 </span><span class="caption-text">Keep flash data</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos"> 6</span><span class="c1">// Initial page load</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span> <span class="c1">// null</span>
+<span class="hll"><span class="linenos"> 9</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashKeep</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">);</span> <span class="c1">// false</span>
+</span><span class="linenos">10</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashSet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">,</span> <span class="mi">123</span><span class="p">);</span>
+<span class="hll"><span class="linenos">11</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashKeep</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">);</span> <span class="c1">// false</span>
+</span><span class="linenos">12</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span> <span class="c1">// null</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">16</span><span class="c1">// 1st page refresh</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span>          <span class="c1">// int 123</span>
+<span class="hll"><span class="linenos">19</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashKeep</span><span class="p">(</span><span class="s1">&#39;nonexistent-var&#39;</span><span class="p">);</span> <span class="c1">// false</span>
+</span><span class="hll"><span class="linenos">20</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashKeep</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">);</span>          <span class="c1">// true</span>
+</span><span class="linenos">21</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">24</span><span class="c1">// 2nd page refresh</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span>          <span class="c1">// int 123</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">30</span><span class="c1">// 3rd page refresh</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span>          <span class="c1">// null</span>
+<span class="hll"><span class="linenos">33</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashKeep</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span>         <span class="c1">// false</span>
+</span><span class="linenos">34</span>
+<span class="linenos">35</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-flash-set"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::flashSet">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">flashSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">mixed</span> <span class="pre">$value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Session::flashSet" title="Permalink to this definition"></a></dt>
+<dd><p>Set session flash data item</p>
+<p>This method will set a session flash data item to be used for the next session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the flash data item</p></li>
+<li><p><strong>$value</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">mixed</span></code></span>) – The value of the flash data item</p></li>
+</ul>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-number">Example 13 </span><span class="caption-text">Set flash data</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos"> 6</span><span class="c1">// Initial page load</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span> <span class="c1">// null</span>
+<span class="hll"><span class="linenos"> 9</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashSet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">,</span> <span class="mi">123</span><span class="p">);</span>
+</span><span class="linenos">10</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span> <span class="c1">// null</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">14</span><span class="c1">// 1st page refresh</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span> <span class="c1">// int 123</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">20</span><span class="c1">// 2nd page refresh</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">flashGet</span><span class="p">(</span><span class="s1">&#39;my-var&#39;</span><span class="p">));</span> <span class="c1">// null</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-get"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::get">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Session::get" title="Permalink to this definition"></a></dt>
+<dd><p>Get session data item</p>
+<p>This method is used to retrieve a session data item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – Session Data Key</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> Session Data</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-number">Example 14 </span><span class="caption-text">Get session data</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">,</span> <span class="mi">123</span><span class="p">);</span>
+<span class="linenos"> 6</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;test_temp&#39;</span><span class="p">,</span> <span class="nb">time</span><span class="p">(),</span> <span class="mi">60</span><span class="p">);</span> <span class="c1">// set ttl for 60 sec</span>
+<span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">));</span>   <span class="c1">// int 123</span>
+</span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_temp&#39;</span><span class="p">));</span>   <span class="c1">// int 1655112668</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">11</span><span class="c1">// 1st page refresh 30 sec</span>
+<span class="linenos">12</span>
+<span class="hll"><span class="linenos">13</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">));</span> <span class="c1">// int 123</span>
+</span><span class="hll"><span class="linenos">14</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_temp&#39;</span><span class="p">));</span> <span class="c1">// int 1655112668</span>
+</span><span class="linenos">15</span><span class="nb">var_dump</span><span class="p">(</span><span class="nb">time</span><span class="p">());</span>                  <span class="c1">// int 1655112698</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">18</span><span class="c1">// 2nd page refresh 60 sec</span>
+<span class="linenos">19</span>
+<span class="hll"><span class="linenos">20</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">));</span> <span class="c1">// int 123</span>
+</span><span class="hll"><span class="linenos">21</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_temp&#39;</span><span class="p">));</span> <span class="c1">// int 1655112668</span>
+</span><span class="linenos">22</span><span class="nb">var_dump</span><span class="p">(</span><span class="nb">time</span><span class="p">());</span>                  <span class="c1">// int 1655112728</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">25</span><span class="c1">// 3rd page refresh 61 sec</span>
+<span class="linenos">26</span>
+<span class="hll"><span class="linenos">27</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">));</span> <span class="c1">// int 123</span>
+</span><span class="hll"><span class="linenos">28</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_temp&#39;</span><span class="p">));</span> <span class="c1">// null</span>
+</span><span class="linenos">29</span><span class="nb">var_dump</span><span class="p">(</span><span class="nb">time</span><span class="p">());</span>                  <span class="c1">// int 1655112729</span>
+<span class="linenos">30</span>
+<span class="linenos">31</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-get-all-sessions"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::getAllSessions">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">getAllSessions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Session::getAllSessions" title="Permalink to this definition"></a></dt>
+<dd><p>Get all sessions</p>
+<p>This method will get all sessions from the handler. Not all save handlers support this method. If it is not supported then an empty array will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><span><code class="xref php php-exc docutils literal notranslate"><span class="pre">Exception</span></code></span> – If save handler does not support this method.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">array</span></code> Sessions from handler</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only the <code class="docutils literal notranslate"><span class="pre">memcached</span></code> save handler is supported at this time.</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-number">Example 15 </span><span class="caption-text">Get all sessions</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="k">echo</span> <span class="nb">session_id</span><span class="p">();</span>                 <span class="c1">// string &#39;s319vde2dtjf888clm3m12tdno&#39;</span>
+<span class="hll"><span class="linenos"> 6</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">getAllSessions</span><span class="p">());</span> <span class="c1">// array [</span>
+</span><span class="linenos"> 7</span>                                   <span class="c1">//     &#39;7bh6us2i64eum0vueofbtnsfkl&#39;,</span>
+<span class="linenos"> 8</span>                                   <span class="c1">//     &#39;s319vde2dtjf888clm3m12tdno&#39;,</span>
+<span class="linenos"> 9</span>                                   <span class="c1">//     &#39;gj636nqn35ifkq9b6dr5ft11iv&#39;,</span>
+<span class="linenos">10</span>                                   <span class="c1">// ]</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-get-metadata"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::getMetadata">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">getMetadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Session::getMetadata" title="Permalink to this definition"></a></dt>
+<dd><p>Get session metadata</p>
+<p>This method will return metadata with a provided key. If no key is passed the entire metadata array will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – Metadata Key</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> Session Metadata</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-number">Example 16 </span><span class="caption-text">Get all sessions</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="hll"><span class="linenos"> 5</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">getMetadata</span><span class="p">());</span>
+</span><span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="cm">/*</span>
+<span class="linenos"> 8</span><span class="cm">Above will output something similar to:</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="cm">[</span>
+<span class="linenos">11</span><span class="cm">  &#39;acl_groups&#39; =&gt; [ &#39;GUEST&#39;, &#39;PUBLIC&#39; ],</span>
+<span class="linenos">12</span><span class="cm">  &#39;started&#39;    =&gt; 1654647866,</span>
+<span class="linenos">13</span><span class="cm">  &#39;session_id&#39; =&gt; &#39;srh6g2amog4hmbkvjpuj8urmfv&#39;,</span>
+<span class="linenos">14</span><span class="cm">  &#39;timeleft&#39;   =&gt; 27376,</span>
+<span class="linenos">15</span><span class="cm">  &#39;updated&#39;    =&gt; 1654648614,</span>
+<span class="linenos">16</span><span class="cm">  &#39;user&#39;       =&gt; null,</span>
+<span class="linenos">17</span><span class="cm">]</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="cm">*/</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-gc"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::gc">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">gc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Session::gc" title="Permalink to this definition"></a></dt>
+<dd><p>Cleanup old sessions</p>
+<p>Cleans up expired sessions. Called internally by PHP SessionHandler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – Metadata Key</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">int|false</span></code> Returns the number of deleted sessions on success, or false on failure.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method should not be called directly, it should only be invoked by the session_handler.</p>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-grant"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::grant">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">grant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string|array</span> <span class="pre">$groups</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Session::grant" title="Permalink to this definition"></a></dt>
+<dd><p>Grant session access</p>
+<p>This method grants session access via adding it the the <code class="docutils literal notranslate"><span class="pre">acl_groups</span></code> array in the sessions metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$groups</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string|array</span></code></span>) – ACL group or array of ACL groups to be granted</p></li>
+</ul>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-number">Example 17 </span><span class="caption-text">Grant session access</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">));</span> <span class="c1">// false</span>
+<span class="hll"><span class="linenos"> 6</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">grant</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">);</span>
+</span><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">));</span> <span class="c1">// true</span>
+<span class="linenos"> 8</span>
+<span class="hll"><span class="linenos"> 9</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">grant</span><span class="p">([</span><span class="s1">&#39;RED&#39;</span><span class="p">,</span><span class="s1">&#39;BLUE&#39;</span><span class="p">]);</span>
+</span><span class="linenos">10</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">(</span><span class="s1">&#39;RED&#39;</span><span class="p">));</span>     <span class="c1">// true</span>
+<span class="linenos">11</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">(</span><span class="s1">&#39;BLUE&#39;</span><span class="p">));</span>    <span class="c1">// true</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-has-access"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::hasAccess">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">hasAccess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string|array</span> <span class="pre">$groups</span></em>, <em class="sig-param"><span class="pre">int</span> <span class="pre">$flags</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Session::hasAccess" title="Permalink to this definition"></a></dt>
+<dd><p>Check if has access</p>
+<p>This method checks if a session has access via checking if in the <code class="docutils literal notranslate"><span class="pre">acl_groups</span></code> array in the sessions metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$groups</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string|array</span></code></span>) – ACL group or array of ACL groups to check access for</p></li>
+<li><p><strong>$flags</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">integer</span></code></span>) – Bitwise flags for this method</p></li>
+</ul>
+</dd>
+<dt class="field-even">Flag</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">Session::HAS_ACCESS_ANY</span></code> Has Access check true on ANY match</p>
+</dd>
+<dt class="field-odd">Flag</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Session::HAS_ACCESS_ALL</span></code> Has Access check true if ALL match</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code> If has session access</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-number">Example 18 </span><span class="caption-text">Check for session access</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="hll"><span class="linenos"> 5</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">));</span>      <span class="c1">// false</span>
+</span><span class="linenos"> 6</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">grant</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">);</span>
+<span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">));</span>      <span class="c1">// true</span>
+</span><span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">grant</span><span class="p">([</span><span class="s1">&#39;RED&#39;</span><span class="p">,</span><span class="s1">&#39;BLUE&#39;</span><span class="p">]);</span>
+<span class="hll"><span class="linenos">10</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">([</span><span class="s1">&#39;RED&#39;</span><span class="p">,</span><span class="s1">&#39;BLUE&#39;</span><span class="p">]);</span>  <span class="c1">// true</span>
+</span><span class="hll"><span class="linenos">11</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">([</span><span class="s1">&#39;RED&#39;</span><span class="p">,</span><span class="s1">&#39;GREEN&#39;</span><span class="p">]);</span> <span class="c1">// true</span>
+</span><span class="hll"><span class="linenos">12</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">([</span><span class="s1">&#39;RED&#39;</span><span class="p">,</span><span class="s1">&#39;GREEN&#39;</span><span class="p">],</span> <span class="nx">Session</span><span class="o">::</span><span class="na">HAS_ACCESS_ALL</span><span class="p">);</span> <span class="c1">// false</span>
+</span><span class="hll"><span class="linenos">13</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">([</span><span class="s1">&#39;RED&#39;</span><span class="p">,</span><span class="s1">&#39;GREEN&#39;</span><span class="p">],</span> <span class="nx">Session</span><span class="o">::</span><span class="na">HAS_ACCESS_ANY</span><span class="p">);</span> <span class="c1">// true</span>
+</span><span class="linenos">14</span>
+<span class="linenos">15</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-open"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::open">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Session::open" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize session</p>
+<p>Create new session, or re-initialize existing session. Called internally by PHP when a session starts either automatically or when session_start() is invoked.</p>
+<p>See <a class="reference external" href="https://www.php.net/manual/en/sessionhandler.open.php">PHP SessionHandler::open</a> for more information the PHP built-in functionality of the this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code> The return value (usually true on success, false on failure). Note this value is returned internally to PHP for processing.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method should not be called directly, it should only be invoked by the session_handler.</p>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<blockquote>
+<div><p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</div></blockquote>
+<span class="target" id="session-method-read"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::read">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Session::read" title="Permalink to this definition"></a></dt>
+<dd><p>Read session data</p>
+<p>Reads the session data from the session storage, and returns the result back to PHP for internal processing. This method is called automatically by PHP when a session is started (either automatically or explicitly with session_start() and is preceded by an internal call to the Session::open().</p>
+<p>See <a class="reference external" href="https://www.php.net/manual/en/sessionhandler.read.php">PHP SessionHandler::read</a> for more information the PHP built-in functionality of the this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$id</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The session id to read data for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">string|false</span></code> Returns an encoded string of the read data. If nothing was read, it must return false. Note this value is returned internally to PHP for processing.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method should not be called directly, it should only be invoked by the session_handler.</p>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<blockquote>
+<div><p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</div></blockquote>
+<span class="target" id="session-method-revoke"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::revoke">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">revoke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string|array</span> <span class="pre">$groups</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Session::revoke" title="Permalink to this definition"></a></dt>
+<dd><p>Revoke session access</p>
+<p>This method removes session access via removing from <code class="docutils literal notranslate"><span class="pre">acl_groups</span></code> array in the sessions metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$groups</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string|array</span></code></span>) – ACL group or array of ACL groups to be revoked</p></li>
+</ul>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-number">Example 19 </span><span class="caption-text">Check for session access</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">grant</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">);</span>
+<span class="linenos"> 6</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">));</span> <span class="c1">// true</span>
+<span class="hll"><span class="linenos"> 7</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">revoke</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">)</span>
+</span><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">));</span> <span class="c1">// false</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">grant</span><span class="p">([</span><span class="s1">&#39;RED&#39;</span><span class="p">,</span><span class="s1">&#39;BLUE&#39;</span><span class="p">]);</span>
+<span class="linenos">11</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">([</span><span class="s1">&#39;RED&#39;</span><span class="p">,</span><span class="s1">&#39;BLUE&#39;</span><span class="p">],</span> <span class="nx">Session</span><span class="o">::</span><span class="na">HAS_ACCESS_ALL</span><span class="p">);</span> <span class="c1">// true</span>
+<span class="hll"><span class="linenos">12</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">revoke</span><span class="p">([</span><span class="s1">&#39;RED&#39;</span><span class="p">,</span><span class="s1">&#39;BLUE&#39;</span><span class="p">])</span>
+</span><span class="linenos">13</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">hasAccess</span><span class="p">([</span><span class="s1">&#39;RED&#39;</span><span class="p">,</span><span class="s1">&#39;BLUE&#39;</span><span class="p">],</span> <span class="nx">Session</span><span class="o">::</span><span class="na">HAS_ACCESS_ANY</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-set"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::set">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">mixed</span> <span class="pre">$value</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$ttl</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Session::set" title="Permalink to this definition"></a></dt>
+<dd><p>Set session data item</p>
+<p>This method is used to store a session data item. If the optional <code class="docutils literal notranslate"><span class="pre">$ttl</span></code> is passed the data item will also be given an expiration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – Key of session data item to set.</p></li>
+<li><p><strong>$value</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">mixed</span></code></span>) – Value of session data item to set.</p></li>
+<li><p><strong>$ttl</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">integer</span></code></span>) – Time To Live for this data item.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-number">Example 20 </span><span class="caption-text">Set session data</span><a class="headerlink" href="#id11" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="hll"><span class="linenos"> 5</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">,</span> <span class="mi">123</span><span class="p">);</span>
+</span><span class="hll"><span class="linenos"> 6</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;test_temp&#39;</span><span class="p">,</span> <span class="nb">time</span><span class="p">(),</span> <span class="mi">60</span><span class="p">);</span> <span class="c1">// set ttl for 60 sec</span>
+</span><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">));</span>   <span class="c1">// int 123</span>
+<span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_temp&#39;</span><span class="p">));</span>   <span class="c1">// int 1655112668</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">11</span><span class="c1">// 1st page refresh 30 sec</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">));</span> <span class="c1">// int 123</span>
+<span class="linenos">14</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_temp&#39;</span><span class="p">));</span> <span class="c1">// int 1655112668</span>
+<span class="linenos">15</span><span class="nb">var_dump</span><span class="p">(</span><span class="nb">time</span><span class="p">());</span>                   <span class="c1">// int 1655112698</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">18</span><span class="c1">// 2nd page refresh 60 sec</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">));</span> <span class="c1">// int 123</span>
+<span class="linenos">21</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_temp&#39;</span><span class="p">));</span> <span class="c1">// int 1655112668</span>
+<span class="linenos">22</span><span class="nb">var_dump</span><span class="p">(</span><span class="nb">time</span><span class="p">());</span>                   <span class="c1">// int 1655112728</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">25</span><span class="c1">// 3rd page refresh 61 sec</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">));</span> <span class="c1">// int 123</span>
+<span class="linenos">28</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;test_temp&#39;</span><span class="p">));</span> <span class="c1">// null</span>
+<span class="linenos">29</span><span class="nb">var_dump</span><span class="p">(</span><span class="nb">time</span><span class="p">());</span>                   <span class="c1">// int 1655112729</span>
+<span class="linenos">30</span>
+<span class="linenos">31</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-user"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::user">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$name</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Session::user" title="Permalink to this definition"></a></dt>
+<dd><p>Get and/or set the current session user</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">$user</span></code> parameter is used the acl_groups will be replaced with the ones declared in the acl_group.default_user directive and the session start time will also be reset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$user</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The user to bind to the current session</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">string|null</span></code> User of the current session</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-number">Example 21 </span><span class="caption-text">Get / Set session user</span><a class="headerlink" href="#id12" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">Session</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="linenos"> 4</span>
+<span class="hll"><span class="linenos"> 5</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">());</span> <span class="c1">// null</span>
+</span><span class="hll"><span class="linenos"> 6</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">(</span><span class="s1">&#39;12345&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">());</span> <span class="c1">// string &#39;12345&#39;</span>
+</span><span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">10</span><span class="c1">// page refresh</span>
+<span class="hll"><span class="linenos">11</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">());</span> <span class="c1">// string &#39;12345&#39;</span>
+</span><span class="linenos">12</span>
+<span class="linenos">13</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<span class="target" id="session-method-write"></span><dl class="php method">
+<dt class="sig sig-object php" id="Session::write">
+<span class="sig-prename descclassname"><span class="pre">Session::</span></span><span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$id</span></em>, <em class="sig-param"><span class="pre">string</span> <span class="pre">$data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Session::write" title="Permalink to this definition"></a></dt>
+<dd><p>Write session data</p>
+<p>Writes the session data to the session storage. Called by normal PHP shutdown, by session_write_close(), or when session_register_shutdown() fails. PHP will call SessionHandler::close() immediately after this method returns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$id</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The session id</p></li>
+<li><p><strong>$data</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The encoded session data. This data is the result of the PHP internally encoding the $_SESSION superglobal to a serialized string and passing it as this parameter. Please note sessions use an alternative serialization method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code> The return value (usually true on success, false on failure). Note this value is returned internally to PHP for processing.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method should not be called directly, it should only be invoked by the session_handler.</p>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<blockquote>
+<div><p class="wy-text-right"><a class="reference internal" href="#table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="request.html" class="btn btn-neutral float-left" title="Request Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="view.html" class="btn btn-neutral float-right" title="View Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Everett Myers.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

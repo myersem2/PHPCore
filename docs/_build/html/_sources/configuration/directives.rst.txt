@@ -1,0 +1,16 @@
+.. _Configuration Directives:
+
+======================
+phpcore.ini directives
+======================
+
+Session Directives
+##################
+
+
+.. _Configuration Directives.auto_start:
+
+auto_start
+----------
+
+``auto_start = Yes|No`` specifies whether the session module starts a session automatically on request startup. Defaults to 0 (disabled).

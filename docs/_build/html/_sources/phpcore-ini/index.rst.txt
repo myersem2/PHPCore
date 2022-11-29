@@ -1,0 +1,6 @@
+.. _phpcore_configuration:
+
+=====================
+PHPCore Configuration
+=====================
+

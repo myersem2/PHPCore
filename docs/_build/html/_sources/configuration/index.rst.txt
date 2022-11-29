@@ -1,0 +1,10 @@
+.. _PHPCore Configuration:
+
+=====================
+PHPCore Configuration
+=====================
+
+.. toctree::
+   :maxdepth: 2
+
+   phpcore.ini Directives <directives>

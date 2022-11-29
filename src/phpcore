@@ -29,17 +29,13 @@ foreach ($argv as $opt) {
     if (str_starts_with($opt, '--') === true) {
         list($opt) = explode('=', $opt);
         if (isset($options[substr($opt, 2)]) === false) {
-            trigger_error(
-                "'{$opt}' is not a valid phpcore option, see 'phpcore --help' for allowed options",
-                E_USER_ERROR
-            );    
+            echo "Error in argument 1, no argument for option $opt\n";
+            $argv = ['--help'];
         }
     } elseif (str_starts_with($opt, '-') == true) {
         if (isset($options[substr($opt, 1)]) === false) {
-            trigger_error(
-                "'{$opt}' is not a valid phpcore option, see 'phpcore --help' for allowed options",
-                E_USER_ERROR
-            );    
+            echo "Error in argument 1, no argument for option $opt\n";
+            $argv = ['--help']; 
         }
     }
 }

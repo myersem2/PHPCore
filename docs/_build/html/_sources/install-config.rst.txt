@@ -1,0 +1,20 @@
+.. _install-config:
+
+============================
+Installing and Configuration
+============================
+
+...
+
+Requirements
+############
+
+...
+
+PHP Configuration
+#################
+
+...
+
+Runtime Configuration
+#####################

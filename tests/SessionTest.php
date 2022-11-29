@@ -93,7 +93,7 @@ final class SessionTest extends TestCase
      * @coversNothing
      * @depends testSessionClassExists
      * @dataProvider dataProviderMethodsExist
-     */
+     *
     public function testMethodsExist(string $method): void
     {
         $this->assertTrue(
@@ -111,7 +111,7 @@ final class SessionTest extends TestCase
 
     /**
      * @covers \PHPCore\Session::__construct
-     */
+     *
     public function testGetInstance(): void
     {
         $this->assertInstanceOf(
@@ -123,7 +123,7 @@ final class SessionTest extends TestCase
         //print_r(Session::getInstance()->getAllKeys());
         
     }
-
+    /* */
 }
 
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////

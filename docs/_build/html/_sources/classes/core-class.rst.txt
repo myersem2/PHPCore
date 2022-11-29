@@ -1,0 +1,70 @@
+.. _Core Class:
+
+==========
+Core Class
+==========
+
+Class synopsis
+##############
+
+.. code-block:: php
+
+   class CoreClass {
+
+      /* Reference Only Required to be set in class using traits */
+      const DEFAULT_INSTANCE_NAME = 'main';
+ 
+       /* Static Properties */
+      protected static $Instances = [];
+
+      /* Static Methods */
+      public static function __destroyAllInstances(): void
+      public static function __destroyInstance(?string $name = null): void
+      public static function &__getInstance(?string $name = null): object
+      public static function __isConstructed(?string $name = null): bool
+      public static function __initialize(): void
+
+      /* Properties */
+      protected $initialized = false;
+
+   }
+
+Class methods
+#############
+
+.. php:class:: CoreClass
+
+.. php:staticmethod:: __destroyAllInstances()
+
+   Destroy all class instances
+
+   Destructs all class instance that have been constructed.
+
+.. php:staticmethod:: __destroyInstance(?string $name = null)
+
+   Destroy class instance
+
+   Destructs class instance that has been constructed for a specified name.
+
+   :param string $name: Name of instance, if not specified, ``self::DEFAULT_INSTANCE_NAME`` will be used.
+
+.. php:staticmethod:: __getInstance(?string $name = null)
+
+   Get session class instance
+
+   Returns the class instance for a specified name. This method will also invoke the ``__construct()`` method with the specified name as the first parameter if the specified instance has not been constructed.
+
+   :param string $name: Name of instance, if not specified, ``self::DEFAULT_INSTANCE_NAME`` will be used.
+   :returns: ``object`` Session class instance
+
+.. php:staticmethod:: __isConstructed(?string $name = null)
+
+   Is class instance constructed
+
+   Checks if class instance for a specified name has been constructed.
+
+.. php:staticmethod:: __initialize()
+
+   Initialize class
+
+   Used to preform routines that are required only once during runtime.

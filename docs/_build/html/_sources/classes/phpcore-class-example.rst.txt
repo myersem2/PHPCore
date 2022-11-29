@@ -1,0 +1,34 @@
+.. _PHPCore Class Example:
+
+=====================
+PHPCore Class Example
+=====================
+
+Class synopsis
+##############
+
+.. code-block:: php
+
+   class MyClass {
+ 
+      const INITIALIZED;
+ 
+      /* Static Properties */
+      protected static $Handlers = [];
+      protected static $Instances = [];
+
+      /* Static Methods */
+      public static function __destroyInstances(): void
+      public static function &__getInstance([?string $name = null]): object
+      public static function __initialize(): void
+
+      /* Properties */
+      protected $Config = [];
+
+      /* Methods */
+      public function __construct()
+      public function close(): bool
+   }
+
+.. todo::
+   __initialize setups up class and set the self::INITIALIZED to true

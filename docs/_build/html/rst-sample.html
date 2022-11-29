@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RST Sample &mdash; PHPCore dev-initial-build
+ Manual</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Core Trait" href="classes/core-trait.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> PHPCore
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#a-simple-tutorial">A simple tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install-config/index.html">Installing and Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install-config/requirements.html">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install-config/directives.html">Configuration Directives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install-config/directives.html#session-directives">Session Directives</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#save-handler-id-prefix">save_handler_id_prefix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#auto-start">auto_start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#cookie-autodestroy">cookie_autodestroy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#gc-maxlength">gc_maxlength</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#encrypt">encrypt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#key-phase">key_phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#acl-group">acl_group</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="install-config/index.html#manual-installation">Manual Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install-config/index.html#php-configuration">PHP Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="features/index.html">Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="features/session.html">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="features/session.html#metadata">Metadata</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="features/session.html#acl-groups">acl_groups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="features/session.html#started">started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="features/session.html#session-id">session_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="features/session.html#timeleft">timeleft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="features/session.html#updated">updated</a></li>
+<li class="toctree-l4"><a class="reference internal" href="features/session.html#user">user</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="features/session.html#user-and-acl-groups">User and ACL Groups</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="features/session.html#grant-revoke">grant &amp; revoke</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="features/session.html#setting-data-with-ttl">Setting Data with TTL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="classes/index.html">Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classes/controller.html">Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classes/database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classes/email.html">Email</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classes/model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classes/request.html">Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classes/session.html">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="classes/session.html#class-synopsis">Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classes/session.html#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classes/session.html#class-methods">Class methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="classes/view.html">View</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functions/index.html">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functions/general.html">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/core.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/session.html">Session</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/string.html">String</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="annotations.html">Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/core-trait.html">Core Trait</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classes/core-trait.html#trait-synopsis">Trait synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classes/core-trait.html#core-trait-methods">Core Trait methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">RST Sample</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#code-block">Code Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#glossary">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#seealso">Seealso</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PHPCore</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>RST Sample</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/myersem2/PHPCore/blob/dev-initial-build/docs/rst-sample.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rst-sample">
+<span id="id1"></span><h1>RST Sample<a class="headerlink" href="#rst-sample" title="Permalink to this headline"></a></h1>
+<p><a class="reference external" href="https://sublime-and-sphinx-guide.readthedocs.io/en/latest/index.html">Sphinx RST Guide</a></p>
+<p><a class="reference external" href="https://docutils.sourceforge.io/docs/user/rst/quickref.html">RST Cheet Sheet</a></p>
+<section id="code-block">
+<h2>Code Block<a class="headerlink" href="#code-block" title="Permalink to this headline"></a></h2>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-number">Example 38 </span><span class="caption-text">./file.php</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="linenos">20</span> <span class="k">class</span> <span class="nc">Session</span>
+</span><span class="linenos">21</span> <span class="p">{</span>
+<span class="linenos">22</span>     <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">()</span>
+<span class="hll"><span class="linenos">23</span>     <span class="p">{</span>
+</span><span class="hll"><span class="linenos">24</span>         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">test</span> <span class="o">=</span> <span class="mi">123</span><span class="p">;</span>
+</span><span class="hll"><span class="linenos">25</span>     <span class="p">}</span>
+</span><span class="linenos">26</span> <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>PHP Domain (Class)</p>
+<dl class="php class">
+<dt class="sig sig-object php" id="DateTime">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">DateTime</span></span><a class="headerlink" href="#DateTime" title="Permalink to this definition"></a></dt>
+<dd><p>Datetime class</p>
+<dl class="php method">
+<dt class="sig sig-object php" id="DateTime::setDate">
+<span class="sig-name descname"><span class="pre">setDate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">$year</span></em>, <em class="sig-param"><span class="pre">$month</span></em>, <em class="sig-param"><span class="pre">$day</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DateTime::setDate" title="Permalink to this definition"></a></dt>
+<dd><p>Set the date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$year</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – The year.</p></li>
+<li><p><strong>$month</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – The month.</p></li>
+<li><p><strong>$day</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – The day.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Either false on failure, or the datetime object for method chaining.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="php method">
+<dt class="sig sig-object php" id="DateTime::setTime">
+<span class="sig-name descname"><span class="pre">setTime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">$hour</span></em>, <em class="sig-param"><span class="pre">$minute</span></em><span class="optional">[</span>, <em class="sig-param"><span class="pre">$second</span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#DateTime::setTime" title="Permalink to this definition"></a></dt>
+<dd><p>Set the time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$hour</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – The hour</p></li>
+<li><p><strong>$minute</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – The minute</p></li>
+<li><p><strong>$second</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – The second</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Either false on failure, or the datetime object for method chaining.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="php const">
+<dt class="sig sig-object php" id="DateTime::ATOM">
+<em class="property"><span class="pre">constant</span> </em><span class="sig-name descname"><span class="pre">ATOM</span></span><a class="headerlink" href="#DateTime::ATOM" title="Permalink to this definition"></a></dt>
+<dd><p>Y-m-dTH:i:sP</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="glossary">
+<h2>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline"></a></h2>
+<dl class="glossary simple">
+<dt id="term-environment">environment<a class="headerlink" href="#term-environment" title="Permalink to this term"></a></dt><dd><p>A structure where information about all documents under the root is
+saved, and used for cross-referencing.  The environment is pickled
+after the parsing stage, so that successive runs only need to read
+and parse new and changed documents.</p>
+</dd>
+<dt id="term-source-directory">source directory<a class="headerlink" href="#term-source-directory" title="Permalink to this term"></a></dt><dd><p>The directory which, including its subdirectories, contains all
+source files for one Sphinx project.</p>
+</dd>
+</dl>
+</section>
+<section id="seealso">
+<h2>Seealso<a class="headerlink" href="#seealso" title="Permalink to this headline"></a></h2>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference external" href="http://link">GNU tar manual, Basic Tar Format</a></dt><dd><p>Documentation for tar archive files, including GNU tar extensions.</p>
+</dd>
+</dl>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 34%" />
+<col style="width: 34%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Header 1</p></th>
+<th class="head"><p>Header 2</p></th>
+<th class="head"><p>Header 3</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>body row 1</p></td>
+<td><p>column 2</p></td>
+<td><p>column 3</p></td>
+</tr>
+<tr class="row-odd"><td><p>body row 2</p></td>
+<td colspan="2"><p>Cells may span columns.</p></td>
+</tr>
+<tr class="row-even"><td><p>body row 3</p></td>
+<td rowspan="2"><p>Cells may
+span rows.</p></td>
+<td rowspan="2"><ul class="simple">
+<li><p>Cells</p></li>
+<li><p>contain</p></li>
+<li><p>blocks.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>body row 4</p></td>
+</tr>
+</tbody>
+</table>
+<p>Simple table:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 31%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" colspan="2"><p>Inputs</p></th>
+<th class="head"><p>Output</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>A</p></th>
+<th class="head"><p>B</p></th>
+<th class="head"><p>A or B</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>False</p></td>
+<td><p>False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p>True</p></td>
+<td><p>False</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-odd"><td><p>False</p></td>
+<td><p>True</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-even"><td><p>True</p></td>
+<td><p>True</p></td>
+<td><p>True</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="classes/core-trait.html" class="btn btn-neutral float-left" title="Core Trait" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Everett Myers.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

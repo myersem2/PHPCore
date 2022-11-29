@@ -23,6 +23,13 @@ use \Exception;
  */
 final class Database
 {
+    use Core;
+
+    /**
+     * The name for the default instance for this class
+     */
+    const DEFAULT_INSTANCE_NAME = 'main';
+
     /**
      * PDO default options
      *
@@ -37,7 +44,7 @@ final class Database
     /**
      * Constant flags
      *
-     * @const int
+     * @cont int
      */
     const DEBUG_MODE                = 1;    // Return array with debug information
     const NO_THROW_ON_ERROR         = 2;    // Do not throw exception on error
@@ -115,16 +122,20 @@ final class Database
     }
 
     /**
-     * Get Instance
+     * Get database class instance
      *
-     * This method is used to get an instance that has already been constructed.
+     * Returns the database instance for a given name name. If the database
+     * handler has not been initiated yet it will be before the instance is
+     * returned.
+     *
+     * If the **$name** is not provided the instance with the name 
+     * Database::MAIN_INSTANCE_NAME
      *
      * @param string $name Name of instance
-     *
-     * @throws Exception If instance is not found
-     * @return object
+     * @throws Exception if instance is not found
+     * @return object Database class instance
      */
-    public static function &getInstance(string $name = 'main'): object
+    public static function &__getInstance(?string $name = null): object
     {
         if (empty(self::$Instances[$name])) {
             self::$Instances[$name] = new self($name);
@@ -147,8 +158,9 @@ final class Database
      * @throws Exception If instance is already constructed
      * @throws PDOException(...) Various
      */
-    public function __construct(string $name, string $dsn = '', string|null $usr = null, string|null $pwd = null)
+    public function __construct(?string $name = null, string $dsn = '', string|null $usr = null, string|null $pwd = null)
     {
+        $name = $name ?? self::MAIN_INSTANCE_NAME;
         if (isset(self::$Instances[$name])) {
             throw new Exception("Database instance with the name $name has already been constructed");
         }

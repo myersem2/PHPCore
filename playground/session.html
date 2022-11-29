@@ -1,0 +1,572 @@
+<?php declare(strict_types=1);
+/**
+ * PHPCore - Session Playground
+ *
+ * @author    Everett Myers <Me@EverettMyers.com>
+ * @copyright Copyright (c) 2022, PHPCore
+ */
+
+// -----------------------------------------------------------------------------
+
+/** !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ WARNING: This script is for testing on a development server only.
+          This script should never be placed on a production server.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! **/
+
+// =============================================================================
+// PHPCore bootstrap
+// =============================================================================
+$ds = DIRECTORY_SEPARATOR;
+$bootstrap = __DIR__ . "{$ds}..{$ds}src{$ds}bootstrap.php";
+include $bootstrap;
+
+// =============================================================================
+// Paths and Directives
+// =============================================================================
+$php_net_directive = 'https://www.php.net/manual/en/session.configuration.php#ini.session.';
+$phpcore_directive = '/docs/install-config/directives.html#';
+$phpcore_metadata = '/docs/features/session.html#metadata';
+$directives = [
+    'save_path', 'name', 'save_handler', 'save_handler_id_prefix', 'auto_start', 'gc_probability', 'gc_divisor',
+    'gc_maxlifetime', 'serialize_handler', 'cookie_lifetime', 'cookie_path', 'cookie_domain',
+    'cookie_secure', 'cookie_httponly', 'cookie_samesite', 'cookie_autodestroy', 'use_strict_mode',
+    'use_cookies', 'use_only_cookies', 'referer_check', 'cache_limiter', 'cache_expire',
+    'use_trans_sid', 'trans_sid_tags', 'trans_sid_hosts', 'sid_length', 'sid_bits_per_character',
+    'upload_progress.enabled', 'upload_progress.cleanup', 'upload_progress.prefix',
+    'upload_progress.name', 'upload_progress.freq', 'upload_progress.min_freq', 'lazy_write',
+    'encrypt', 'key_phase', 'acl_group.default_guest', 'acl_group.default_user',
+];
+$core_only_directives = [
+    'encrypt', 'key_phase', 'acl_group.default_guest', 'acl_group.default_user',
+    'cookie_autodestroy', 'save_handler_id_prefix',
+];
+$php_ini = array_map( function($directive) use(&$core_only_directives) {
+    if (in_array($directive, $core_only_directives)) return null;
+    return ini_get("session.$directive");
+}, $directives);
+
+// =============================================================================
+// Delete Method
+// =============================================================================
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+  $loc = $_GET['loc'] ?? null;
+  $key = $_GET['key'] ?? null;
+  switch($loc) {
+    case 'all-sessions':
+      session_destroy_all();
+    break;
+    case 'whole-session':
+      session_destroy();
+    break;
+    default:
+      unset($_SESSION[$key]);
+    break;
+  }
+  exit;
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $loc = $_POST['loc'] ?? null;
+  $key = $_POST['key'] ?? null;
+  $val = $_POST['val'] ?? null;
+  $ttl = $_POST['ttl'] ?? null;
+  switch($loc) {
+    case 'data':
+      if (empty($ttl)) $ttl = null;
+      else $ttl = intval($ttl);
+      session_set($key, $val, $ttl);
+    break;
+    case 'flash':
+      session_flash_set($key, $val);
+    break;
+    case 'bind_user':
+      session_user($val);
+    break;
+    case 'revoke_acl':
+      session_revoke($val);
+    break;
+    case 'grant_acl':
+      session_grant($val);
+    break;
+    default:
+      $_SESSION[trim($key)] = $val ?? null;
+    break;
+  }
+  exit;
+}
+
+/* *
+?>
+<form action="" method="post">
+  <input type="hidden" name="act" value="add-session-data">
+  <input type="text" name="key">
+  <input type="text" name="val">
+  <input type="submit" name="submit" value="Submit">
+</form>
+<?php
+var_dump($_POST);
+var_dump($_SESSION);
+exit;
+/* */
+
+function ini_check($directive, $php_value, $phpcore_value) {
+  if ($directive == 'auto_start') {
+    if (empty($php_value) === false) {
+      return 'ERROR: php.ini needs to be set to "0"';
+    }
+  }
+  return null;
+}
+function metadata_display($key, $var) {
+  switch ($key) {
+    case 'started': return date('m/d/y H:i:s', $var);
+    case 'updated': return date('m/d/y H:i:s', $var);
+    case 'timeleft':
+      if ($var === null) return '∞';
+      $arr = timetoarray($var);
+      return sprintf(
+        '%d days, %d hrs, %d mins, %d secs',
+        $arr['days'],
+        $arr['hrs'],
+        $arr['mins'],
+        $arr['secs'],
+      );
+    default: return null;
+  }
+}
+function var_type_display($var) {
+  switch (gettype($var)) {
+    case 'boolean': return '<span style="color:#369;">' . (($var)?'TRUE':'FALSE') . '</span>';
+    case 'integer': return '<span style="color:#0000BB;">' . $var . '</span>';
+    case 'double':  return '<span style="color:#0000BB;">' . $var . '</span>';
+    case 'string':  return '<span style="color:#DD0000;">\'' . $var . '\'</span>';
+    case 'NULL':    return '<span style="color:#369;">NULL</span>';
+    case 'object':  return '<span>' . json_encode($var) . '</span>';
+    case 'array':   return '<span>' . json_encode($var) . '</span>';
+    case 'resource':
+    default:
+    case 'unknown type': return 'unknown type';
+  }
+}
+?><!DOCTYPE html>
+<html>
+  <head>
+    <title>PHPCore Session Playground</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico">
+    <script>
+      function getCookie(name){
+        console.log(name,document.cookie.split(';'))
+        return document.cookie.split(';').some(c => {
+          return c.trim().startsWith(name + '=')
+        })
+      }
+      function deleteCookie(name) {
+        const domain = window.location.hostname
+        if (getCookie(name)) {
+          document.cookie = name+"=;path=/;domain="+domain+";expires=Thu, 01 Jan 1970 00:00:01 GMT"
+        }
+      }
+      function delSessionData(e, key) {
+        e.preventDefault()
+        e.target.hidden = true
+        const request  = new XMLHttpRequest()
+        request.open('DELETE', window.location.href + '?key=' + key)
+        request.send()
+        setTimeout( () => {
+          window.location.reload()
+        }, 500)
+      }
+      function delCookie(e, key) {
+        e.preventDefault()
+        e.target.hidden = true
+        deleteCookie(key)
+        window.location.reload()
+      }
+      function addSessionData(e) {
+        e.preventDefault()
+        e.target.hidden = true
+        const formData = new FormData()
+        const request  = new XMLHttpRequest()
+        formData.append('loc', 'data')
+        formData.append('key', document.getElementById("new_sess_data_key").value)
+        formData.append('val', document.getElementById("new_sess_data_val").value)
+        formData.append('ttl', document.getElementById("new_sess_data_ttl").value)
+        document.getElementById("new_sess_data_key").disabled = true
+        document.getElementById("new_sess_data_val").disabled = true
+        document.getElementById("new_sess_data_ttl").disabled = true
+        request.open('POST', window.location.href)
+        request.send(formData)
+        setTimeout( () => {
+          window.location.reload()
+        }, 500)
+      }
+      function addFlashData(e) {
+        e.preventDefault()
+        e.target.hidden = true
+        const formData = new FormData()
+        const request  = new XMLHttpRequest()
+        formData.append('loc', 'flash')
+        formData.append('key', document.getElementById("new_flash_data_key").value)
+        formData.append('val', document.getElementById("new_flash_data_val").value)
+        document.getElementById("new_flash_data_key").disabled = true
+        document.getElementById("new_flash_data_val").disabled = true
+        request.open('POST', window.location.href)
+        request.send(formData)
+        setTimeout( () => {
+          window.location.reload()
+        }, 500)
+      }
+      function destroySession(e) {
+        e.preventDefault()
+        e.target.disabled = true
+        const request  = new XMLHttpRequest()
+        request.open('DELETE', window.location.href + '?loc=whole-session')
+        request.send()
+        setTimeout( () => {
+          window.location.reload()
+        }, 500)
+      }
+      function destroyAllSessions(e) {
+        e.preventDefault()
+        e.target.disabled = true
+        if ( ! confirm('Are you sure you want to destroy ALL sessions?')) {
+            e.target.disabled = false     
+          return;
+        }
+        const request  = new XMLHttpRequest()
+        request.open('DELETE', window.location.href + '?loc=all-sessions')
+        request.send()
+        setTimeout( () => {
+          window.location.reload()
+        }, 500)
+      }
+      function grantButton(e) {
+        e.preventDefault()
+        const formData = new FormData()
+        const request  = new XMLHttpRequest()
+        let acl_group = prompt('Enter in a new ACL Group')
+        if ( ! acl_group) {
+          return
+        }
+        e.target.disabled = true
+        formData.append('loc', 'grant_acl')
+        formData.append('val', acl_group)
+        request.open('POST', window.location.href)
+        request.send(formData)
+        setTimeout( () => {
+          window.location.reload()
+        }, 500)
+      }
+      function revokeButton(e) {
+        e.preventDefault()
+        const formData = new FormData()
+        const request  = new XMLHttpRequest()
+        let acl_group = prompt('Enter in a ACL Group to remove')
+        if ( ! acl_group) {
+          return
+        }
+        e.target.disabled = true
+        formData.append('loc', 'revoke_acl')
+        formData.append('val', acl_group)
+        request.open('POST', window.location.href)
+        request.send(formData)
+        setTimeout( () => {
+          window.location.reload()
+        }, 500)
+      }
+      function bindUserButton(e) {
+        e.preventDefault()
+        const formData = new FormData()
+        const request  = new XMLHttpRequest()
+        let acl_group = prompt('Enter user identifier')
+        if ( ! acl_group) {
+          return
+        }
+        e.target.disabled = true
+        formData.append('loc', 'bind_user')
+        formData.append('val', acl_group)
+        request.open('POST', window.location.href)
+        request.send(formData)
+        setTimeout( () => {
+          window.location.reload()
+        }, 500)
+      }
+    </script>
+    <style>
+      /* reset */
+      html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,
+      address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,
+      i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,
+      td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,
+      ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;
+      font:inherit;vertical-align:baseline;}Article,aside,details,figcaption,figure,footer,header,
+      hgroup,menu,nav,section{display:block;}body{line-height:1;}ol,ul{list-style:none;}blockquote,
+      q{quotes:none;}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
+      table{border-collapse:collapse;border-spacing:0;}
+      /* standard */
+      h1{font-size:2em;font-weight:bold;margin-block-start:0.67em;margin-block-end:0.67em;}h2{
+      font-size:1.5em;font-weight:bold;margin-block-start:0.83em;margin-block-end:0.83em;}h3{
+      font-size:1.17em;font-weight:bold;margin-block-start:1em;margin-block-end:1em;}h4{
+      font-weight:bold;margin-block-start:1.33em;margin-block-end:1.33em;}h5{font-size:0.83em;
+      font-weight:bold;margin-block-start:1.67em;margin-block-end:1.67em;}h6{font-size:0.67em;
+      margin-block-start:2.33em;margin-block-end:2.33em;font-weight:bold;}table{
+      border-spacing:0.25em;}th{font-weight:bold;text-align:-internal-center;padding:1px;
+      border:1px solid #777777;background-color:#DDDDDD}td{padding:0.25em;border:1px solid #BBBBBB;}
+      section{margin:1em;}
+      /* This page */
+      section {
+        /* display: flex; */
+      } section > table {
+        margin: 1em;
+      } h1 {
+        margin-left: 0.5em;
+      } div.buttons {
+        margin: 0.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PHPCore Session Playground</h1>
+    <hr>
+    <p style="padding:0.5em;color:#A71C20;font-weight:bold;">
+      WARNING: This script is designed for testing in a development environment only. This script should never be placed in a production environment.
+    </p>
+    <hr>
+    <div class="buttons">
+      <button onClick="destroySession(event)">Destroy Session</button>
+        <button
+          onClick="destroyAllSessions(event)"
+          <?php if ( ! in_array(core_ini_get('save_handler', 'Session'), ['memcached'])) echo 'disabled'; ?>
+        >Destroy ALL Session</button>
+    </div>
+    <section>
+      <table>
+        <thead>
+          <tr>
+            <th colSpan="20">Metadata</th>
+          </tr>
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+            <th></th>
+            <th>Documentation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach (session()->getMetadata() as $key=>$value) { ?>
+            <tr>
+              <td><?php echo $key; ?></td>
+              <td><?php echo var_type_display($value); ?></td>
+<?php
+              switch($key) {
+                case 'user': 
+                  echo '<td style="text-align:center;">';
+                  echo '<button onClick="bindUserButton(event)">Bind User</button>';
+                  echo '</td>';
+                break;
+                case 'acl_groups': 
+                  echo '<td style="text-align:center;">';
+                  echo '<button onClick="grantButton(event)">Grant</button>';
+                  echo '<button onClick="revokeButton(event)">Revoke</button>';
+                  echo '</td>';
+                break;
+                default:
+                  echo '<td style="text-align:center;">';
+                  echo metadata_display($key, $value);
+                  echo '</td>';
+                break;
+              }
+?>
+              <td>
+                <a target="_blank" href="<?php echo $phpcore_metadata; ?>">
+                  phpcore.org
+                </a>
+              </td>
+            </tr>
+          <?php } ?>
+        </tbody>
+      </table>
+      <table>
+        <thead>
+          <tr>
+            <th colSpan="20">Cookies</th>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <th>Value</th>
+            <th style="width:4em;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($_COOKIE as $name=>$value) { ?>
+            <tr>
+              <td><?php echo $name; ?></td>
+              <td style="text-align:center"><?php echo strval($value); ?></td>
+              <td style="text-align:center">
+                <a style="cursor:pointer;" onClick="delCookie(event, '<?php echo $name; ?>')">Delete</a>
+              </td>
+            </tr>
+          <?php } ?>
+        </tbody>
+      </table>
+      <table>
+        <thead>
+          <tr>
+            <th colSpan="20">Session Data</th>
+          </tr>
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+            <th>TTL (empty for none)</th>
+            <th style="width:4em;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($_SESSION as $key=>$value) { ?>
+            <?php if (in_array($key, ['_META', '_FLASH', '_EXP'])) continue; ?>
+            <tr>
+              <td><?php echo $key; ?></td>
+              <td style="text-align:center"><?php echo strval($value); ?></td>
+              <td style="text-align:center">
+<?php
+                $ttl = $_SESSION['_EXP'][$key] ?? null;
+                if ($ttl !== null) {
+                    $secs = ( $_SESSION['_EXP'][$key] - time() );
+                    $arr = timetoarray($secs);
+                    echo sprintf(
+                      '%d days, %d hrs, %d mins, %d secs',
+                      $arr['days'],
+                      $arr['hrs'],
+                      $arr['mins'],
+                      $arr['secs'],
+                    );
+                }
+?>
+              </td>
+              <td style="text-align:center">
+                <a style="cursor:pointer;" onClick="delSessionData(event, '<?php echo $key; ?>')">Delete</a>
+              </td>
+            </tr>
+          <?php } ?>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><input type="text" id="new_sess_data_key"></td>
+            <td><input type="text" id="new_sess_data_val"></td>
+            <td>
+              <input type="number" id="new_sess_data_ttl">
+            </td>
+            <td style="text-align:center"><input type="submit" value="Add" onClick="addSessionData(event)"></td>
+          </tr>
+        </tfoot>
+      </table>
+      <table>
+        <thead>
+          <tr>
+            <th colSpan="20">Flash Data</th>
+          </tr>
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach (session_flash_get() as $key=>$value) { ?>
+            <?php if (in_array($key, ['_META', '_FLASH'])) continue; ?>
+            <tr>
+              <td><?php echo $key; ?></td>
+              <td style="text-align:center"><?php echo strval($value); ?></td>
+              <td style="text-align:center"></td>
+            </tr>
+          <?php } ?>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><input type="text" id="new_flash_data_key"></td>
+            <td><input type="text" id="new_flash_data_val"></td>
+            <td style="text-align:center"><input type="submit" value="Add" onClick="addFlashData(event)"></td>
+          </tr>
+        </tfoot>
+      </table>
+      <table>
+        <thead>
+          <tr>
+            <th colSpan="20">All Sessions</th>
+          </tr>
+          <?php if (in_array(core_ini_get('save_handler', 'Session'), ['memcached'])) { ?>
+            <tr>
+              <th>ID</th>
+            </tr>
+          <?php } ?>
+        </thead>
+        <tbody>
+          <?php if (in_array(core_ini_get('save_handler', 'Session'), ['memcached'])) { ?>
+            <?php foreach (session()->getAllSessions() as $id) { ?>
+              <tr>
+                <td><?php echo $id; ?></td>
+              </tr>
+            <?php } ?>
+          <?php } else { ?>
+            <tr>
+              <td colspan="10">Not Supported</td>
+            </tr>
+          <?php } ?>
+        </tbody>
+      </table>
+      <table>
+        <thead>
+          <tr>
+            <th colSpan="20">Configuration</th>
+          </tr>
+          <tr>
+            <th>Directive</th>
+            <th>PHP</th>
+            <th>PHPCore</th>
+            <th colSpan="2">Documentation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($directives as $index=>$directive) { ?>
+          <tr>
+            <td><?php echo $directive; ?></td>
+            <?php if(in_array($directive, $core_only_directives)) { ?>
+            <td style="background-color:#777;"></td>
+            <?php } else { ?>
+            <td style="text-align:center">
+              <?php echo $php_ini[$index]; ?>
+            </td>
+            <?php } ?>
+            <td style="text-align:center">
+              <?php echo core_ini_get($directive, 'Session'); ?>
+              <p style="color:#A71C20;">
+                <?php echo ini_check($directive, $php_ini[$index], core_ini_get($directive, 'Session')); ?>
+              </p>
+            </td>
+            <?php if(in_array($directive, $core_only_directives)) { ?>
+            <td style="background-color:#777;"></td>
+            <?php } else { ?>
+            <td style="text-align:center">
+              <a target="_blank" href="<?php echo $php_net_directive . str_replace('_', '-', $directive); ?>">
+                php.net
+              </a>
+            </td>
+            <?php } ?>
+            <td style="text-align:center">
+              <a target="_blank" href="<?php echo $phpcore_directive . str_replace('_', '-', $directive); ?>">
+                phpcore.org
+              </a>
+            </td>
+          </tr>
+          <?php } ?>
+        </tbody>
+      <table>
+    </section>
+  </body>
+</html>
+<?php
+
+// EOF /////////////////////////////////////////////////////////////////////////////////////////////

@@ -9,11 +9,31 @@
 // -------------------------------------------------------------------------------------------------
 
 $disabled_functions = $disable_classes = [];
-if (empty($GLOBALS['_CORE']['DISABLE_FUNCTIONS']) === false) {
+if (isset($GLOBALS['_CORE']['DISABLE_FUNCTIONS'])) {
     $disabled_functions = explode(',', $GLOBALS['_CORE']['DISABLE_FUNCTIONS']);
 }
-if (empty($GLOBALS['_CORE']['DISABLE_CLASSES']) === false) {
+if (isset($GLOBALS['_CORE']['DISABLE_CLASSES'])) {
     $disable_classes = explode(',', $GLOBALS['_CORE']['DISABLE_CLASSES']);
+}
+
+/**
+ * Time to array
+ *
+ * Takes a provide time and returns an array of time units.
+ *
+ * @param integer $time Time
+ * @return array
+ */
+if ( ! in_array('timetoarray', $disabled_functions) ) {
+    function timetoarray(int $time): array
+    {
+        return [
+          'secs' => $time % 60,
+          'mins' => floor( ($time % 3600) / 60),
+          'hrs'  => floor( ($time % 86400) / 3600),
+          'days' => floor( ($time % 2592000) / 86400),
+        ];
+    }
 }
 
 /**
@@ -31,8 +51,8 @@ if (empty($GLOBALS['_CORE']['DISABLE_CLASSES']) === false) {
 if ( ! in_array('core_ini_get', $disabled_functions) ) {
     function core_ini_get(string $directive, string $section = 'PHPCore'): string|false
     {
-		//print_r($GLOBALS['_CORE_INI'][$section]);      
-		return $GLOBALS['_CORE_INI'][$section][$directive] ?? false;
+        //print_r($GLOBALS['_CORE_INI'][$section]);      
+        return $GLOBALS['_CORE_INI'][$section][$directive] ?? false;
     }
 }
 
@@ -48,7 +68,7 @@ if ( ! in_array('core_ini_get', $disabled_functions) ) {
  *               section doesn't exist.
  */
 if ( ! in_array('core_ini_get_all', $disabled_functions) ) {
-    function core_ini_get_all(string|null $section = null, string|null $sub_section = null): array|false
+    function core_ini_get_all(?string $section = null, ?string $sub_section = null): array|false
     {
         if (empty($section)) {
             return $GLOBALS['_CORE_INI'] ?? false;
@@ -81,11 +101,11 @@ if ( ! in_array('core_ini_get_all', $disabled_functions) ) {
  * @return string|false Returns the old value on success, false on failure.
  */
 if ( ! in_array('core_ini_set', $disabled_functions) ) {
-    function core_ini_set(string $directive, string|int|float|bool|null $value, string $section = 'PHPCore'): string|false
+    function core_ini_set(string $directive, mixed $value, string $section = 'PHPCore'): string|false
     {
         $oldValue =  $GLOBALS['_CORE_INI'][$section][$directive] ?? '';
         if (isset($GLOBALS['_CORE_INI'][$section])) {
-          $GLOBALS['_CORE_INI'][$section] = [];
+            $GLOBALS['_CORE_INI'][$section] = [];
         }  
         $GLOBALS['_CORE_INI'][$section][$directive] = $value;
         return $oldValue;
@@ -93,7 +113,7 @@ if ( ! in_array('core_ini_set', $disabled_functions) ) {
 }
 
 /**
- * Gets PHPCore Information
+ * Get PHPCore Information
  *
  * @todo: Build HTML pretty output 
  *
@@ -126,45 +146,53 @@ if ( ! in_array('coreinfo', $disabled_functions) ) {
                     $output .= "\$_CORE['".str_color($name, 'green')."'] => $value" . $eol;
                 }
                 $output .= PHP_EOL;
+                echo $output;
+                exit;
             break;
-            /*
-            // TODO: clean this up with a function or library to output HTML
             case 'html':
-                $output .= "<h1>PHPCore $version</h1>$eol";
-                $output .= "<h3>Core Configuration</h3>$eol";
-                $output .= "<table>$eol";
-                $output .= "    <thead>$eol";
-                $output .= "        <tr>$eol";
-                $output .= "            <td>Directive</td>$eol";
-                $output .= "            <td>Value</td>$eol";
-                $output .= "        </tr>$eol";
-                $output .= "    </thead>$eol";
-                $output .= "    <tbody>$eol";
+                $output .= "<!DOCTYPE html><html lang=\en\"><head><title>PHPCore $version</title><meta charset=\"utf-8\">";
+                $output .= "<style>
+body {background-color: #fff; color: #222; font-family: sans-serif;}
+pre {margin: 0; font-family: monospace;}
+a:link {color: #009; text-decoration: none; background-color: #fff;}
+a:hover {text-decoration: underline;}
+table {border-collapse: collapse; border: 0; width: 934px; box-shadow: 1px 2px 3px #ccc;}
+.center {text-align: center;}
+.center table {margin: 1em auto; text-align: left;}
+.center th {text-align: center !important;}
+td, th {border: 1px solid #666; font-size: 75%; vertical-align: baseline; padding: 4px 5px;}
+th {position: sticky; top: 0; background: inherit;}
+h1 {font-size: 150%;}
+h2 {font-size: 125%;}
+.p {text-align: left;}
+.e {background-color: #cef; width: 300px; font-weight: bold;}
+.h {background-color: #9bc; font-weight: bold;}
+.v {background-color: #ddd; max-width: 300px; overflow-x: auto; word-wrap: break-word;}
+.v i {color: #999;}
+span {float: right;}
+hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
+</style>";
+                $output .= "</head><body><div class=\"center\">";
+                $output .= "<table><tr class=\"h\"><td><h1 class=\"p\">PHPCore $version ";
+                $output .= "<span>PHP Version ".phpversion()."</span></h1></td></tr></table>";
                 foreach ($GLOBALS['_CORE_INI'] as $section=>$directives) {
-                    $output .= "        <tr><td colSPan=\"2\" style=\"font-weight:bold;\">$section</td></tr>$eol";
+                    $output .= "<hr><h1>$section</h1><table>";
+                    $output .= "<tr class=\"h\"><th>Directive</th><th>Value</th></tr>";
                     foreach ($directives as $directive=>$value) {
-                        $output .= "        <tr><td>$directive</td><td>$value</td></tr>$eol";
+                        $output .= "<tr><td class=\"e\">$directive</td><td class=\"v\">$value</td></tr>";
                     }
+                    $output .= "</table>";
                 }
-                $output .= "    </tbody>$eol";
-                $output .= "</table>$eol";
-                $output .= "<hr>$eol";
-                $output .= "<h3>Core Variables</h3>$eol";
-                $output .= "<table>$eol";
-                $output .= "    <thead>$eol";
-                $output .= "        <tr>$eol";
-                $output .= "            <td>Item</td>$eol";
-                $output .= "            <td>Value</td>$eol";
-                $output .= "        </tr>$eol";
-                $output .= "    </thead>$eol";
-                $output .= "    <tbody>$eol";
+                $output .= "<hr><h1>Core Variables</h1>";
+                $output .= "<table>";
+                $output .= "<tr class=\"h\"><th>Directive</th><th>Value</th></tr>";
                 foreach ($GLOBALS['_CORE'] as $name=>$value) {
-                    $output .= "        <tr><td>$name</td><td>$value</td></tr>$eol";
+                    $output .= "<tr><td class=\"e\">$name</td><td class=\"v\">$value</td></tr>";
                 }
-                $output .= "    </tbody>$eol";
-                $output .= "</table>$eol";
+                $output .= "</table></div></body></html>";
+                PHPCore\Response::send($output);
+                exit;
             break;
-            */
             case 'json':
             case 'xml':
                 $data = ['PHPCoreVersion'=>$version];
@@ -175,9 +203,28 @@ if ( ! in_array('coreinfo', $disabled_functions) ) {
                 } elseif ($format === 'xml') {
                     $output = xml_encode($data, XML_ENCODE_PRETTY_PRINT);
                 }
+                PHPCore\Response::send($output);
+                exit;
             break;
         }
-        echo $output;
+    }
+}
+
+/**
+ * Delete cookie
+ *
+ * Defines a cookie to be sent along with the rest of the HTTP headers with an expiration time in
+ * the past therefor telling the browser the cookie has expired.
+ *
+ * @param string $name The name of the cookie.
+ * @param string $path The path on the server in which the cookie will be delete for. The default
+ *                     value is the current directory that the cookie is being deleted in.
+ * @param string $domain The (sub)domain that the cookie will be deleted for.
+ */
+if ( ! in_array('delcookie', $disabled_functions) ) {
+    function delcookie(string $name, string $path = '', string $domain = '')
+    {
+        setcookie($name, '', -1, $path, $domain);
     }
 }
 
@@ -201,7 +248,7 @@ if ( ! in_array('coreinfo', $disabled_functions) ) {
  *
  * @see https://www.php.net/manual/en/pdo.drivers.php
  *
- * @param string $dsn Data Source Name (DSN) string to parse .
+ * @param string $dsn Data Source Name (DSN) string to parse.
  * @return array Returns DSN elements as associated array.
  */
 if ( ! in_array('parse_dsn', $disabled_functions) ) {
@@ -237,24 +284,58 @@ if ( ! in_array('parse_dsn', $disabled_functions) ) {
 }
 
 /**
+ * Get session class instance
+ *
+ * Returns the current session instance. If the session has not been started yet it will be started
+ * before the instance is returned.
+ *
+ * @return object Session
+ */
+if ( ! in_array('session', $disabled_functions) ) {
+    function &session(): object
+    {
+        return \PHPCore\Session::getInstance();
+    }
+}
+
+/**
+ * Destroy all sessions
+ *
+ * Destroys **ALL** sessions if the save handlers supports this method.
+ *
+ * @return boolean Returns true on success or false on failure.
+ * @throws Exception If save handler does not support this method.
+ */
+if ( ! in_array('session_destroy_all', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_destroy_all(): bool
+    {
+        return \PHPCore\Session::getInstance()->destroyAll();
+    }
+}
+
+/**
  * Get session flash data item
  *
+ * This method will return the flash data item that matches the provided key. If a key is not
+ * provided the entire flash data array will be returned.
+ *
  * @param string $key The key of the flash data item to retrieve
- * @return mixed
+ * @return mixed Returns the flash data item
  */
 if ( ! in_array('session_flash_get', $disabled_functions) and ! in_array('Session', $disable_classes)) {
-    function session_flash_get(string $key): mixed
+    function session_flash_get(?string $key = null): mixed
     {
         return \PHPCore\Session::getInstance()->flashGet($key);
     }
 }
 
 /**
- * Keep session flash data item for the next session. Return true on success and
- * false if item was not found in flash data.
+ * Keep session flash data item
  *
- * @param string $key The key of the flash data item to retrieve
- * @return boolean
+ * This method will keep a session flash data item for the next session.
+ *
+ * @param string $key The key of the flash data item to keep
+ * @return boolean Return true on success and false if not found
  */
 if ( ! in_array('session_flash_keep', $disabled_functions) and ! in_array('Session', $disable_classes)) {
     function session_flash_keep(string $key): bool
@@ -264,7 +345,9 @@ if ( ! in_array('session_flash_keep', $disabled_functions) and ! in_array('Sessi
 }
 
 /**
- * Set session flash data item for use in the next session
+ * Set session flash data item
+ *
+ * This method will set a session flash data item to be used for the next session.
  *
  * @param string $key The key of the flash data item
  * @param mixed $value The value of the flash data item
@@ -278,22 +361,41 @@ if ( ! in_array('session_flash_set', $disabled_functions) and ! in_array('Sessio
 }
 
 /**
+ * Get session data item
+ *
+ * This method is used to retrieve a session data item.
+ *
+ * @param string $key Key of session data item to retrieve
+ * @return mixed Data item from session data
+ */
+if ( ! in_array('session_get', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_get(string $key): mixed
+    {
+        return \PHPCore\Session::getInstance()->get($key);
+    }
+}
+
+/**
  * Returns all the session metadata
  *
- * If no key is passed the entire metadata array will be returned.
+ * This method will get metadata with a provided key. If no key is passed the
+ * entire metadata array will be returned.
  *
  * @param string $key Metadata Key
- * @return array Session Metadata
+ * @return mixed Session Metadata
  */
 if ( ! in_array('session_get_metadata', $disabled_functions) and ! in_array('Session', $disable_classes)) {
-    function session_get_metadata(string $key = null): mixed
+    function session_get_metadata(?string $key = null): mixed
     {
         return \PHPCore\Session::getInstance()->getMetadata($key);
     }
 }
 
 /**
- * Grant session access to an ACL group
+ * Grant session access
+ *
+ * This method grants session access via adding it the the ``acl_groups``
+ * array in the sessions metadata.
  *
  * @param string|array $groups ACL group or array of ACL groups to be granted
  * @return void
@@ -306,20 +408,30 @@ if ( ! in_array('session_grant', $disabled_functions) and ! in_array('Session', 
 }
 
 /**
- * Check if session has ACL group
+ * Check if has access
  *
- * @param string $group ACL group to check access for
- * @return boolean
+ * This method checks if a session has access via checking if in the
+ * ``acl_groups`` array in the sessions metadata.
+ *
+ * @param string|array $groups ACL group or array of ACL groups to check
+ *                             access for
+ * @param integer $flags Bitwise flags for this method
+ * @flag Session::HAS_ACCESS_ANY Has Access check true on ANY match 
+ * @flag Session::HAS_ACCESS_ALL Has Access check true if ALL match
+ * @return boolean If has session access
  */
 if ( ! in_array('session_has_access', $disabled_functions) and ! in_array('Session', $disable_classes)) {
-    function session_has_access(string $group): bool
+    function session_has_access(string|array $groups, int $flags = 0): bool
     {
-        return \PHPCore\Session::getInstance()->hasAccess($group);
+        return \PHPCore\Session::getInstance()->hasAccess($groups);
     }
 }
 
 /**
- * Revoke session access to an ACL group
+ * Revoke session access
+ *
+ * This method removes session access via removing from ``acl_groups`` array in
+ * the sessions metadata.
  *
  * @param string|array $groups ACL group or array of ACL groups to be revoked
  * @return void
@@ -332,35 +444,37 @@ if ( ! in_array('session_revoke', $disabled_functions) and ! in_array('Session',
 }
 
 /**
- * Returns time left in session
- * 
- * If the gc_maxlength directive is set it will return the difference in time
- * since the session started. If directive is not used will return null.
+ * Set session data item
  *
- * @return integer|null
+ * This method is used to store a session data item. If the optional ``$ttl``
+ * is passed the data item will also be given an expiration.
+ *
+ * @param string $key Key of session data item to set.
+ * @param mixed $value Value of session data item to set.
+ * @param integer $ttl Time To Live for this data item.
  */
-if ( ! in_array('session_time_left', $disabled_functions) and ! in_array('Session', $disable_classes)) {
-    function session_time_left(): int|null
+if ( ! in_array('session_set', $disabled_functions) and ! in_array('Session', $disable_classes)) {
+    function session_set(string $key, mixed $value, ?int $ttl = null): void
     {
-        return \PHPCore\Session::getInstance()->timeLeft();
+        \PHPCore\Session::getInstance()->set($key, $value, $ttl);
     }
 }
 
 /**
  * Get and/or set the current session user
  *
- * If the user parameter is used the acl_groups will be replaced with the ones
- * declared in the acl_group.default_user directive. The session start time will
+ * If the ``$user`` parameter is used the acl_groups will be replaced with the ones
+ * declared in the acl_group.default_user directive and the session start time will
  * also be reset.
  *
- * @param string|int $user The user to bind to the current session
- * @return string|int|null
+ * @param string $user The user to bind to the current session
+ * @return string|null User of the current session
  */
 if ( ! in_array('session_user', $disabled_functions) and ! in_array('Session', $disable_classes)) {
-    function session_user(string|int $user = null): string|int|null
+    function session_user(?string $user = null): string|null
     {
         if ($user !== null) {
-            \PHPCore\Session::getInstance()->userBind($user);
+            \PHPCore\Session::getInstance()->user($user);
         }
         $meta_data = \PHPCore\Session::getInstance()->getMetadata();
         return $meta_data['user'] ?? null;
@@ -368,12 +482,14 @@ if ( ! in_array('session_user', $disabled_functions) and ! in_array('Session', $
 }
 
 /**
- * String Color
+ * Returns terminal colored string
+ *
+ * This is done by escape character so we can actually define a output color. This is done with \033 (\e). 
  *
  * @param string $string         String to be colorized
  * @param string $str_color_name String color name
  * @param string $bkg_color_name Background color name
- * @return void
+ * @return string
  */
 if ( ! in_array('str_color', $disabled_functions) ) {
     function str_color(string $string, string $str_color_name, string $bkg_color_name = 'black'): string
@@ -421,7 +537,9 @@ if ( ! in_array('str_color', $disabled_functions) ) {
 }
 
 /**
- * String Style
+ * Returns terminal styled string
+ *
+ * This is done by escape character so we can actually define a output color. This is done with \033 (\e). 
  *
  * @param string $string     String to be styled
  * @param string $style_name Style name

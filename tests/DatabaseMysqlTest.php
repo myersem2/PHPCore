@@ -44,7 +44,7 @@ final class DatabaseMysqlTest extends TestCase
         Database::unlinkInstances();
         self::$core_ini_bkup = $GLOBALS['_CORE_INI'];
         $GLOBALS['_CORE_INI']['Database'] = self::$databaseConfig;
-        $db = Database::getInstance();
+        $db = Database::__getInstance();
         $db->exec('DROP TABLE IF EXISTS `User`');
         $db->exec('DROP TABLE IF EXISTS `UserAccess`');
         $db->exec('
@@ -75,7 +75,7 @@ final class DatabaseMysqlTest extends TestCase
     public static function tearDownAfterClass(): void
     {
         $GLOBALS['_CORE_INI'] = self::$core_ini_bkup;
-        $db = Database::getInstance();
+        $db = Database::__getInstance();
         $db->exec('DROP TABLE IF EXISTS `User`');
         $db->exec('DROP TABLE IF EXISTS `UserAccess`');
     }
@@ -107,7 +107,7 @@ final class DatabaseMysqlTest extends TestCase
     // -----------------------------------------------------------------------------------------
 
     /**
-     * @covers \PHPCore\Database::getInstance
+     * @covers \PHPCore\Database::__getInstance
      * @covers \PHPCore\Database::__construct
      * @covers ::core_ini_get_all
      * @covers ::parse_dsn
@@ -121,12 +121,12 @@ final class DatabaseMysqlTest extends TestCase
         if (empty($name) === true) {
             $this->assertInstanceOf(
                 Database::class,
-                Database::getInstance()
+                Database::__getInstance()
             );
         } else {
             $this->assertInstanceOf(
                 Database::class,
-                Database::getInstance($name)
+                Database::__getInstance($name)
             );
         }
     }
@@ -140,7 +140,7 @@ final class DatabaseMysqlTest extends TestCase
     /**
      * @covers \PHPCore\Database::createRecord
      * @covers \PHPCore\Database::createRecords
-     * @covers \PHPCore\Database::getInstance
+     * @covers \PHPCore\Database::__getInstance
      * @covers \PHPCore\Database::exec
      * @covers \PHPCore\Database::query
      * @covers \PHPCore\Database::_execStatement
@@ -153,7 +153,7 @@ final class DatabaseMysqlTest extends TestCase
      */
     public function testCreateRecords(string $table, string $type, array $data, int $flags, array $tests): void
     {
-        $db = Database::getInstance();
+        $db = Database::__getInstance();
         $res = $db->exec("TRUNCATE `$table`");
         if (isset($tests['pre_query'])) {
             $result = $db->exec($tests['pre_query'], [], Database::RETURN_LAST_INSERT_ID);
@@ -385,7 +385,7 @@ final class DatabaseMysqlTest extends TestCase
     /**
      * @covers \PHPCore\Database::getRecord
      * @covers \PHPCore\Database::getRecords
-     * @covers \PHPCore\Database::getInstance
+     * @covers \PHPCore\Database::__getInstance
      * @covers \PHPCore\Database::exec
      * @covers \PHPCore\Database::query
      * @covers \PHPCore\Database::_execStatement
@@ -400,7 +400,7 @@ final class DatabaseMysqlTest extends TestCase
      */
     public function testGetRecords(string $type, array $where, array|null $order, int|null $limit, int|null $offest, array|null $match, int $flags = 0): void
     {
-        $db = Database::getInstance();
+        $db = Database::__getInstance();
         $this->setUpGetRecords(false);
         $res = $db->query("SELECT * FROM `User`");
         if (count($res) !== 4) {
@@ -430,7 +430,7 @@ final class DatabaseMysqlTest extends TestCase
     }
     private function setUpGetRecords(bool $createTable = true): void
     {
-        $db = Database::getInstance();
+        $db = Database::__getInstance();
         $db->exec("TRUNCATE `User`");
         $db->exec("INSERT INTO `User` (`Name`, `email`) VALUES ('John', 'john@email.com')");
         $db->exec("INSERT INTO `User` (`Name`, `email`) VALUES ('Jane', 'john@email.com')");
@@ -603,7 +603,7 @@ final class DatabaseMysqlTest extends TestCase
 
     /**
      * @covers \PHPCore\Database::updateRecords
-     * @covers \PHPCore\Database::getInstance
+     * @covers \PHPCore\Database::__getInstance
      * @covers \PHPCore\Database::exec
      * @covers \PHPCore\Database::query
      * @covers \PHPCore\Database::_execStatement
@@ -618,7 +618,7 @@ final class DatabaseMysqlTest extends TestCase
      */
     public function testUpdateRecords(array $updates, array $where, int $updateCount, int $flags = 0): void
     {
-        $db = Database::getInstance();
+        $db = Database::__getInstance();
         $res = $db->query("SELECT * FROM `User`");
         if (count($res) !== 3) {
             $this->markTestSkipped('setUpUpdateRecord() did not setup database correctly');
@@ -640,7 +640,7 @@ final class DatabaseMysqlTest extends TestCase
     }
     private function setUpUpdateRecords(bool $createTable = true): void
     {
-        $db = Database::getInstance();
+        $db = Database::__getInstance();
         $db->exec("TRUNCATE `User`");
         $db->exec("INSERT INTO `User` (`Name`, `email`, `Phone`) VALUES ('John', 'john@email.com', '')");
         $db->exec("INSERT INTO `User` (`Name`, `email`, `Phone`) VALUES ('Jane', 'john@email.com', '')");
@@ -672,7 +672,7 @@ final class DatabaseMysqlTest extends TestCase
 
     /**
      * @covers \PHPCore\Database::deleteRecords
-     * @covers \PHPCore\Database::getInstance
+     * @covers \PHPCore\Database::__getInstance
      * @covers \PHPCore\Database::exec
      * @covers \PHPCore\Database::query
      * @covers \PHPCore\Database::_execStatement
@@ -686,7 +686,7 @@ final class DatabaseMysqlTest extends TestCase
      */
     public function testDeleteRecords(array $where, int $deleteCount, int $flags = 0): void
     {
-        $db = Database::getInstance();
+        $db = Database::__getInstance();
         $res = $db->query("SELECT * FROM `User`");
         if (count($res) !== 3) {
             $this->markTestSkipped('setUpDeleteRecords() did not setup database correctly');
@@ -708,7 +708,7 @@ final class DatabaseMysqlTest extends TestCase
     }
     private function setUpDeleteRecords(): void
     {
-        $db = Database::getInstance();
+        $db = Database::__getInstance();
         $db->exec("TRUNCATE `User`");
         $db->exec("INSERT INTO `User` (`Name`, `email`) VALUES ('John', 'john@email.com')");
         $db->exec("INSERT INTO `User` (`Name`, `email`) VALUES ('Jane', 'john@email.com')");
@@ -724,7 +724,7 @@ final class DatabaseMysqlTest extends TestCase
 
     /**
      * @covers \PHPCore\Database::procedure
-     * @covers \PHPCore\Database::getInstance
+     * @covers \PHPCore\Database::__getInstance
      * @covers \PHPCore\Database::exec
      * @covers \PHPCore\Database::_execStatement
      * @covers \PHPCore\Database::_cleanName
@@ -735,7 +735,7 @@ final class DatabaseMysqlTest extends TestCase
      */
     public function testProcedures(): void
     {
-        $db = Database::getInstance();
+        $db = Database::__getInstance();
         $results = $db->procedure('TestProcedure', [3,'Jane'], Database::USE_ROWSETS | Database::MERGED_ROWSETS);
         $this->assertEquals(count($results), 6);
         $results = $db->procedure('TestProcedure', [3,'Jane'], Database::USE_ROWSETS );
@@ -743,7 +743,7 @@ final class DatabaseMysqlTest extends TestCase
     }
     public function setUpProcedures(): void
     {
-        $db = Database::getInstance();
+        $db = Database::__getInstance();
         $db->exec("TRUNCATE `User`");
         $db->exec("INSERT INTO `User` (`Name`, `email`) VALUES ('John', 'john@email.com')");
         $db->exec("INSERT INTO `User` (`Name`, `email`) VALUES ('Jane', 'john@email.com')");

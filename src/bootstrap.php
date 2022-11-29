@@ -17,82 +17,37 @@ define('CORE_MINOR_VERSION', 0);
 define('CORE_RELEASE_VERSION', 0);
 define('CORE_VERSION_ID', 10000);
 define('CORE_EXTRA_VERSION', '-beta');
-define(
-    'CORE_VERSION',
-    CORE_MAJOR_VERSION . '.' . CORE_MINOR_VERSION . '.' . CORE_RELEASE_VERSION . CORE_EXTRA_VERSION
-);
+define('CORE_VERSION', '1.0.0-beta');
 
 // =============================================================================
-// Base variables
+// PHPCore configurations
 // =============================================================================
-$ini_config = null;
-$interface = str_starts_with(php_sapi_name(), 'cli') ? 'cli' : 'www';
-$interface = str_starts_with(php_sapi_name(), 'apache2') ? 'apache2' : $interface;
-$config_paths[] = $config_path = $base_config = "/etc/phpcore/$interface/phpcore.ini";
-
-// =============================================================================
-// PHPCoreAutoloader
-// =============================================================================
-spl_autoload_register(function(string $class_name) {
-    if ($class_name[0] === '\\') {
-        $class_name = substr($class_name, 1);
-    }
-    if (str_starts_with($class_name, 'PHPCore\\')) {
-        $file = str_replace('\\', DIRECTORY_SEPARATOR, substr($class_name, 7));
-        if (empty($GLOBALS['_CORE']['DISABLE_CLASSES']) === false) {
-            if (in_array($file, explode(',', $GLOBALS['_CORE']['DISABLE_CLASSES'])) === true) {
-                return;
-            }
-        }
-        include $GLOBALS['_CORE']['PATH'] . "$file.php";
-    }
-});
-
-// =============================================================================
-// Load Base PHPCore configuration
-// =============================================================================
-if (is_readable($base_config) === true) {
-    $ini_config = parse_ini_file($base_config, true);
-} else {
-    trigger_error(
-        "Missing base PHPCore configuration file. ($base_config)",
-        E_USER_WARNING
-    );
-}
-unset($base_config);
-
-// =============================================================================
-// Look for and load environment PHPCore configuration
-// =============================================================================
+$phpcorewd = getcwd() . '/phpcore.ini';
 $phpcorerc = getenv('PHPCORERC');
-if (empty($phpcorerc) === false) {
-    if (is_readable($phpcorerc) === true) {
-        $config_path = $phpcorerc;
-        $config_paths[] = $config_path;
-        $ini_config = array_merge_recursive($ini_config, parse_ini_file($phpcorerc, true), );
+$config_paths[] = '/etc/phpcore/' . str_replace('handler', '', PHP_SAPI) . '/phpcore.ini';
+if ( ! is_readable($config_paths[0])) {
+    trigger_error("Missing base PHPCore configuration file. ({$config_paths[0]})", E_USER_WARNING);
+}
+if ( ! empty($phpcorerc) && is_readable($phpcorerc)) {
+    $config_paths[] = $phpcorerc;
+}
+if (is_readable($phpcorewd)) {
+    $config_paths[] = $phpcorewd;
+}
+foreach ($config_paths as $config_path) {
+    if (isset($ini_config)) {
+        $ini_config = array_merge_recursive($ini_config, parse_ini_file($config_path, true));
+    } else {
+        $ini_config = parse_ini_file($config_path, true);
     }
 }
 
 // =============================================================================
-// Look for and load working path PHPCore configuration
+// PHPCore version lock check
 // =============================================================================
-$wd = getcwd();
-if (is_readable("$wd/phpcore.ini") === true) {
-    $config_path = "$wd/phpcore.ini";
-    $config_paths[] = $config_path;
-    $ini_config = array_merge_recursive($ini_config, parse_ini_file("$wd/phpcore.ini", true));
-}
-unset($wd);
-
-// =============================================================================
-// version lock check
-// =============================================================================
-if (empty($ini_config['PHPCore']['version_lock']) === false) {
-    if (str_starts_with(CORE_VERSION, $ini_config['PHPCore']['version_lock']) === false) {
-        trigger_error(
-            "PHPCore configuration version lock mismatch with this version.",
-            E_USER_WARNING
-        );
+if (isset($ini_config['PHPCore']['version_lock'])) {
+    if ( ! str_starts_with(CORE_VERSION, $ini_config['PHPCore']['version_lock'])) {
+        trigger_error("PHPCore configuration version lock mismatch.", E_USER_WARNING);
     }
 }
 
@@ -102,16 +57,30 @@ if (empty($ini_config['PHPCore']['version_lock']) === false) {
 $GLOBALS['_CORE_INI'] = $ini_config;
 $GLOBALS['_CORE'] = [
     'PATH'              => __DIR__,
-    'CONFIG_FILE'       => $config_path,
     'CONFIG_FILES'      => implode(',', $config_paths),
-    'DISABLE_FUNCTIONS' => $GLOBALS['_CORE_INI']['PHPCore']['disable_functions'] ?? '',
-    'DISABLE_CLASSES'   => $GLOBALS['_CORE_INI']['PHPCore']['disable_classes'] ?? '',
-    'INTERFACE'         => $interface,
-    'FORMAT'            => ($interface === 'cli') ? 'text' : $GLOBALS['_CORE_INI']['PHPCore']['default_format'],
+    'DISABLE_FUNCTIONS' => $ini_config['PHPCore']['disable_functions'] ?? null,
+    'DISABLE_CLASSES'   => $ini_config['PHPCore']['disable_classes'] ?? null,
+    'INTERFACE'         => PHP_SAPI,
+    'FORMAT'            => $ini_config['PHPCore']['default_format'] ?? 'json',
 ];
-unset($config_path);
-unset($ini_config);
-unset($config_paths);
+
+// =============================================================================
+// PHPCore autoloader
+// =============================================================================
+spl_autoload_register(function(string $class_name) {
+    if ($class_name[0] === '\\') {
+        $class_name = substr($class_name, 1);
+    }
+    if (str_starts_with($class_name, 'PHPCore\\')) {
+        $file = str_replace('\\', DIRECTORY_SEPARATOR, substr($class_name, 7));
+        if (isset($GLOBALS['_CORE']['DISABLE_CLASSES'])) {
+            if (in_array($file, explode(',', $GLOBALS['_CORE']['DISABLE_CLASSES']))) {
+                return;
+            }
+        }
+        include $GLOBALS['_CORE']['PATH'] . "$file.php";
+    }
+});
 
 // =============================================================================
 // PHPCore functions
@@ -119,10 +88,26 @@ unset($config_paths);
 include $GLOBALS['_CORE']['PATH'] . DIRECTORY_SEPARATOR . 'functions.php';
 
 // =============================================================================
+// Variable cleanup
+// =============================================================================
+unset($config_path);
+unset($config_paths);
+unset($ini_config);
+unset($phpcorewd);
+unset($phpcorerc);
+
+// =============================================================================
+// Process request
+// =============================================================================
+if (PHP_SAPI !== 'cli') {
+    PHPCore\Request::process();
+}
+
+// =============================================================================
 // Session Auto Start
 // =============================================================================
 if (core_ini_get('auto_start', 'Session')) {
-    \PHPCore\Session::getInstance();
+    PHPCore\Session::getInstance();
 }
 
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////

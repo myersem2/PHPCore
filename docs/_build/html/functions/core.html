@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core Functions &mdash; PHPCore dev-initial-build
+ Manual</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Session Functions" href="session.html" />
+    <link rel="prev" title="General" href="general.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PHPCore
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#a-simple-tutorial">A simple tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../install-config/index.html">Installing and Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/requirements.html">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/directives.html">Configuration Directives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../install-config/directives.html#session-directives">Session Directives</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#save-handler-id-prefix">save_handler_id_prefix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#auto-start">auto_start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#cookie-autodestroy">cookie_autodestroy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#gc-maxlength">gc_maxlength</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#encrypt">encrypt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#key-phase">key_phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#acl-group">acl_group</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/index.html#manual-installation">Manual Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/index.html#php-configuration">PHP Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../features/index.html">Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../features/session.html">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#metadata">Metadata</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#acl-groups">acl_groups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#started">started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#session-id">session_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#timeleft">timeleft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#updated">updated</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#user">user</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#user-and-acl-groups">User and ACL Groups</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#grant-revoke">grant &amp; revoke</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#setting-data-with-ttl">Setting Data with TTL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../classes/controller.html">Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../classes/database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../classes/email.html">Email</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../classes/model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../classes/request.html">Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../classes/session.html">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#class-synopsis">Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#class-methods">Class methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../classes/view.html">View</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Functions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="general.html">General</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session.html">Session</a></li>
+<li class="toctree-l2"><a class="reference internal" href="string.html">String</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../annotations.html">Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes/core-trait.html">Core Trait</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../classes/core-trait.html#trait-synopsis">Trait synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../classes/core-trait.html#core-trait-methods">Core Trait methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../rst-sample.html">RST Sample</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#code-block">Code Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#glossary">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#seealso">Seealso</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PHPCore</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">PHPCore Built-In Functions</a> &raquo;</li>
+      <li>Core Functions</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/myersem2/PHPCore/blob/dev-initial-build/docs/functions/core.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="core-functions">
+<h1>Core Functions<a class="headerlink" href="#core-functions" title="Permalink to this headline"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="#core_ini_get">core_ini_get</a> - Gets the value of a PHPCore configuration directive</p></li>
+<li><p><a class="reference internal" href="#core_ini_get_all">core_ini_get_all</a> - Gets all configuration options</p></li>
+<li><p><a class="reference internal" href="#core_ini_set">core_ini_set</a> - Sets the value of a configuration directive.</p></li>
+<li><p><a class="reference internal" href="#coreinfo">coreinfo</a> - Get PHPCore Information</p></li>
+</ul>
+<hr class="docutils" />
+<dl class="php function">
+<dt class="sig sig-object php" id="core_ini_get">
+<span class="sig-name descname"><span class="pre">core_ini_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$directive</span></em>, <em class="sig-param"><span class="pre">string</span> <span class="pre">$section</span> <span class="pre">=</span> <span class="pre">'PHPCore'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#core_ini_get" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the value of a PHPCore configuration directive</p>
+<p>Returns the value of the PHPCore configuration directive on success. If section is not passed ‘the [PHPCore] section will be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$directive</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The configuration directive name.</p></li>
+<li><p><strong>$section</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The configuration section name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">string|false</span></code> Returns the value of the configuration option as a string on success, or an empty string for null values. Returns false if the configuration option doesn’t exist.</p>
+</dd>
+</dl>
+<p class="wy-text-right"><a class="reference internal" href="#core-functions"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<dl class="php function">
+<dt class="sig sig-object php" id="core_ini_get_all">
+<span class="sig-name descname"><span class="pre">core_ini_get_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$section</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?string</span> <span class="pre">$sub_section</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#core_ini_get_all" title="Permalink to this definition"></a></dt>
+<dd><p>Gets all configuration options</p>
+<p>Returns all the registered configuration options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$section</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – An optional section name. If not empty, the function returns only options specific for that section.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">array</span></code> Returns an associative array with directive name as the array key. Returns false and raises an E_WARNING level error if the section doesn’t exist.</p>
+</dd>
+</dl>
+<p class="wy-text-right"><a class="reference internal" href="#core-functions"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<dl class="php function">
+<dt class="sig sig-object php" id="core_ini_set">
+<span class="sig-name descname"><span class="pre">core_ini_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#core_ini_set" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the value of a configuration directive.</p>
+<p>Sets the value of the given PHPCore configuration directive. The configuration directive will keep this new value during the script’s execution, and will be restored at the script’s ending. This is similar to PHP ini_set() function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$directive</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The configuration directive name.</p></li>
+<li><p><strong>$section</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The configuration section name.</p></li>
+<li><p><strong>$value</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The new value for the option.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">string|false</span></code> Returns the old value on success, false on failure</p>
+</dd>
+</dl>
+<p class="wy-text-right"><a class="reference internal" href="#core-functions"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<dl class="php function">
+<dt class="sig sig-object php" id="coreinfo">
+<span class="sig-name descname"><span class="pre">coreinfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#coreinfo" title="Permalink to this definition"></a></dt>
+<dd><p>Get PHPCore Information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List or HTML formated PHPCore information.</p>
+</dd>
+</dl>
+<p class="wy-text-right"><a class="reference internal" href="#core-functions"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="general.html" class="btn btn-neutral float-left" title="General" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="session.html" class="btn btn-neutral float-right" title="Session Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Everett Myers.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
