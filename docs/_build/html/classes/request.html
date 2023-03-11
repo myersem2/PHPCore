@@ -172,10 +172,12 @@
     <span class="cm">/* Static Methods */</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">agent</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">body</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">fileType</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="nx">string</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">fileContents</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">cookie</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">file</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="nx">object</span><span class="o">|</span><span class="k">null</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">files</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">format</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">ipAddress</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">host</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">ipAddress</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">param</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">path</span><span class="p">(</span><span class="o">?</span><span class="nx">int</span> <span class="nv">$pos</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
 <span class="p">}</span>
@@ -188,6 +190,8 @@
 <li><p><a class="reference internal" href="#request-method-agent"><span class="std std-ref">Request::agent</span></a> - Get request agent capabilities</p></li>
 <li><p><a class="reference internal" href="#request-method-body"><span class="std std-ref">Request::body</span></a> - Get data from request body</p></li>
 <li><p><a class="reference internal" href="#request-method-cookie"><span class="std std-ref">Request::cookie</span></a> - Get data from HTTP cookie</p></li>
+<li><p><a class="reference internal" href="#request-method-file"><span class="std std-ref">Request::file</span></a> - Get file from request</p></li>
+<li><p><a class="reference internal" href="#request-method-files"><span class="std std-ref">Request::file</span></a> - Get files from request</p></li>
 </ul>
 </section>
 <section id="request-class-methods">
@@ -316,6 +320,88 @@
 </div>
 </div>
 <p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-file"></span><dl class="php method">
+<dt class="sig sig-object php" id="file">
+<span class="sig-name descname"><span class="pre">file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#file" title="Permalink to this definition"></a></dt>
+<dd><p>Get file from request</p>
+<p>Will return the file by a given $key for the files that was uploaded via the HTTP POST method using the $_FILES superglobal variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the file to retrieve</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">object|null</span></code> RequestFile object</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-number">Example 13 </span><span class="caption-text">Get file from request</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="c1">// $_FILES[&#39;test&#39;] = [</span>
+<span class="linenos"> 4</span><span class="c1">//     &#39;name&#39;      =&gt; &#39;sample.pdf.png&#39;,</span>
+<span class="linenos"> 5</span><span class="c1">//     &#39;full_path&#39; =&gt; &#39;sample.pdf.png&#39;,</span>
+<span class="linenos"> 6</span><span class="c1">//     &#39;type&#39;      =&gt; &#39;image/png&#39;,</span>
+<span class="linenos"> 7</span><span class="c1">//     &#39;tmp_name&#39;  =&gt; &#39;/tmp/php059gDH&#39;,</span>
+<span class="linenos"> 8</span><span class="c1">//     &#39;error&#39;     =&gt; 0,</span>
+<span class="linenos"> 9</span><span class="c1">//     &#39;size&#39;      =&gt; 3028</span>
+<span class="linenos">10</span><span class="c1">// ];</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">13</span><span class="c1">// Get capability by key</span>
+<span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
+</span><span class="hll"><span class="linenos">15</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
+</span><span class="linenos">16</span>
+<span class="linenos">17</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-files"></span><dl class="php function">
+<dt class="sig sig-object php" id="files">
+<span class="sig-name descname"><span class="pre">files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#files" title="Permalink to this definition"></a></dt>
+<dd><p>Get files from request</p>
+<p>Will return an array of files for a given $key that were uploaded via the HTTP POST method using the $_FILES superglobal variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the array of files to retrieve</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">array</span></code> Array of RequestFile objects</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-number">Example 14 </span><span class="caption-text">Get file from request</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="c1">// $_FILES[&#39;test&#39;] = [</span>
+<span class="linenos"> 4</span><span class="c1">//     &#39;name&#39;      =&gt; [ 0 =&gt; &#39;sample.pdf.png&#39; ],</span>
+<span class="linenos"> 5</span><span class="c1">//     &#39;full_path&#39; =&gt; [ 0 =&gt; &#39;sample.pdf.png&#39; ],</span>
+<span class="linenos"> 6</span><span class="c1">//     &#39;type&#39;      =&gt; [ 0 =&gt; &#39;image/png&#39;      ],</span>
+<span class="linenos"> 7</span><span class="c1">//     &#39;tmp_name&#39;  =&gt; [ 0 =&gt; &#39;/tmp/php059gDH&#39; ],</span>
+<span class="linenos"> 8</span><span class="c1">//     &#39;error&#39;     =&gt; [ 0 =&gt; 0                ],</span>
+<span class="linenos"> 9</span><span class="c1">//     &#39;size&#39;      =&gt; [ 0 =&gt; 3028             ]</span>
+<span class="linenos">10</span><span class="c1">// ];</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">13</span><span class="c1">// Get capability by key</span>
+<span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
+</span><span class="hll"><span class="linenos">15</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
+</span><span class="linenos">16</span>
+<span class="linenos">17</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="../functions/request.html#request-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
 </section>

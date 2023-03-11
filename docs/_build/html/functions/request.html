@@ -161,6 +161,8 @@
 <li><p><a class="reference internal" href="#request_agent">request_agent</a> - Get request agent capabilities</p></li>
 <li><p><a class="reference internal" href="#request_body">request_body</a> - Get data from request body.</p></li>
 <li><p><a class="reference internal" href="#request_cookie">request_cookie</a> - Get data from HTTP cookie.</p></li>
+<li><p><a class="reference internal" href="#request_file">request_file</a> - Get file from request.</p></li>
+<li><p><a class="reference internal" href="#request_files">request_files</a> - Get files from request.</p></li>
 </ul>
 <hr class="docutils" />
 <p>Many of the request functions below are just aliases for the methods of the <a class="reference external" href="../classes/request.html">PHPCore Request Class</a>.</p>
@@ -186,7 +188,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-number">Example 29 </span><span class="caption-text">Get request agent capabilities</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 31 </span><span class="caption-text">Get request agent capabilities</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span><span class="c1">// $_SERVER[&#39;HTTP_USER_AGENT&#39;] = &#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36&#39;</span>
 <span class="linenos"> 3</span>
@@ -231,7 +233,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-number">Example 30 </span><span class="caption-text">Get data from request body</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 32 </span><span class="caption-text">Get data from request body</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span><span class="c1">// $_POST = &#39;{ &quot;name&quot;: &quot;Smith&quot;, &quot;age&quot;: &quot;22&quot; }&#39;</span>
 <span class="linenos"> 3</span>
@@ -275,7 +277,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-number">Example 31 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 33 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos">2</span><span class="c1">// $_COOKIE = [ &#39;OFFSET&#39; =&gt; 1, &#39;ORDER&#39; =&gt; &#39;asc&#39; ]</span>
 <span class="linenos">3</span>
@@ -285,6 +287,86 @@
 </span><span class="hll"><span class="linenos">7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">request_cookie</span><span class="p">(</span><span class="s1">&#39;OFFSET&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
 </span><span class="linenos">8</span>
 <span class="linenos">9</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-functions"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="php function">
+<dt class="sig sig-object php" id="request_file">
+<span class="sig-name descname"><span class="pre">request_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#request_file" title="Permalink to this definition"></a></dt>
+<dd><p>Get file from request</p>
+<p>Will return the file by a given $key for the files that was uploaded via the HTTP POST method using the $_FILES superglobal variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the file to retrieve</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">object|null</span></code> RequestFile object</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-number">Example 34 </span><span class="caption-text">Get file from request</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="c1">// $_FILES[&#39;test&#39;] = [</span>
+<span class="linenos"> 3</span><span class="c1">//     &#39;name&#39;      =&gt; &#39;sample.pdf.png&#39;,</span>
+<span class="linenos"> 4</span><span class="c1">//     &#39;full_path&#39; =&gt; &#39;sample.pdf.png&#39;,</span>
+<span class="linenos"> 5</span><span class="c1">//     &#39;type&#39;      =&gt; &#39;image/png&#39;,</span>
+<span class="linenos"> 6</span><span class="c1">//     &#39;tmp_name&#39;  =&gt; &#39;/tmp/php059gDH&#39;,</span>
+<span class="linenos"> 7</span><span class="c1">//     &#39;error&#39;     =&gt; 0,</span>
+<span class="linenos"> 8</span><span class="c1">//     &#39;size&#39;      =&gt; 3028</span>
+<span class="linenos"> 9</span><span class="c1">// ];</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">12</span><span class="c1">// Get capability by key</span>
+<span class="hll"><span class="linenos">13</span><span class="k">echo</span> <span class="nx">request_file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
+</span><span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">request_file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
+</span><span class="linenos">15</span>
+<span class="linenos">16</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-functions"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="php function">
+<dt class="sig sig-object php" id="request_files">
+<span class="sig-name descname"><span class="pre">request_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#request_files" title="Permalink to this definition"></a></dt>
+<dd><p>Get files from request</p>
+<p>Will return an array of files for a given $key that were uploaded via the HTTP POST method using the $_FILES superglobal variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the array of files to retrieve</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">array</span></code> Array of RequestFile objects</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-number">Example 35 </span><span class="caption-text">Get file from request</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="c1">// $_FILES[&#39;test&#39;] = [</span>
+<span class="linenos"> 3</span><span class="c1">//     &#39;name&#39;      =&gt; [ 0 =&gt; &#39;sample.pdf.png&#39; ],</span>
+<span class="linenos"> 4</span><span class="c1">//     &#39;full_path&#39; =&gt; [ 0 =&gt; &#39;sample.pdf.png&#39; ],</span>
+<span class="linenos"> 5</span><span class="c1">//     &#39;type&#39;      =&gt; [ 0 =&gt; &#39;image/png&#39;      ],</span>
+<span class="linenos"> 6</span><span class="c1">//     &#39;tmp_name&#39;  =&gt; [ 0 =&gt; &#39;/tmp/php059gDH&#39; ],</span>
+<span class="linenos"> 7</span><span class="c1">//     &#39;error&#39;     =&gt; [ 0 =&gt; 0                ],</span>
+<span class="linenos"> 8</span><span class="c1">//     &#39;size&#39;      =&gt; [ 0 =&gt; 3028             ]</span>
+<span class="linenos"> 9</span><span class="c1">// ];</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">12</span><span class="c1">// Get capability by key</span>
+<span class="linenos">13</span><span class="k">echo</span> <span class="nx">request_files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
+<span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">request_files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
+</span><span class="hll"><span class="linenos">15</span>
+</span><span class="linenos">16</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>

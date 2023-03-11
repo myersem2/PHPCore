@@ -660,7 +660,15 @@ if ( ! in_array('request_cookie', $disabled_functions) ) {
     }
 }
 
-// TODO: document
+/**
+ * Get file from request
+ *
+ * Will return the file by a given $key for the files that was uploaded via the
+ * HTTP POST method using the $_FILES superglobal variable.
+ *
+ * @param string $key The key of the file to retrieve
+ * @return object|null RequestFile object
+ */
 if ( ! in_array('request_file', $disabled_functions) ) {
     function request_file(string $key): object|null
     {
@@ -668,7 +676,15 @@ if ( ! in_array('request_file', $disabled_functions) ) {
     }
 }
 
-// TODO: document
+/**
+ * Get files from request
+ *
+ * Will return an array of files for a given $key that were uploaded via the
+ * HTTP POST method using the $_FILES superglobal variable.
+ *
+ * @param string $key The key of the array of files to retrieve
+ * @return array Array of RequestFile objects
+ */
 if ( ! in_array('request_files', $disabled_functions) ) {
     function request_files(string $key): array
     {
@@ -676,7 +692,16 @@ if ( ! in_array('request_files', $disabled_functions) ) {
     }
 }
 
-// TODO: document
+/**
+ * Get the requested format
+ *
+ * This method will return the request format by first looking at the
+ * requested CONTENT_TYPE, if unknown then it will attempt to decipher using
+ * the REQUEST_URI extention. If format cannot be determine then the
+ * default_format set in the INI will be used.     
+ *
+ * @return string Format extention
+ */
 if ( ! in_array('request_format', $disabled_functions) ) {
     function request_format(): string
     {

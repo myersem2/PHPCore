@@ -18,10 +18,12 @@ Request Class synopsis
        /* Static Methods */
        public static function agent(?string $key = null): mixed
        public static function body(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
-       public static function fileType(string $key): string
-       public static function fileContents(string $key): string
+       public static function cookie(string $key, ?int $filter = null, array|int $options = 0): mixed
+       public static function file(string $key): object|null
+       public static function files(string $key): array
        public static function format(): string
-       public static function ipAddress(): string
+       public static function host(): string|false
+       public static function ipAddress(): string|false
        public static function param(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
        public static function path(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
    }
@@ -32,6 +34,8 @@ Request Class Table of Contents
 * :ref:`Request::agent<request-method-agent>` - Get request agent capabilities
 * :ref:`Request::body<request-method-body>` - Get data from request body
 * :ref:`Request::cookie<request-method-cookie>` - Get data from HTTP cookie
+* :ref:`Request::file<request-method-file>` - Get file from request
+* :ref:`Request::file<request-method-files>` - Get files from request
 
 Request Class methods
 #####################
@@ -155,6 +159,84 @@ Request Class methods
    .. rst-class:: wy-text-right
 
       :ref:`Back to list<Request Class Table Of Contents>`
+
+-----
+
+.. _request-method-file:
+.. php:method:: file(string $key)
+
+   Get file from request
+
+   Will return the file by a given $key for the files that was uploaded via the HTTP POST method using the $_FILES superglobal variable.
+
+   :param string $key: The key of the file to retrieve
+   :returns: ``object|null`` RequestFile object
+
+   .. code-block:: php
+      :caption: Get file from request
+      :linenos:
+      :emphasize-lines: 14,15
+
+      <?php
+      use \PHPCore\Request;
+      // $_FILES['test'] = [
+      //     'name'      => 'sample.pdf.png',
+      //     'full_path' => 'sample.pdf.png',
+      //     'type'      => 'image/png',
+      //     'tmp_name'  => '/tmp/php059gDH',
+      //     'error'     => 0,
+      //     'size'      => 3028
+      // ];
+
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      // Get capability by key
+      echo Request::file('test')->name; // 'image/png'
+      echo Request::file('test')->trueType(); // 'application/pdf'
+
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Class Table Of Contents>`
+
+-----
+
+.. _request-method-files:
+.. php:function:: files(string $key)
+
+   Get files from request
+
+   Will return an array of files for a given $key that were uploaded via the HTTP POST method using the $_FILES superglobal variable.
+
+   :param string $key: The key of the array of files to retrieve
+   :returns: ``array`` Array of RequestFile objects
+
+   .. code-block:: php
+      :caption: Get file from request
+      :linenos:
+      :emphasize-lines: 14,15
+
+      <?php
+      use \PHPCore\Request;
+      // $_FILES['test'] = [
+      //     'name'      => [ 0 => 'sample.pdf.png' ],
+      //     'full_path' => [ 0 => 'sample.pdf.png' ],
+      //     'type'      => [ 0 => 'image/png'      ],
+      //     'tmp_name'  => [ 0 => '/tmp/php059gDH' ],
+      //     'error'     => [ 0 => 0                ],
+      //     'size'      => [ 0 => 3028             ]
+      // ];
+
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      // Get capability by key
+      echo Request::files('test')[0]->name; // 'image/png'
+      echo Request::files('test')[0]->trueType(); // 'application/pdf'
+
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Functions>`
 
 .. _PHPCore Request Class: ../classes/request.html
 .. _PHPCore Request Functions: ../functions/request.html

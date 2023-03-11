@@ -173,7 +173,7 @@ final class Request
     }
 
     /**
-     * Get filse from request
+     * Get files from request
      *
      * Will return an array of files for a given $key that were uploaded via the
      * HTTP POST method using the $_FILES superglobal variable.
@@ -189,14 +189,16 @@ final class Request
             return [];
         }
 
-        $files = [];
-        foreach ($_FILES[$key] as $param => $items) {
-            foreach ($items as $index => $value) {
-                $files[$index][$param] = $value;
-            }
-        }
-        foreach ($files as $index => $file) {
-            $request_files[$key][$index] = new RequestFile($file);
+        if ( ! isset($request_files[$key])) {
+          $files = [];
+          foreach ($_FILES[$key] as $param => $items) {
+              foreach ($items as $index => $value) {
+                  $files[$index][$param] = $value;
+              }
+          }
+          foreach ($files as $index => $file) {
+              $request_files[$key][$index] = new RequestFile($file);
+          }
         }
 
         return $request_files[$key];
@@ -456,6 +458,7 @@ final class RequestFile
     public function trueType(): string
     {
         if (empty($this->true_type) && ! empty($this->tmp_name)) {
+            $finfo = new \finfo(FILEINFO_MIME);
             list($this->true_type) = explode(';', $finfo->buffer(file_get_contents($this->tmp_name)));
         }
         return $this->true_type;

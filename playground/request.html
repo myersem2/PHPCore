@@ -25,23 +25,29 @@ include $bootstrap;
 // =============================================================================
 $phpcore_request_doc = '/docs/classes/request.html#';
 
+//if ( ! empty($_FILES)){var_dump($_FILES);exit;}
 
-var_dump($_COOKIE);
+//var_dump($_FILES['multiple']);
+//var_dump(request_file('single')->name);
+//var_dump(request_file('single')->type);
+//var_dump(request_file('single')->trueType());
+//var_dump(request_files('multiple')[0]->name);
+//var_dump(request_files('multiple')[0]->trueType());
+//var_dump(request_cookie('WS-SessionID'));
+//exit;
 
-var_dump(request_cookie('WS-SessionID'));
-exit;
-
-
-/*
+/* */
 ?>
 <form method="post" enctype="multipart/form-data">
-  <input type="file" name="single" />
-  <input type="file" name="multiple[]" />
-  <input type="file" name="multiple[]" />
-  <input type="submit" value="Go" />
+  <fieldset>
+    <legend>Upload Files</legend>
+    <label for="single">Single:</label><input type="file" name="single" /><br />
+    <label for="multiple[]">Multiple:</label><input type="file" name="multiple[]" multiple /><br />
+    <input type="submit" value="Submit" />
+  </fieldset>
 </form>
 <?php
-*/
+/* */
 function var_type_display($var) {
   switch (gettype($var)) {
     case 'boolean': return '<span style="color:#369;">' . (($var)?'TRUE':'FALSE') . '</span>';

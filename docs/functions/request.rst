@@ -5,6 +5,8 @@ Request Functions
 * `request_agent`_ - Get request agent capabilities
 * `request_body`_ - Get data from request body.
 * `request_cookie`_ - Get data from HTTP cookie.
+* `request_file`_ - Get file from request.
+* `request_files`_ - Get files from request.
 
 ----
 
@@ -92,7 +94,6 @@ Many of the request functions below are just aliases for the methods of the `PHP
 
       :ref:`Back to list<Request Functions>`
 
-
 -----
 
 .. php:function:: request_cookie(string $key, ?int $filter = null, array|int $options = 0)
@@ -125,6 +126,80 @@ Many of the request functions below are just aliases for the methods of the `PHP
 
       ?>
 
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Functions>`
+
+-----
+
+.. php:function:: request_file(string $key)
+
+   Get file from request
+
+   Will return the file by a given $key for the files that was uploaded via the HTTP POST method using the $_FILES superglobal variable.
+
+   :param string $key: The key of the file to retrieve
+   :returns: ``object|null`` RequestFile object
+
+   .. code-block:: php
+      :caption: Get file from request
+      :linenos:
+      :emphasize-lines: 13,14
+
+      <?php
+      // $_FILES['test'] = [
+      //     'name'      => 'sample.pdf.png',
+      //     'full_path' => 'sample.pdf.png',
+      //     'type'      => 'image/png',
+      //     'tmp_name'  => '/tmp/php059gDH',
+      //     'error'     => 0,
+      //     'size'      => 3028
+      // ];
+
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      // Get capability by key
+      echo request_file('test')->name; // 'image/png'
+      echo request_file('test')->trueType(); // 'application/pdf'
+
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Functions>`
+
+-----
+
+.. php:function:: request_files(string $key)
+
+   Get files from request
+
+   Will return an array of files for a given $key that were uploaded via the HTTP POST method using the $_FILES superglobal variable.
+
+   :param string $key: The key of the array of files to retrieve
+   :returns: ``array`` Array of RequestFile objects
+
+   .. code-block:: php
+      :caption: Get file from request
+      :linenos:
+      :emphasize-lines: 13,14
+
+      <?php
+      // $_FILES['test'] = [
+      //     'name'      => [ 0 => 'sample.pdf.png' ],
+      //     'full_path' => [ 0 => 'sample.pdf.png' ],
+      //     'type'      => [ 0 => 'image/png'      ],
+      //     'tmp_name'  => [ 0 => '/tmp/php059gDH' ],
+      //     'error'     => [ 0 => 0                ],
+      //     'size'      => [ 0 => 3028             ]
+      // ];
+
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      // Get capability by key
+      echo request_files('test')[0]->name; // 'image/png'
+      echo request_files('test')[0]->trueType(); // 'application/pdf'
+
+      ?>
 
    .. rst-class:: wy-text-right
 
