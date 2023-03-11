@@ -1,0 +1,167 @@
+<?php declare(strict_types=1);
+/**
+ * PHPCore - Request Playground
+ *
+ * @author    Everett Myers <Me@EverettMyers.com>
+ * @copyright Copyright (c) 2022, PHPCore
+ */
+
+// -----------------------------------------------------------------------------
+
+/** !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ WARNING: This script is for testing on a development server only.
+          This script should never be placed on a production server.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! **/
+
+// =============================================================================
+// PHPCore bootstrap
+// =============================================================================
+$ds = DIRECTORY_SEPARATOR;
+$bootstrap = __DIR__ . "{$ds}..{$ds}src{$ds}bootstrap.php";
+include $bootstrap;
+
+// =============================================================================
+// Paths and Directives
+// =============================================================================
+$phpcore_request_doc = '/docs/classes/request.html#';
+
+
+var_dump($_COOKIE);
+
+var_dump(request_cookie('WS-SessionID'));
+exit;
+
+
+/*
+?>
+<form method="post" enctype="multipart/form-data">
+  <input type="file" name="single" />
+  <input type="file" name="multiple[]" />
+  <input type="file" name="multiple[]" />
+  <input type="submit" value="Go" />
+</form>
+<?php
+*/
+function var_type_display($var) {
+  switch (gettype($var)) {
+    case 'boolean': return '<span style="color:#369;">' . (($var)?'TRUE':'FALSE') . '</span>';
+    case 'integer': return '<span style="color:#0000BB;">' . $var . '</span>';
+    case 'double':  return '<span style="color:#0000BB;">' . $var . '</span>';
+    case 'string':  return '<span style="color:#DD0000;">\'' . $var . '\'</span>';
+    case 'NULL':    return '<span style="color:#369;">NULL</span>';
+    case 'object':  return '<span>' . json_encode($var) . '</span>';
+    case 'array':   return '<span>' . json_encode($var) . '</span>';
+    case 'resource':
+    default:
+    case 'unknown type': return 'unknown type';
+  }
+}
+?><!DOCTYPE html>
+<html>
+  <head>
+    <title>PHPCore Request Playground</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico">
+    <script>
+
+    </script>
+    <style>
+      /* reset */
+      html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,
+      address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,
+      i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,
+      td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,
+      ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;
+      font:inherit;vertical-align:baseline;}Article,aside,details,figcaption,figure,footer,header,
+      hgroup,menu,nav,section{display:block;}body{line-height:1;}ol,ul{list-style:none;}blockquote,
+      q{quotes:none;}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
+      table{border-collapse:collapse;border-spacing:0;}
+      /* standard */
+      h1{font-size:2em;font-weight:bold;margin-block-start:0.67em;margin-block-end:0.67em;}h2{
+      font-size:1.5em;font-weight:bold;margin-block-start:0.83em;margin-block-end:0.83em;}h3{
+      font-size:1.17em;font-weight:bold;margin-block-start:1em;margin-block-end:1em;}h4{
+      font-weight:bold;margin-block-start:1.33em;margin-block-end:1.33em;}h5{font-size:0.83em;
+      font-weight:bold;margin-block-start:1.67em;margin-block-end:1.67em;}h6{font-size:0.67em;
+      margin-block-start:2.33em;margin-block-end:2.33em;font-weight:bold;}table{
+      border-spacing:0.25em;}th{font-weight:bold;text-align:-internal-center;padding:1px;
+      border:1px solid #777777;background-color:#DDDDDD}td{padding:0.25em;border:1px solid #BBBBBB;}
+      section{margin:1em;}
+      /* This page */
+      section {
+        /* display: flex; */
+      } section > table {
+        margin: 1em;
+      } h1 {
+        margin-left: 0.5em;
+      } div.buttons {
+        margin: 0.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PHPCore Request Playground</h1>
+    <hr>
+    <p style="padding:0.5em;color:#A71C20;font-weight:bold;">
+      WARNING: This script is designed for testing in a development environment only. This script should never be placed in a production environment.
+    </p>
+    <hr>
+     <section>
+      <table>
+        <thead>
+          <tr>
+            <th colSpan="20">URL Parameters</th>
+          </tr>
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach (request_param() as $key=>$value) { ?>
+            <tr>
+              <td><?php echo $key; ?></td>
+              <td><?php echo var_type_display($value); ?></td>
+            </tr>
+          <?php } ?>
+        </tbody>
+        <?php if (empty(request_param())) { ?>
+          <tfoot>
+            <tr>
+              <td colspan="9" style="text-align:center;">None</td>
+            </tr>
+          </tfoot>
+        <?php } ?>
+      </table>
+    </section>
+      <table>
+        <thead>
+          <tr>
+            <th colSpan="20">Agent</th>
+          </tr>
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if ( ! empty(request_agent())) { foreach (request_agent() as $key=>$value) { ?>
+            <tr>
+              <td><?php echo $key; ?></td>
+              <td><?php echo var_type_display($value); ?></td>
+            </tr>
+          <?php }} ?>
+        </tbody>
+        <?php if (empty(request_agent())) { ?>
+          <tfoot>
+            <tr>
+              <td colspan="9" style="text-align:center;">browscap not set</td>
+            </tr>
+          </tfoot>
+        <?php } ?>
+      </table>
+  </body>
+</html>
+<?php
+
+// EOF /////////////////////////////////////////////////////////////////////////////////////////////
