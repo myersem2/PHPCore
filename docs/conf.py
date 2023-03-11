@@ -41,7 +41,7 @@ lexers['php-annotations'] = PhpLexer(startinline=True)
 # -- Project information -----------------------------------------------------
 
 project = 'PHPCore'
-copyright = '2022, Everett Myers'
+copyright = '2023, Everett Myers'
 author = 'Everett Myers'
 
 # The version info for the project you're documenting, acts as replacement for

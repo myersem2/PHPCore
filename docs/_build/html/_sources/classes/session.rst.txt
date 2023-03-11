@@ -14,39 +14,39 @@ The Session class is a special class that has been used to extend the built-in P
    `PHPCore Session Functions`_
       The PHPCore session handling functions.
 
-Class synopsis
-##############
+Session Class synopsis
+######################
 
 .. code-block:: php
 
    class Session extends \SessionHandler {
  
-      use CoreTrait;
+       use CoreTrait;
  
-      const HAS_ACCESS_ANY = 1;  // Has Access check true on ANY match 
-      const HAS_ACCESS_ALL = 2;  // Has Access check true if ALL match
+       const HAS_ACCESS_ANY = 1;  // Has Access check true on ANY match 
+       const HAS_ACCESS_ALL = 2;  // Has Access check true if ALL match
  
-      /* Methods */
-      public function __construct()
-      public function close(): bool
-      public function create_sid(): string
-      public function destroy(string $id): bool
-      public function destroyAll(): bool
-      public function flashGet(string $key): mixed
-      public function flashKeep(string $key): bool
-      public function flashSet(string $key, mixed $value): void
-      public function get(string $key): mixed
-      public function getAllSessions(): array
-      public function getMetadata(?string $key = null): mixed
-      public function gc(int $max_lifetime): int|false
-      public function grant(string|array $groups): void
-      public function hasAccess(string $group): bool
-      public function open(string $path, string $name): bool
-      public function read(string $id): string|false
-      public function revoke(string|array $groups): void
-      public function set(string $key, mixed $val, ?int $ttl = null): void
-      public function user(?string $user = null): vstring|null
-      public function write(string $id, string $data): bool
+       /* Methods */
+       public function __construct()
+       public function close(): bool
+       public function create_sid(): string
+       public function destroy(string $id): bool
+       public function destroyAll(): bool
+       public function flashGet(string $key): mixed
+       public function flashKeep(string $key): bool
+       public function flashSet(string $key, mixed $value): void
+       public function get(string $key): mixed
+       public function getAllSessions(): array
+       public function getMetadata(?string $key = null): mixed
+       public function gc(int $max_lifetime): int|false
+       public function grant(string|array $groups): void
+       public function hasAccess(string $group): bool
+       public function open(string $path, string $name): bool
+       public function read(string $id): string|false
+       public function revoke(string|array $groups): void
+       public function set(string $key, mixed $val, ?int $ttl = null): void
+       public function user(?string $user = null): vstring|null
+       public function write(string $id, string $data): bool
    }
  
 .. warning::
@@ -58,10 +58,8 @@ Class synopsis
 .. note::
    You can use the phpcore.ini Session :ref:`Configuration Directives.auto_start` directive if you want the session to automatically start as
    
-----
-
-Table of Contents
-#################
+Session Class Table of Contents
+###############################
 
 * :ref:`Session::__construct<session-method-construct>` - Constructor
 * :ref:`Session::close<session-method-close>` - Close the session
@@ -84,12 +82,8 @@ Table of Contents
 * :ref:`Session::user<session-method-user>` - Get and/or set the current session user
 * :ref:`Session::write<session-method-write>` - Write session data
 
-Class methods
-#############
-
-.. php:class:: Session
-
-   This class is used to interface with a session using the built-in PHP **session_set_save_handler()**.
+Session Class methods
+#####################
 
 .. _session-method-construct:
 .. php:method:: __construct( )
@@ -107,7 +101,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-close:
 .. php:method:: close( )
@@ -127,7 +121,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-create_sid:
 .. php:method:: create_sid( )
@@ -147,7 +141,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-destroy:
 .. php:method:: destroy(string $id)
@@ -165,7 +159,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-destroy-all:
 .. php:method:: destroyAll( )
@@ -213,7 +207,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-flash-get:
 .. php:method:: flashGet(?string $key = null)
@@ -257,7 +251,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-flash-keep:
 .. php:method:: flashKeep(string $key)
@@ -312,7 +306,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-flash-set:
 .. php:method:: flashSet(string $key, mixed $value)
@@ -356,7 +350,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-get:
 .. php:method:: get(string $key)
@@ -407,7 +401,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-get-all-sessions:
 .. php:method:: getAllSessions( )
@@ -443,7 +437,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-get-metadata:
 .. php:method:: getMetadata( )
@@ -484,7 +478,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-gc:
 .. php:method:: gc( )
@@ -501,7 +495,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-grant:
 .. php:method:: grant(string|array $groups)
@@ -533,7 +527,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-has-access:
 .. php:method:: hasAccess(string|array $groups, int $flags = 0)
@@ -571,7 +565,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-open:
 .. php:method:: open( )
@@ -591,7 +585,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-read:
 .. php:method:: read( )
@@ -612,7 +606,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-revoke:
 .. php:method:: revoke(string|array $groups)
@@ -646,7 +640,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-set:
 .. php:method:: set(string $key, mixed $value, ?int $ttl = null)
@@ -699,7 +693,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-user:
 .. php:method:: user(?string $name = null)
@@ -732,7 +726,7 @@ Class methods
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _session-method-write:
 .. php:method:: write(string $id, string $data)
@@ -748,11 +742,9 @@ Class methods
    .. note::
       This method should not be called directly, it should only be invoked by the session_handler.
 
------
-
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Table Of Contents>`
+      :ref:`Back to list<Session Class Table of Contents>`
 
 .. _PHPCore Session Feature: ../features/session.html
 .. _PHPCore Session Class: ../classes/session.html

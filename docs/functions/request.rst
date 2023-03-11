@@ -1,43 +1,19 @@
-=============
-Request Class
-=============
+=================
+Request Functions
+=================
 
-The Request class is used to simplify working with data sent via http request.
+* `request_agent`_ - Get request agent capabilities
+* `request_body`_ - Get data from request body.
+* `request_cookie`_ - Get data from HTTP cookie.
+
+----
+
+Many of the request functions below are just aliases for the methods of the `PHPCore Request Class`_.
 
 .. seealso::
-   `PHPCore Request Functions`_
-      Simplified functions that interface directly with the `PHPCore Request Class`_.
+   `PHPCore Request Class`_ The PHPCore request class.
 
-Request Class synopsis
-######################
-
-.. code-block:: php
-
-   final class Request {
-
-       /* Static Methods */
-       public static function agent(?string $key = null): mixed
-       public static function body(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
-       public static function fileType(string $key): string
-       public static function fileContents(string $key): string
-       public static function format(): string
-       public static function ipAddress(): string
-       public static function param(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
-       public static function path(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
-   }
-
-Request Class Table of Contents
-###############################
-
-* :ref:`Request::agent<request-method-agent>` - Get request agent capabilities
-* :ref:`Request::body<request-method-body>` - Get data from request body
-* :ref:`Request::cookie<request-method-cookie>` - Get data from HTTP cookie
-
-Request Class methods
-#####################
-
-.. _request-method-agent:
-.. php:method:: agent(?string $key = null)
+.. php:function:: request_agent(?string $key = null)
 
    Get request agent capabilities
 
@@ -53,31 +29,29 @@ Request Class methods
    .. code-block:: php
       :caption: Get request agent capabilities
       :linenos:
-      :emphasize-lines: 7,8,12
+      :emphasize-lines: 6,7,11
 
       <?php
-      use \PHPCore\Request;
       // $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       // Get capability by key
-      echo Request::agent('browser'); // 'Chrome'
-      var_dump(Request::agent('istablet')); // false
+      echo request_agent('browser'); // 'Chrome'
+      var_dump(request_agent('istablet')); // false
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       // Direct chain
-      echo Request::agent()->device_type; // 'Desktop'
+      echo request_agent()->device_type; // 'Desktop'
 
       ?>
 
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Request Class Table Of Contents>`
+      :ref:`Back to list<Request Functions>`
 
 -----
 
-.. _request-method-body:
-.. php:method:: body(?string $key = null, ?int $filter = null, array|int $options = 0)
+.. php:function:: request_body(?string $key = null, ?int $filter = null, array|int $options = 0)
 
    Get data from request body
 
@@ -97,31 +71,31 @@ Request Class methods
    .. code-block:: php
       :caption: Get data from request body
       :linenos:
-      :emphasize-lines: 7,8,12
+      :emphasize-lines: 6,7,11
 
       <?php
-      use \PHPCore\Request;
       // $_POST = '{ "name": "Smith", "age": "22" }'
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       // Get capability by key
-      echo Request::body('name'); // 'Smith'
-      var_dump(Request::body('name', FILTER_VALIDATE_INT)); // 22
+      echo request_body('name'); // 'Smith'
+      var_dump(request_body('name', FILTER_VALIDATE_INT)); // 22
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       // Direct chain
-      echo Request::body()->age; // '22'
+      echo request_body()->age; // '22'
 
       ?>
 
+
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Request Class Table Of Contents>`
+      :ref:`Back to list<Request Functions>`
+
 
 -----
 
-.. _request-method-cookie:
-.. php:method:: cookie(string $key, ?int $filter = null, array|int $options = 0)
+.. php:function:: request_cookie(string $key, ?int $filter = null, array|int $options = 0)
 
    Get data from HTTP cookie
 
@@ -139,24 +113,23 @@ Request Class methods
    .. code-block:: php
       :caption: Get data from HTTP cookie
       :linenos:
-      :emphasize-lines: 7,8
+      :emphasize-lines: 6,7
 
       <?php
-      use \PHPCore\Request;
       // $_COOKIE = [ 'OFFSET' => 1, 'ORDER' => 'asc' ]
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       // Get capability by key
-      echo Request::cookie('ORDER'); // 'asc'
-      var_dump(Request::cookie('OFFSET', FILTER_VALIDATE_INT)); // 1
+      echo request_cookie('ORDER'); // 'asc'
+      var_dump(request_cookie('OFFSET', FILTER_VALIDATE_INT)); // 1
 
       ?>
 
+
    .. rst-class:: wy-text-right
 
-      :ref:`Back to list<Request Class Table Of Contents>`
+      :ref:`Back to list<Request Functions>`
 
 .. _PHPCore Request Class: ../classes/request.html
-.. _PHPCore Request Functions: ../functions/request.html
 .. _PHP Filter Variable: https://www.php.net/manual/en/function.filter-var.php
 .. _PHP Types of filters: https://www.php.net/manual/en/filter.filters.php

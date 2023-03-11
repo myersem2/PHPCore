@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="String Functions" href="string.html" />
-    <link rel="prev" title="Core Functions" href="core.html" /> 
+    <link rel="prev" title="Request Functions" href="request.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -89,11 +89,16 @@
 <li class="toctree-l2"><a class="reference internal" href="../classes/database.html">Database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../classes/email.html">Email</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../classes/model.html">Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../classes/request.html">Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../classes/request.html">Request</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../classes/request.html#request-class-synopsis">Request Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/request.html#request-class-table-of-contents">Request Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/request.html#request-class-methods">Request Class methods</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../classes/session.html">Session</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#class-synopsis">Class synopsis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#table-of-contents">Table of Contents</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#class-methods">Class methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#session-class-synopsis">Session Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#session-class-table-of-contents">Session Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#session-class-methods">Session Class methods</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../classes/view.html">View</a></li>
@@ -102,6 +107,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Functions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="general.html">General</a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="request.html">Request</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Session</a></li>
 <li class="toctree-l2"><a class="reference internal" href="string.html">String</a></li>
 </ul>
@@ -180,6 +186,7 @@
 </dd>
 </dl>
 </div>
+<hr class="docutils" />
 <dl class="php function">
 <dt class="sig sig-object php" id="session">
 <span class="sig-name descname"><span class="pre">session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#session" title="Permalink to this definition"></a></dt>
@@ -191,26 +198,25 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-number">Example 26 </span><span class="caption-text">Get session object</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 32 </span><span class="caption-text">Get session object</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
-<span class="linenos"> 3</span>
-<span class="linenos"> 4</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos"> 5</span><span class="c1">// Set as variable</span>
-<span class="hll"><span class="linenos"> 6</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">session</span><span class="p">();</span>
-</span><span class="linenos"> 7</span><span class="k">echo</span> <span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">getMetadata</span><span class="p">(</span><span class="s1">&#39;session_id&#39;</span><span class="p">);</span> <span class="c1">// &#39;srh6g2amog4hmbkvjpuj8urmfv&#39;</span>
-<span class="linenos"> 8</span>
-<span class="linenos"> 9</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos">10</span><span class="c1">// Direct chain</span>
-<span class="hll"><span class="linenos">11</span><span class="k">echo</span> <span class="nx">session</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getMetadata</span><span class="p">(</span><span class="s1">&#39;session_id&#39;</span><span class="p">);</span> <span class="c1">// &#39;srh6g2amog4hmbkvjpuj8urmfv&#39;</span>
-</span><span class="linenos">12</span>
-<span class="linenos">13</span><span class="cp">?&gt;</span><span class="x"></span>
-</pre></div>
+<span class="linenos"> 2</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos"> 3</span><span class="c1">// Set as variable</span>
+<span class="linenos"> 4</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">session</span><span class="p">();</span>
+<span class="linenos"> 5</span><span class="k">echo</span> <span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">getMetadata</span><span class="p">(</span><span class="s1">&#39;session_id&#39;</span><span class="p">);</span> <span class="c1">// &#39;srh6g2amog4hmbkvjpuj8urmfv&#39;</span>
+<span class="hll"><span class="linenos"> 6</span>
+</span><span class="linenos"> 7</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos"> 8</span><span class="c1">// Direct chain</span>
+<span class="linenos"> 9</span><span class="k">echo</span> <span class="nx">session</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getMetadata</span><span class="p">(</span><span class="s1">&#39;session_id&#39;</span><span class="p">);</span> <span class="c1">// &#39;srh6g2amog4hmbkvjpuj8urmfv&#39;</span>
+<span class="linenos">10</span>
+<span class="hll"><span class="linenos">11</span><span class="cp">?&gt;</span><span class="x"></span>
+</span></pre></div>
 </div>
 </div>
 <p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="php function">
 <dt class="sig sig-object php" id="session_destroy_all">
 <span class="sig-name descname"><span class="pre">session_destroy_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#session_destroy_all" title="Permalink to this definition"></a></dt>
@@ -229,42 +235,38 @@
 <p>Only the <code class="docutils literal notranslate"><span class="pre">memcached</span></code> save handler is supported at this time.</p>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-number">Example 27 </span><span class="caption-text">Destroy all sessions</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 33 </span><span class="caption-text">Destroy all sessions</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Session</span><span class="p">;</span>
-<span class="linenos"> 3</span>
-<span class="linenos"> 4</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos"> 5</span><span class="c1">// Set as variable</span>
-<span class="linenos"> 6</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">session</span><span class="p">();</span>
-<span class="linenos"> 7</span>
-<span class="linenos"> 8</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos"> 9</span><span class="c1">// Initial page load</span>
-<span class="linenos">10</span>
-<span class="linenos">11</span><span class="k">echo</span> <span class="nb">session_id</span><span class="p">();</span>                 <span class="c1">// string &#39;s319vde2dtjf888clm3m12tdno&#39;</span>
-<span class="linenos">12</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">getAllSessions</span><span class="p">());</span> <span class="c1">// array [</span>
-<span class="linenos">13</span>                                   <span class="c1">//     &#39;7bh6us2i64eum0vueofbtnsfkl&#39;,</span>
-<span class="linenos">14</span>                                   <span class="c1">//     &#39;s319vde2dtjf888clm3m12tdno&#39;,</span>
-<span class="linenos">15</span>                                   <span class="c1">//     &#39;gj636nqn35ifkq9b6dr5ft11iv&#39;,</span>
-<span class="linenos">16</span>                                   <span class="c1">// ]</span>
-<span class="hll"><span class="linenos">17</span><span class="nx">session_destroy_all</span><span class="p">();</span>
-</span><span class="linenos">18</span>
-<span class="linenos">19</span>
-<span class="linenos">20</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos">21</span><span class="c1">// 1st page refresh</span>
-<span class="linenos">22</span>
-<span class="linenos">23</span><span class="k">echo</span> <span class="nb">session_id</span><span class="p">();</span>                 <span class="c1">// string &#39;am59ant4l8meialih84nmd5arv&#39;</span>
-<span class="linenos">24</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">getAllSessions</span><span class="p">());</span> <span class="c1">// array [ &#39;am59ant4l8meialih84nmd5arv&#39; ]</span>
-<span class="linenos">25</span>
-<span class="linenos">26</span><span class="cp">?&gt;</span><span class="x"></span>
+<span class="linenos"> 2</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos"> 3</span><span class="c1">// Set as variable</span>
+<span class="linenos"> 4</span><span class="nv">$sess</span> <span class="o">=</span> <span class="nx">session</span><span class="p">();</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos"> 7</span><span class="c1">// Initial page load</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="k">echo</span> <span class="nb">session_id</span><span class="p">();</span>                 <span class="c1">// string &#39;s319vde2dtjf888clm3m12tdno&#39;</span>
+<span class="linenos">10</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">getAllSessions</span><span class="p">());</span> <span class="c1">// array [</span>
+<span class="linenos">11</span>                                   <span class="c1">//     &#39;7bh6us2i64eum0vueofbtnsfkl&#39;,</span>
+<span class="linenos">12</span>                                   <span class="c1">//     &#39;s319vde2dtjf888clm3m12tdno&#39;,</span>
+<span class="linenos">13</span>                                   <span class="c1">//     &#39;gj636nqn35ifkq9b6dr5ft11iv&#39;,</span>
+<span class="linenos">14</span>                                   <span class="c1">// ]</span>
+<span class="linenos">15</span><span class="nx">session_destroy_all</span><span class="p">();</span>
+<span class="linenos">16</span>
+<span class="hll"><span class="linenos">17</span>
+</span><span class="linenos">18</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">19</span><span class="c1">// 1st page refresh</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="k">echo</span> <span class="nb">session_id</span><span class="p">();</span>                 <span class="c1">// string &#39;am59ant4l8meialih84nmd5arv&#39;</span>
+<span class="linenos">22</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$sess</span><span class="o">-&gt;</span><span class="na">getAllSessions</span><span class="p">());</span> <span class="c1">// array [ &#39;am59ant4l8meialih84nmd5arv&#39; ]</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>
+<p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
 <hr class="docutils" />
-<blockquote>
-<div><p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
-</div></blockquote>
 <dl class="php function">
 <dt class="sig sig-object php" id="session_flash_get">
 <span class="sig-name descname"><span class="pre">session_flash_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#session_flash_get" title="Permalink to this definition"></a></dt>
@@ -281,7 +283,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-number">Example 28 </span><span class="caption-text">Get flash data</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 34 </span><span class="caption-text">Get flash data</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
@@ -310,6 +312,7 @@
 <p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="php function">
 <dt class="sig sig-object php" id="session_flash_keep">
 <span class="sig-name descname"><span class="pre">session_flash_keep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#session_flash_keep" title="Permalink to this definition"></a></dt>
@@ -326,7 +329,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-number">Example 29 </span><span class="caption-text">Keep flash data</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 35 </span><span class="caption-text">Keep flash data</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
@@ -366,6 +369,7 @@
 <p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="php function">
 <dt class="sig sig-object php" id="session_flash_set">
 <span class="sig-name descname"><span class="pre">session_flash_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">mixed</span> <span class="pre">$value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#session_flash_set" title="Permalink to this definition"></a></dt>
@@ -380,7 +384,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-number">Example 30 </span><span class="caption-text">Set flash data</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 36 </span><span class="caption-text">Set flash data</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
@@ -409,6 +413,7 @@
 <p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="php function">
 <dt class="sig sig-object php" id="session_get">
 <span class="sig-name descname"><span class="pre">session_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#session_get" title="Permalink to this definition"></a></dt>
@@ -425,7 +430,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-number">Example 31 </span><span class="caption-text">Get session data</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 37 </span><span class="caption-text">Get session data</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="nx">session_set</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">,</span> <span class="mi">123</span><span class="p">);</span>
@@ -461,6 +466,7 @@
 <p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="php function">
 <dt class="sig sig-object php" id="session_get_metadata">
 <span class="sig-name descname"><span class="pre">session_get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#session_get_metadata" title="Permalink to this definition"></a></dt>
@@ -477,7 +483,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-number">Example 32 </span><span class="caption-text">Get all sessions</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 38 </span><span class="caption-text">Get all sessions</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="hll"><span class="linenos"> 3</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">session_get_metadata</span><span class="p">(</span><span class="s1">&#39;session_id&#39;</span><span class="p">));</span> <span class="c1">// srh6g2amog4hmbkvjpuj8urmfv</span>
@@ -505,6 +511,7 @@
 <p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="php function">
 <dt class="sig sig-object php" id="session_grant">
 <span class="sig-name descname"><span class="pre">session_grant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string|array</span> <span class="pre">$groups</span></em><span class="sig-paren">)</span><a class="headerlink" href="#session_grant" title="Permalink to this definition"></a></dt>
@@ -518,7 +525,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-number">Example 33 </span><span class="caption-text">Grant session access</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 39 </span><span class="caption-text">Grant session access</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos">2</span>
 <span class="linenos">3</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">session_has_access</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">));</span> <span class="c1">// false</span>
@@ -532,6 +539,7 @@
 <p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="php function">
 <dt class="sig sig-object php" id="session_has_access">
 <span class="sig-name descname"><span class="pre">session_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string|array</span> <span class="pre">$groups</span></em><span class="sig-paren">)</span><a class="headerlink" href="#session_has_access" title="Permalink to this definition"></a></dt>
@@ -555,7 +563,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-number">Example 34 </span><span class="caption-text">Check for session access</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 40 </span><span class="caption-text">Check for session access</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="hll"><span class="linenos"> 3</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">session_has_access</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">));</span> <span class="c1">// false</span>
@@ -575,6 +583,7 @@
 <p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="php function">
 <dt class="sig sig-object php" id="session_revoke">
 <span class="sig-name descname"><span class="pre">session_revoke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string|array</span> <span class="pre">$groups</span></em><span class="sig-paren">)</span><a class="headerlink" href="#session_revoke" title="Permalink to this definition"></a></dt>
@@ -588,7 +597,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-number">Example 35 </span><span class="caption-text">Revoke session access</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 41 </span><span class="caption-text">Revoke session access</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="nx">session_grant</span><span class="p">(</span><span class="s1">&#39;SPECIAL&#39;</span><span class="p">);</span>
@@ -608,6 +617,7 @@
 <p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="php function">
 <dt class="sig sig-object php" id="session_set">
 <span class="sig-name descname"><span class="pre">session_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">mixed</span> <span class="pre">$val</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$ttl</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#session_set" title="Permalink to this definition"></a></dt>
@@ -623,7 +633,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-number">Example 36 </span><span class="caption-text">Set session data</span><a class="headerlink" href="#id11" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 42 </span><span class="caption-text">Set session data</span><a class="headerlink" href="#id11" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="hll"><span class="linenos"> 3</span><span class="nx">session_set</span><span class="p">(</span><span class="s1">&#39;test_perm&#39;</span><span class="p">,</span> <span class="mi">123</span><span class="p">);</span>
@@ -659,6 +669,7 @@
 <p class="wy-text-right"><a class="reference internal" href="#session-functions"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="php function">
 <dt class="sig sig-object php" id="session_user">
 <span class="sig-name descname"><span class="pre">session_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$user</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#session_user" title="Permalink to this definition"></a></dt>
@@ -675,7 +686,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id12">
-<div class="code-block-caption"><span class="caption-number">Example 37 </span><span class="caption-text">Get / Set session user</span><a class="headerlink" href="#id12" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 43 </span><span class="caption-text">Get / Set session user</span><a class="headerlink" href="#id12" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="hll"><span class="linenos"> 3</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">session_user</span><span class="p">());</span> <span class="c1">// null</span>
@@ -699,14 +710,14 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="core.html" class="btn btn-neutral float-left" title="Core Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="request.html" class="btn btn-neutral float-left" title="Request Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="string.html" class="btn btn-neutral float-right" title="String Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Everett Myers.</p>
+    <p>&#169; Copyright 2023, Everett Myers.</p>
   </div>
 
    

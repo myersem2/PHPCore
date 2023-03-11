@@ -89,11 +89,16 @@
 <li class="toctree-l2"><a class="reference internal" href="../classes/database.html">Database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../classes/email.html">Email</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../classes/model.html">Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../classes/request.html">Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../classes/request.html">Request</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../classes/request.html#request-class-synopsis">Request Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/request.html#request-class-table-of-contents">Request Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/request.html#request-class-methods">Request Class methods</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../classes/session.html">Session</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#class-synopsis">Class synopsis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#table-of-contents">Table of Contents</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#class-methods">Class methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#session-class-synopsis">Session Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#session-class-table-of-contents">Session Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../classes/session.html#session-class-methods">Session Class methods</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../classes/view.html">View</a></li>
@@ -102,6 +107,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Functions</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">General</a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="request.html">Request</a></li>
 <li class="toctree-l2"><a class="reference internal" href="session.html">Session</a></li>
 <li class="toctree-l2"><a class="reference internal" href="string.html">String</a></li>
 </ul>
@@ -173,7 +179,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-number">Example 22 </span><span class="caption-text">Delete cookie</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 25 </span><span class="caption-text">Delete cookie</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos">2</span>
 <span class="linenos">3</span><span class="k">if</span> <span class="p">(</span><span class="nv">$clear_search</span><span class="p">)</span> <span class="p">{</span>
@@ -207,7 +213,7 @@
 <p><a class="reference external" href="https://www.php.net/manual/en/pdo.drivers.php">PHP PDO Drivers</a> list.</p>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-number">Example 23 </span><span class="caption-text">Get dsn parts</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 26 </span><span class="caption-text">Get dsn parts</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="nv">$dsn_str</span> <span class="o">=</span> <span class="s1">&#39;mysql:host=localhost;dbname=my_database;charset=utf8mb4&#39;</span><span class="p">;</span>
@@ -240,7 +246,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-number">Example 24 </span><span class="caption-text">Time to array</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 27 </span><span class="caption-text">Time to array</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">timetoarray</span><span class="p">(</span><span class="mi">123456</span><span class="p">));</span> <span class="c1">// [</span>
@@ -272,7 +278,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-number">Example 25 </span><span class="caption-text">Array to XML string</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 28 </span><span class="caption-text">Array to XML string</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="nv">$data</span> <span class="o">=</span> <span class="p">[</span>
@@ -303,7 +309,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Everett Myers.</p>
+    <p>&#169; Copyright 2023, Everett Myers.</p>
   </div>
 
    

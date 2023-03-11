@@ -9,26 +9,26 @@ Trait synopsis
 
    trait CoreClass {
 
-      /**
-       * Reference Only
-       *
-       * The following are required to be set in class using this trait
-       *
-      const DEFAULT_INSTANCE_NAME = 'main';
-      protected static $Initialized = false;
-      protected static $Instances = [];
-      */
+       /**
+        * Reference Only
+        *
+        * The following are required to be set in class using this trait
+        *
+       const DEFAULT_INSTANCE_NAME = 'main';
+       protected static $Initialized = false;
+       protected static $Instances = [];
+       */
 
-      /* Static Methods */
-      public static function destroyAllInstances(): void
-      public static function destroyInstance(?string $name = null): void
-      public static function &getInstance(?string $name = null): object
-      public static function isConstructed(?string $name = null): bool
-      public static function initialize(): void
+       /* Static Methods */
+       public static function destroyAllInstances(): void
+       public static function destroyInstance(?string $name = null): void
+       public static function &getInstance(?string $name = null): object
+       public static function isConstructed(?string $name = null): bool
+       public static function initialize(): void
 
-      /* Properties */
-      protected $Config = [];
-      protected $Handler = null;
+       /* Properties */
+       protected $Config = [];
+       protected $Handler = null;
 
    }
 

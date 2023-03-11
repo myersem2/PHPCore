@@ -89,11 +89,16 @@
 <li class="toctree-l2"><a class="reference internal" href="database.html">Database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="email.html">Email</a></li>
 <li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Request</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Request</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#request-class-synopsis">Request Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#request-class-table-of-contents">Request Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#request-class-methods">Request Class methods</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="session.html">Session</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="session.html#class-synopsis">Class synopsis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="session.html#table-of-contents">Table of Contents</a></li>
-<li class="toctree-l3"><a class="reference internal" href="session.html#class-methods">Class methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#session-class-synopsis">Session Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#session-class-table-of-contents">Session Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#session-class-methods">Session Class methods</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="view.html">View</a></li>
@@ -102,6 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../functions/index.html">Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../functions/general.html">General</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/core.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/request.html">Request</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/session.html">Session</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/string.html">String</a></li>
 </ul>
@@ -151,7 +157,168 @@
              
   <section id="request-class">
 <h1>Request Class<a class="headerlink" href="#request-class" title="Permalink to this headline"></a></h1>
-<p>Placeholder…</p>
+<p>The Request class is used to simplify working with data sent via http request.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference external" href="../functions/request.html">PHPCore Request Functions</a></dt><dd><p>Simplified functions that interface directly with the <a class="reference external" href="../classes/request.html">PHPCore Request Class</a>.</p>
+</dd>
+</dl>
+</div>
+<section id="request-class-synopsis">
+<h2>Request Class synopsis<a class="headerlink" href="#request-class-synopsis" title="Permalink to this headline"></a></h2>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">final</span> <span class="k">class</span> <span class="nc">Request</span> <span class="p">{</span>
+
+    <span class="cm">/* Static Methods */</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">agent</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">body</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">fileType</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">fileContents</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">format</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">ipAddress</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">param</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">path</span><span class="p">(</span><span class="o">?</span><span class="nx">int</span> <span class="nv">$pos</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="request-class-table-of-contents">
+<h2>Request Class Table of Contents<a class="headerlink" href="#request-class-table-of-contents" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#request-method-agent"><span class="std std-ref">Request::agent</span></a> - Get request agent capabilities</p></li>
+<li><p><a class="reference internal" href="#request-method-body"><span class="std std-ref">Request::body</span></a> - Get data from request body</p></li>
+<li><p><a class="reference internal" href="#request-method-cookie"><span class="std std-ref">Request::cookie</span></a> - Get data from HTTP cookie</p></li>
+</ul>
+</section>
+<section id="request-class-methods">
+<h2>Request Class methods<a class="headerlink" href="#request-class-methods" title="Permalink to this headline"></a></h2>
+<span class="target" id="request-method-agent"></span><dl class="php method">
+<dt class="sig sig-object php" id="agent">
+<span class="sig-name descname"><span class="pre">agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#agent" title="Permalink to this definition"></a></dt>
+<dd><p>Get request agent capabilities</p>
+<p>Attempts to determine the capabilities of the user’s browser, by looking up the browser’s information in the browscap.ini file. Then returns the capability by the given <code class="docutils literal notranslate"><span class="pre">$key</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">$key</span></code> is not passed the entire capabilities object will be returned.</p>
+<p>Returns <strong>NULL</strong> if get_browser() fails or requested capability is unknown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the capability data item to retrieve</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The request capability or the entire capability object</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-number">Example 10 </span><span class="caption-text">Get request agent capabilities</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="c1">// $_SERVER[&#39;HTTP_USER_AGENT&#39;] = &#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36&#39;</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos"> 6</span><span class="c1">// Get capability by key</span>
+<span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">agent</span><span class="p">(</span><span class="s1">&#39;browser&#39;</span><span class="p">);</span> <span class="c1">// &#39;Chrome&#39;</span>
+</span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">agent</span><span class="p">(</span><span class="s1">&#39;istablet&#39;</span><span class="p">));</span> <span class="c1">// false</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">11</span><span class="c1">// Direct chain</span>
+<span class="hll"><span class="linenos">12</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">agent</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">device_type</span><span class="p">;</span> <span class="c1">// &#39;Desktop&#39;</span>
+</span><span class="linenos">13</span>
+<span class="linenos">14</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-body"></span><dl class="php method">
+<dt class="sig sig-object php" id="body">
+<span class="sig-name descname"><span class="pre">body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#body" title="Permalink to this definition"></a></dt>
+<dd><p>Get data from request body</p>
+<p>Will parsed the request body based on the format, then return data from the parsed body by a given $key for data passed via the HTTP POST method. The option <code class="docutils literal notranslate"><span class="pre">$filter</span></code> and <code class="docutils literal notranslate"><span class="pre">$options</span></code> parameters may be given to invoke filter_var() before the value is returned.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">$key</span></code> is not passed the request body be returned and the <code class="docutils literal notranslate"><span class="pre">$filter</span></code> and <code class="docutils literal notranslate"><span class="pre">$options</span></code> will be ignored.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.
+<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the filter_var() function.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the body’s data to retrieve</p></li>
+<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">integer</span></code></span>) – The ID of the filter to apply</p></li>
+<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested data item</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-number">Example 11 </span><span class="caption-text">Get data from request body</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="c1">// $_POST = &#39;{ &quot;name&quot;: &quot;Smith&quot;, &quot;age&quot;: &quot;22&quot; }&#39;</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos"> 6</span><span class="c1">// Get capability by key</span>
+<span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">body</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">);</span> <span class="c1">// &#39;Smith&#39;</span>
+</span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">body</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 22</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos">11</span><span class="c1">// Direct chain</span>
+<span class="hll"><span class="linenos">12</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">body</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">age</span><span class="p">;</span> <span class="c1">// &#39;22&#39;</span>
+</span><span class="linenos">13</span>
+<span class="linenos">14</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-cookie"></span><dl class="php method">
+<dt class="sig sig-object php" id="cookie">
+<span class="sig-name descname"><span class="pre">cookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cookie" title="Permalink to this definition"></a></dt>
+<dd><p>Get data from HTTP cookie</p>
+<p>Will return data from cookie by a given $key for data passed via HTTP Cookies. The option <code class="docutils literal notranslate"><span class="pre">$filter</span></code> and <code class="docutils literal notranslate"><span class="pre">$options</span></code> parameters may be given to invoke filter_var() before the value is returned.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.
+<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the filter_var() function.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the cookie to retrieve</p></li>
+<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">integer</span></code></span>) – The ID of the filter to apply</p></li>
+<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested data item</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-number">Example 12 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="c1">// $_COOKIE = [ &#39;OFFSET&#39; =&gt; 1, &#39;ORDER&#39; =&gt; &#39;asc&#39; ]</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="linenos"> 6</span><span class="c1">// Get capability by key</span>
+<span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">cookie</span><span class="p">(</span><span class="s1">&#39;ORDER&#39;</span><span class="p">);</span> <span class="c1">// &#39;asc&#39;</span>
+</span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">cookie</span><span class="p">(</span><span class="s1">&#39;OFFSET&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -165,7 +332,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Everett Myers.</p>
+    <p>&#169; Copyright 2023, Everett Myers.</p>
   </div>
 
    

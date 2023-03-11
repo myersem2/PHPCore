@@ -10,5 +10,6 @@ Placeholder...
 
    General <general>
    Core <core>
+   Request <request>
    Session <session>
    String <string>

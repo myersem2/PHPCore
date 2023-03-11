@@ -29,6 +29,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
    `PHPCore Session Class`_
       The PHPCore session class.
 
+-----
 
 .. php:function:: session( )
 
@@ -44,8 +45,6 @@ Many of the session functions below are just aliases for the methods of the `PHP
       :emphasize-lines: 6,11
 
       <?php
-      use \PHPCore\Session;
-
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       // Set as variable
       $sess = session();
@@ -61,6 +60,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
 
       :ref:`Back to list<Session Functions>`
 
+-----
 
 .. php:function:: session_destroy_all( )
 
@@ -81,8 +81,6 @@ Many of the session functions below are just aliases for the methods of the `PHP
       :emphasize-lines: 17
 
       <?php
-      use \PHPCore\Session;
-
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       // Set as variable
       $sess = session();
@@ -107,13 +105,11 @@ Many of the session functions below are just aliases for the methods of the `PHP
 
       ?>
 
-
------
-
    .. rst-class:: wy-text-right
 
       :ref:`Back to list<Session Functions>`
 
+-----
 
 .. php:function:: session_flash_get(?string $key = null)
 
@@ -156,6 +152,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
 
       :ref:`Back to list<Session Functions>`
 
+-----
 
 .. php:function:: session_flash_keep(string $key)
 
@@ -210,6 +207,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
 
       :ref:`Back to list<Session Functions>`
 
+-----
 
 .. php:function:: session_flash_set(string $key, mixed $value)
 
@@ -252,6 +250,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
 
       :ref:`Back to list<Session Functions>`
 
+-----
 
 .. php:function:: session_get(string $key = null)
 
@@ -301,6 +300,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
 
       :ref:`Back to list<Session Functions>`
 
+-----
 
 .. php:function:: session_get_metadata(?string $key = null)
 
@@ -342,6 +342,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
 
       :ref:`Back to list<Session Functions>`
 
+-----
 
 .. php:function:: session_grant(string|array $groups)
 
@@ -368,6 +369,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
 
       :ref:`Back to list<Session Functions>`
 
+-----
 
 .. php:function:: session_has_access(string|array $groups)
 
@@ -405,6 +407,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
 
       :ref:`Back to list<Session Functions>`
 
+-----
 
 .. php:function:: session_revoke(string|array $groups)
 
@@ -437,6 +440,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
 
       :ref:`Back to list<Session Functions>`
 
+-----
 
 .. php:function:: session_set(string $key, mixed $val, ?int $ttl = null)
 
@@ -487,6 +491,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
 
       :ref:`Back to list<Session Functions>`
 
+-----
 
 .. php:function:: session_user(?string $user = null)
 
@@ -517,7 +522,7 @@ Many of the session functions below are just aliases for the methods of the `PHP
    .. rst-class:: wy-text-right
 
       :ref:`Back to list<Session Functions>`
- 
+
 .. _PHPCore Session Feature: ../features/session.html
 .. _PHPCore Session Class: ../classes/session.html
 .. _PHPCore Session Functions: ../functions/session.html
