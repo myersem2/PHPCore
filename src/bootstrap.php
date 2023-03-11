@@ -36,7 +36,7 @@ if (is_readable($phpcorewd)) {
 }
 foreach ($config_paths as $config_path) {
     if (isset($ini_config)) {
-        $ini_config = array_merge_recursive($ini_config, parse_ini_file($config_path, true));
+        $ini_config = array_replace_recursive($ini_config, parse_ini_file($config_path, true));
     } else {
         $ini_config = parse_ini_file($config_path, true);
     }
@@ -88,6 +88,33 @@ spl_autoload_register(function(string $class_name) {
 include $GLOBALS['_CORE']['PATH'] . DIRECTORY_SEPARATOR . 'functions.php';
 
 // =============================================================================
+// Other autoloaders
+// =============================================================================
+$autoloaders = core_ini_get_all('PHPCore', 'autoloader');
+if ( ! empty($autoloaders)) {
+    spl_autoload_register(function(string $class_name) use($autoloaders) {
+        if ($class_name[0] === '\\') {
+            $class_name = substr($class_name, 1);
+        }
+        foreach ($autoloaders as $spl_namespace=>$spl_path) {
+            if (str_starts_with($class_name, $spl_namespace.'\\')) {
+                $file = str_replace('\\', DIRECTORY_SEPARATOR, substr($class_name, strlen($spl_namespace)));
+                include $spl_path . "$file.php";
+            }
+        }
+        
+    });
+}
+
+// =============================================================================
+// Additional function file 
+// =============================================================================
+$function_file = core_ini_get('function_file');
+if ( ! empty($function_file)) {
+  include $function_file;
+}
+
+// =============================================================================
 // Variable cleanup
 // =============================================================================
 unset($config_path);
@@ -95,12 +122,16 @@ unset($config_paths);
 unset($ini_config);
 unset($phpcorewd);
 unset($phpcorerc);
+unset($autoloaders);
+unset($spl_namespace);
+unset($spl_path);
 
 // =============================================================================
 // Process request
 // =============================================================================
 if (PHP_SAPI !== 'cli') {
-    PHPCore\Request::process();
+    // TODO: is this needed?
+    //$controller = PHPCore\Request::process();
 }
 
 // =============================================================================

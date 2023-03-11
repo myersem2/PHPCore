@@ -18,35 +18,37 @@ final class Response
     use Core;
 
     /**
-     * Header Queue
+     * Headers that are queued to be sent
      *
      * @var array
      */
-    private static $header_queue = [];
+    private static $headerQueue = [];
 
     /**
-     * Prevent page caching
+     * Prevent client from page caching
      *
      * @var boolean
      */
-    private static $prevent_caching = true;
+    private static $preventCaching = true;
 
     // -----------------------------------------------------------------------------------------
 
     /**
      * Add Header
      *
-     * Add a header to the queue that will be sent when the response sent.
+     * Add a header to the header queue that will be sent right before the
+     * response is sent.
      *
      * @param string $header Header
      * @param boolean $replace Replace
      * @return void
      */
-    public static function addHeader(string $header, ?bool $replace = true): void
+    public static function addHeader(string $header, bool $replace = true): void
     {
-        list($type) = explode(':', $header);
-        self::$header_queue[md5($header)] = [
-            'type'    => $type,
+        list($name) = explode(':', $header);
+        $key = md5(strtolower(trim($header)));
+        self::$headerQueue[$key] = [
+            'name'    => $name,
             'string'  => $header,
             'replace' => $replace,
         ];
@@ -55,25 +57,25 @@ final class Response
     /**
      * Remove Header
      *
-     * Remove a header from the queue that will be sent when the response sent.
-     * Note the header string passed MUST EXACTLY match the string that was used
-     * to add the header unless the exact_match param is set to false.
+     * Remove a header from the header queue that will be sent when the response
+     * sent.
      *
      * @param string $header Header
-     * @param boolean $exact_match Header
+     * @param boolean $byName By Name
      * @return void
      */
-    public static function removeHeader(string $header, ?bool $exact_match = true): void
+    public static function removeHeader(string $header, bool $byName = false): void
     {
-        if ($exact_match) {
-            unset(self::$header_queue[md5($header)]);
-        } else {
-            list($type) = explode(':', $header);
-            foreach (self::$header_queue as $index=>$header) {
-                if ($header['type'] === $type) {
-                    unset(self::$header_queue[$index]);
+        if ($byName) {
+            list($name) = explode(':', $header);
+            foreach (self::$headerQueue as $key => $header) {
+                if ($header['name'] === $name) {
+                    unset(self::$headerQueue[$key]);
                 }
             }
+        } else {
+            $key = md5(strtolower(trim($header)));
+            unset(self::$headerQueue[$key]);
         }
     }
 
@@ -85,10 +87,18 @@ final class Response
      * @param string $body Response body
      * @return void
      */
-    public static function send(?string $body = null): void
+    public static function send(?mixed $data = null): void
     {
         self::sendHeaders();
-        echo $body;
+        if (is_string($data)) {
+            echo $data;
+        } elseif (is_array($data)) {
+            foreach ($data as $item) {
+                echo $item->export();
+            }
+        } elseif (is_sset($data)) {
+            echo $data->export();
+        }
     }
 
     /**
@@ -101,9 +111,9 @@ final class Response
     public static function sendHeaders(): void
     {
 
-      header('X-Powered-By: ACore');
+      header('X-Powered-By: PHPCore');
 
-      if (self::$prevent_caching) {
+      if (self::$preventCaching) {
           header('Expires: Tue, 01 Jan 2000 00:00:00 GMT');
           header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
           header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
@@ -120,7 +130,7 @@ final class Response
           break;
       }
 
-      foreach (self::$header_queue as $header) {
+      foreach (self::$headerQueue as $header) {
           header($header['string'], $header['replace']);
       }
 

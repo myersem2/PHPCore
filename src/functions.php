@@ -17,22 +17,25 @@ if (isset($GLOBALS['_CORE']['DISABLE_CLASSES'])) {
 }
 
 /**
- * Time to array
+ * Find in array
  *
- * Takes a provide time and returns an array of time units.
+ * Returns the first item of on array based on a callable function.
  *
- * @param integer $time Time
- * @return array
+ * @param array $arr Array to search.
+ * @param callable $callable Function to be called to perform check.
+ * @return mixed|null Returns the first array item that returns true for the
+ *                    callable function.
+ *                    Returns null if not found.
  */
-if ( ! in_array('timetoarray', $disabled_functions) ) {
-    function timetoarray(int $time): array
+if ( ! in_array('array_find', $disabled_functions) ) {
+    function array_find($arr, $callable): mixed
     {
-        return [
-          'secs' => $time % 60,
-          'mins' => floor( ($time % 3600) / 60),
-          'hrs'  => floor( ($time % 86400) / 3600),
-          'days' => floor( ($time % 2592000) / 86400),
-        ];
+        foreach ($arr as $item) {
+            if (call_user_func($callable, $item)) {
+                return $item;
+            }
+        }
+        return null;
     }
 }
 
@@ -78,7 +81,7 @@ if ( ! in_array('core_ini_get_all', $disabled_functions) ) {
             $sub_directives = [];
             if (empty($GLOBALS['_CORE_INI'][$section]) === false) {
                 foreach ($GLOBALS['_CORE_INI'][$section] as $directive=>$value) {
-                    if (preg_match('/(\w*)\.(\w*)/', $directive, $matches)) {
+                    if (preg_match("/($sub_section)\.(\w*)/", $directive, $matches)) {
                         $sub_directives[$matches[2]] = $value;
                     }
                 }
@@ -211,6 +214,22 @@ hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
 }
 
 /**
+ * Get database class instance
+ *
+ * Returns the current database instance. If the database has not been started yet it will be started
+ * before the instance is returned.
+ *
+ * @param string $name Name of instance
+ * @return object Database
+ */
+if ( ! in_array('database', $disabled_functions) ) {
+    function &database(?string $name = null): object
+    {
+        return \PHPCore\Database::getInstance($name);
+    }
+}
+
+/**
  * Delete cookie
  *
  * Defines a cookie to be sent along with the rest of the HTTP headers with an expiration time in
@@ -270,6 +289,8 @@ if ( ! in_array('parse_dsn', $disabled_functions) ) {
             switch ($driver) {
                 case 'sqlite':
                     $output['path'] = $item;
+                    preg_match('/(\w+)(\.\w+)?((?!.*(\w+)(?!\.\w+)+))/', $item, $matches);
+                    $output['dbname'] = $matches[1];
                     return $output;
             }
             list($name, $value) = explode('=', $item);
@@ -566,6 +587,152 @@ if ( ! in_array('str_style', $disabled_functions) ) {
                     E_USER_ERROR
                 );
         }
+    }
+}
+
+/**
+ * Get request agent capabilities
+ *
+ * Attempts to determine the capabilities of the user's browser, by looking
+ * up the browser's information in the browscap.ini file. Then returns the
+ * capability by the given ``$key``.
+ *
+ * If ``$key ``is not passed the entire capabilities object will be returned.
+ *
+ * Returns **NULL** if get_browser() fails or requested capability is unknown.
+ *
+ * @param string $key The key of the capability data item to retrieve
+ * @return mixed The request capability or the entire capability object
+ */
+if ( ! in_array('request_agent', $disabled_functions) ) {
+    function request_agent(?string $key = null): ?object
+    {
+        return \PHPCore\Request::agent($key);    
+    }
+}
+
+/**
+ * Get data from request body
+ *
+ * Will parsed the request body based on the format, then return data from the
+ * parsed body by a given $key for data passed via the HTTP POST method. The
+ * option ``$filter`` and ``$options`` parameters may be given to invoke
+ * filter_var() before the value is returned.
+ *
+ * If ``$key`` is not passed the request body be returned and the ``$filter``
+ * and ``$options`` will be ignored.
+ *
+ * Supported Filters & Options:
+ * https://www.php.net/manual/en/filter.filters.php
+ *
+ * @param string $key The key of the body's data to retrieve
+ * @param integer $filter The ID of the filter to apply
+ * @param array|int $options Associative array of options or bitwise disjunction of flags
+ * @return mixed The requested data item
+ */
+if ( ! in_array('request_body', $disabled_functions) ) {
+    function request_body(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
+    {
+        return \PHPCore\Request::agent($key);    
+    }
+}
+
+/**
+ * Get data from HTTP cookie
+ *
+ * Will return data from cookie by a given $key for data passed via HTTP 
+ * Cookies. The option ``$filter`` and ``$options`` parameters may be given to
+ * invoke filter_var() before the value is returned.
+ *
+ * Supported Filters & Options:
+ * https://www.php.net/manual/en/filter.filters.php
+ *
+ * @param string $key The key of the cookie to retrieve
+ * @param integer $filter The ID of the filter to apply
+ * @param array|int $options Associative array of options or bitwise
+ *                           disjunction of flags
+ * @return mixed The requested data item
+ */
+if ( ! in_array('request_cookie', $disabled_functions) ) {
+    function request_cookie(string $key, ?int $filter = null, array|int $options = 0): mixed
+    {
+        return \PHPCore\Request::cookie($key, $filter, $options);    
+    }
+}
+
+// TODO: document
+if ( ! in_array('request_file', $disabled_functions) ) {
+    function request_file(string $key): object|null
+    {
+        return \PHPCore\Request::file($key);    
+    }
+}
+
+// TODO: document
+if ( ! in_array('request_files', $disabled_functions) ) {
+    function request_files(string $key): array
+    {
+        return \PHPCore\Request::files($key);    
+    }
+}
+
+// TODO: document
+if ( ! in_array('request_format', $disabled_functions) ) {
+    function request_format(): string
+    {
+        return \PHPCore\Request::format();    
+    }
+}
+
+// TODO: document
+if ( ! in_array('request_host', $disabled_functions) ) {
+    function request_host(): string|false
+    {
+        return \PHPCore\Request::host();    
+    }
+}
+
+// TODO: document
+if ( ! in_array('request_ip', $disabled_functions) ) {
+    function request_ip(): string|false
+    {
+        return \PHPCore\Request::ipAddress();    
+    }
+}
+
+// TODO: document
+if ( ! in_array('request_param', $disabled_functions) ) {
+    function request_param(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
+    {
+        return \PHPCore\Request::param($key, $filter, $options);    
+    }
+}
+
+// TODO: document
+if ( ! in_array('request_path', $disabled_functions) ) {
+    function request_path(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
+    {
+        return \PHPCore\Request::path($pos, $filter, $options);    
+    }
+}
+
+/**
+ * Time to array
+ *
+ * Takes a provide time and returns an array of time units.
+ *
+ * @param integer $time Time
+ * @return array
+ */
+if ( ! in_array('timetoarray', $disabled_functions) ) {
+    function timetoarray(int $time): array
+    {
+        return [
+          'secs' => $time % 60,
+          'mins' => floor( ($time % 3600) / 60),
+          'hrs'  => floor( ($time % 86400) / 3600),
+          'days' => floor( ($time % 2592000) / 86400),
+        ];
     }
 }
 

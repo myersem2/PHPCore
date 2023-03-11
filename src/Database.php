@@ -129,13 +129,13 @@ final class Database
      * returned.
      *
      * If the **$name** is not provided the instance with the name 
-     * Database::MAIN_INSTANCE_NAME
+     * Database::DEFAULT_INSTANCE_NAME
      *
      * @param string $name Name of instance
      * @throws Exception if instance is not found
      * @return object Database class instance
      */
-    public static function &__getInstance(?string $name = null): object
+    public static function &getInstance(?string $name = null): object
     {
         if (empty(self::$Instances[$name])) {
             self::$Instances[$name] = new self($name);
@@ -160,7 +160,7 @@ final class Database
      */
     public function __construct(?string $name = null, string $dsn = '', string|null $usr = null, string|null $pwd = null)
     {
-        $name = $name ?? self::MAIN_INSTANCE_NAME;
+        $name = $name ?? self::DEFAULT_INSTANCE_NAME;
         if (isset(self::$Instances[$name])) {
             throw new Exception("Database instance with the name $name has already been constructed");
         }
@@ -191,6 +191,12 @@ final class Database
             $this->Handler = new PDO($pdo['dsn'], $pdo['usr'], $pdo['pwd'], Database::OPTIONS);
             $this->Config['dsn'] = parse_dsn($pdo['dsn']);
             self::$Instances[$name] =& $this;
+
+            // Attach extended_schema DB for sqlite driver
+            if (isset($this->Config['extended_schema']) and $this->Config['dsn']['driver'] == 'sqlite') {
+              $this->_execStatement("ATTACH '{$this->Config['extended_schema']}' as `extended_schema`");
+            }
+            
         } catch (PDOException $err) {
             throw new PDOException($err->getMessage(), intval($err->getCode()));
         }
@@ -376,7 +382,7 @@ final class Database
         return $this->_execStatement("SELECT * FROM $table $whereStr", $params, $flags);
     }
 
-    public function getRecords(string $table, array $whereArr = NULL, array|null $orderBy = null, int|null $limit = null, int|null $offset = null, int $flags = 0): array
+    public function getRecords(string $table, ?array $whereArr = NULL, ?array $orderBy = null, ?int $limit = null, ?int $offset = null, ?int $flags = 0): array
     {
         $table = $this->_cleanName($table);
         $whereStr = $orderByLimitStr = '';
@@ -400,20 +406,90 @@ final class Database
         ]);
     }
 
-    public function getTableSchema(string $table, string|null $database = null): array
+    public function getTableSchema(string $table, string|null $database = null): object|null
     {
         $database = $database ?? $this->Config['dsn']['dbname'];
-        $this->query('
-            SELECT *
-             FROM `information_schema`.`COLUMNS` AS `s`
-        LEFT JOIN `extended_schema`.`COLUMNS`    AS `x` USING (`TABLE_SCHEMA`,`TABLE_NAME`,`COLUMN_NAME`)
-            WHERE `s`.`TABLE_SCHEMA` = :database
-              AND `s`.`TABLE_NAME`   = :table
-         ORDER BY `LIST_POSITION`  ASC
-        ',[
-            'database' => $database,
-            'table'    => $table,
-        ]);
+        $extended = $this->Config['extended_schema'] ?? 'extended_schema';
+        switch ($this->Config['dsn']['driver']) {
+            case 'mysql':
+                $rows = $this->_execStatement('
+                    SELECT `s`.`TABLE_SCHEMA` AS `database`,
+                           `s`.`TABLE_NAME`   AS `table`
+                           `x`.`acl`          AS `acl`
+                     FROM `information_schema`.`TABLES` AS `s`
+                LEFT JOIN `'.$extended.'`.`tables`      AS `x`
+                            ON `x`.`database` = `s`.`TABLE_SCHEMA`
+                           AND `x`.`table`    = `s`.`TABLE_NAME`
+                    WHERE `s`.`TABLE_SCHEMA` = :database
+                      AND `s`.`TABLE_NAME`   = :table
+                ',[
+                    'database' => $database,
+                    'table'    => $table,
+                ]);
+                if (empty($rows)) {
+                    return null;
+                }
+                $schema = $rows[0];
+                $schema->columns = [];
+                // TODO: build
+                trigger_error('Not Build Yet');
+            case 'sqlite':
+                $info_schema = $this->_execStatement("PRAGMA table_list($table)");
+                if ($database != $this->Config['dsn']['dbname']) {
+                    // TODO: build this
+                    return null;
+                    //trigger_error("Access schema for `$database` which is not attached is not supported at this time. Only the `{$this->Config['dsn']['dbname']}` database schema can be accessed in this was at this time.");
+                }
+                if (empty($info_schema)) {
+                    return null;
+                }
+                $ext_schema = $this->_execStatement('
+                    SELECT `database`,
+                           `table`,
+                           `acl`
+                     FROM `extended_schema`.`tables`
+                    WHERE `database` = :database
+                      AND `table`    = :table
+                ',[
+                    'database' => $database,
+                    'table'    => $table,
+                ]);
+                if (empty($ext_schema)) {
+                    $ext_schema = [(object)[]];
+                }
+                $schema = $ext_schema[0];
+                $schema->columns = [];
+                $info_schema = $this->_execStatement("PRAGMA table_info($table)");
+                $ext_schema = $this->_execStatement('
+                    SELECT *
+                     FROM `extended_schema`.`column_validation`
+                    WHERE `database` = :database
+                      AND `table`    = :table
+                ',[
+                    'database' => $database,
+                    'table'    => $table,
+                ]);
+                foreach ($info_schema as $row) {
+                    $column = (object) [
+                        'database'    => $database,
+                        'table'       => $table,
+                        'column'      => $row->name,
+                        'column'      => $row->name,
+                        'type'        => $row->type,
+                        'nullAllowed' => ! $row->notnull,
+                        'default'     => $row->dflt_value,
+                        'primaryKey'  => $row->pk,
+                    ];
+                    $validation = array_find($ext_schema, function($item) use($row) {
+                        return ($item->column == $row->name);
+                    });
+                    if (isset($validation)) {
+                        $column = (object) array_merge((array)$column, (array)$validation);
+                    }
+                    $schema->columns[] = $column;
+                }
+        }
+        return $schema;
     }
 
     public function getListFields_MOVE_TO_getTableSchema(string $table)
@@ -603,7 +679,7 @@ final class Database
         }
     }
 
-    protected function _buildWhere(array $whereArr, string &$whereStr, array &$params, int $flags = 0): void
+    protected function _buildWhere(?array $whereArr, string &$whereStr, array &$params, int $flags = 0): void
     {
         if (empty($whereArr) === false) {
             foreach ($whereArr as $column=>$value) {
