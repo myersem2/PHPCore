@@ -252,6 +252,49 @@ final class Request
     }
 
     /**
+     * Get data from request header
+     *
+     * Will return data from the HTTP request headers for a given $key. The 
+     * option ``$filter`` and ``$options`` parameters may be given to invoke
+     * filter_var() before the value is returned.
+     *
+     * The key will be searched for both without then with the prefix "x-" to be
+     * compatiable with older conventions. Therfore there is no need include the
+     * prefix "x-" in your code moving forward.
+     *
+     * Supported Filters & Options:
+     * https://www.php.net/manual/en/filter.filters.php
+     *
+     * @param string $key The key of the header's data to retrieve
+     * @param integer $filter The ID of the filter to apply
+     * @param array|int $options Associative array of options or bitwise
+     *                           disjunction of flags
+     * @return mixed The requested header item
+     */
+    public static function header(string $key, ?int $filter = null, array|int $options = 0): mixed
+    {
+        static $headers;
+
+        if (empty($headers)) {
+            foreach (getallheaders() as $index=>$value) {
+                $headers[strtoupper($index)] = $value;
+            }
+        }
+
+        $value = match (true) {
+            isset($headers[strtoupper($key)])      => $headers[strtoupper($key)]      ?? null,
+            isset($headers['X-'.strtoupper($key)]) => $headers['X-'.strtoupper($key)] ?? null,
+            default => null,
+        };
+
+        if (isset($filter)) {
+            $value = filter_var($value, $filter, $options);
+        }
+
+        return $value;
+    }
+
+    /**
      * Get requester internet host name
      *
      * This method will return the requester's internet host name using the

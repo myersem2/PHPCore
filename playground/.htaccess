@@ -1,0 +1,19 @@
+###
+ # WarSupremacy - Playground .htaccess
+ #
+ # @author    Everett Myers <Everett.Myers@WarSupremacy.com>
+ # @copyright Copyright (c) 2022, War Supremacy
+ # @license   https://www.WarSupremacy.com/license.html
+ # @link      https://www.WarSupremacy.com
+ # @version   1.0.0-beta
+ # @updated   2023-01-28
+ ##
+
+## -----------------------------------------------------------------------------
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ request.html/$1 [L]
+
+## EOF /////////////////////////////////////////////////////////////////////////

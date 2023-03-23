@@ -709,6 +709,33 @@ if ( ! in_array('request_format', $disabled_functions) ) {
     }
 }
 
+/**
+ * Get data from request header
+ *
+ * Will return data from the HTTP request headers for a given $key. The option
+ * ``$filter`` and ``$options`` parameters may be given to invoke filter_var()
+ * before the value is returned.
+ *
+ * The key will be searched for both without then with the prefix "x-" to be
+ * compatiable with older conventions. Therfore there is no need include the
+ * prefix "x-" in your code moving forward.
+ *
+ * Supported Filters & Options:
+ * https://www.php.net/manual/en/filter.filters.php
+ *
+ * @param string $key The key of the header's data to retrieve
+ * @param integer $filter The ID of the filter to apply
+ * @param array|int $options Associative array of options or bitwise disjunction
+ *                           of flags
+ * @return mixed The requested header item
+ */
+if ( ! in_array('request_header', $disabled_functions) ) {
+    function request_header(string $key, ?int $filter = null, array|int $options = 0): mixed
+    {
+        return \PHPCore\Request::header($key, $filter, $options);    
+    }
+}
+
 // TODO: document
 if ( ! in_array('request_host', $disabled_functions) ) {
     function request_host(): string|false

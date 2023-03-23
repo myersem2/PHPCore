@@ -22,6 +22,7 @@ Request Class synopsis
        public static function file(string $key): object|null
        public static function files(string $key): array
        public static function format(): string
+       public static function header(string $key, ?int $filter = null, array|int $options = 0): mixed
        public static function host(): string|false
        public static function ipAddress(): string|false
        public static function param(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
@@ -35,7 +36,8 @@ Request Class Table of Contents
 * :ref:`Request::body<request-method-body>` - Get data from request body
 * :ref:`Request::cookie<request-method-cookie>` - Get data from HTTP cookie
 * :ref:`Request::file<request-method-file>` - Get file from request
-* :ref:`Request::file<request-method-files>` - Get files from request
+* :ref:`Request::files<request-method-files>` - Get files from request
+* :ref:`Request::header<request-method-header>` - Get data from request header
 
 Request Class methods
 #####################
@@ -212,7 +214,7 @@ Request Class methods
    :returns: ``array`` Array of RequestFile objects
 
    .. code-block:: php
-      :caption: Get file from request
+      :caption: Get files from request
       :linenos:
       :emphasize-lines: 14,15
 
@@ -231,6 +233,57 @@ Request Class methods
       // Get capability by key
       echo Request::files('test')[0]->name; // 'image/png'
       echo Request::files('test')[0]->trueType(); // 'application/pdf'
+
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Functions>`
+
+-----
+
+.. _request-method-header:
+.. php:function:: header(string $key, ?int $filter = null, array|int $options = 0)
+
+   Get data from request header
+
+   Will return data from the HTTP request headers for a given $key. The option ``$filter`` and ``$options`` parameters may be given to invoke filter_var() before the value is returned.
+
+   The key will be searched for both without then with the prefix "x-" to be compatiable with older conventions. Therfore there is no need include the prefix "x-" in your code moving forward.
+
+   .. seealso::
+      `PHP Types of filters`_ - List of available filters and options. 
+      `PHP Filter Variable`_ - Information on the operation of the filter_var() function.
+
+   :param string $key: The key of the header's data to retrieve
+   :param integer $filter: The ID of the filter to apply
+   :param array|int $options: Associative array of options or bitwise disjunction of flags
+   :returns: ``mixed`` The requested header item
+
+   .. code-block:: php
+      :caption: Get data from request header
+      :linenos:
+      :emphasize-lines: 15,16,17,19
+
+      <?php
+      use \PHPCore\Request;
+      // Request Headers
+      //   Accept: */*
+      //   Accept-Encoding: gzip, deflate
+      //   Accept-Language: en-US,en;q=0.9
+      //   Connection: keep-alive
+      //   Content-Length: 0
+      //   User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36
+      //   x-custom-header-1: Random Text
+      //   x-custom-header-2: 12345
+
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      // Get capability by key
+      echo Request::header('accept-encoding'); // 'gzip, deflate'
+      echo Request::header('custom-header-1'); // 'Random Text'
+      echo Request::header('x-custom-header-1'); // 'Random Text'
+
+      var_dump(Request::header('custom-header-2', FILTER_VALIDATE_INT)); // 12345
 
       ?>
 
