@@ -178,7 +178,7 @@
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">format</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">header</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">host</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">ipAddress</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">ip</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">param</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">path</span><span class="p">(</span><span class="o">?</span><span class="nx">int</span> <span class="nv">$pos</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
 <span class="p">}</span>
@@ -194,6 +194,8 @@
 <li><p><a class="reference internal" href="#request-method-file"><span class="std std-ref">Request::file</span></a> - Get file from request</p></li>
 <li><p><a class="reference internal" href="#request-method-files"><span class="std std-ref">Request::files</span></a> - Get files from request</p></li>
 <li><p><a class="reference internal" href="#request-method-header"><span class="std std-ref">Request::header</span></a> - Get data from request header</p></li>
+<li><p><a class="reference internal" href="#request-method-host"><span class="std std-ref">Request::host</span></a> - Get requester host name</p></li>
+<li><p><a class="reference internal" href="#request-method-ip"><span class="std std-ref">Request::ip</span></a> - Get requester ip address</p></li>
 </ul>
 </section>
 <section id="request-class-methods">
@@ -222,7 +224,7 @@
 <span class="linenos"> 3</span><span class="c1">// $_SERVER[&#39;HTTP_USER_AGENT&#39;] = &#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36&#39;</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos"> 6</span><span class="c1">// Get capability by key</span>
+<span class="linenos"> 6</span><span class="c1">// Get by key</span>
 <span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">agent</span><span class="p">(</span><span class="s1">&#39;browser&#39;</span><span class="p">);</span> <span class="c1">// &#39;Chrome&#39;</span>
 </span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">agent</span><span class="p">(</span><span class="s1">&#39;istablet&#39;</span><span class="p">));</span> <span class="c1">// false</span>
 </span><span class="linenos"> 9</span>
@@ -268,7 +270,7 @@
 <span class="linenos"> 3</span><span class="c1">// $_POST = &#39;{ &quot;name&quot;: &quot;Smith&quot;, &quot;age&quot;: &quot;22&quot; }&#39;</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos"> 6</span><span class="c1">// Get capability by key</span>
+<span class="linenos"> 6</span><span class="c1">// Get by key</span>
 <span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">body</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">);</span> <span class="c1">// &#39;Smith&#39;</span>
 </span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">body</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 22</span>
 </span><span class="linenos"> 9</span>
@@ -308,16 +310,14 @@
 </dl>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-number">Example 12 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
-<span class="linenos"> 3</span><span class="c1">// $_COOKIE = [ &#39;OFFSET&#39; =&gt; 1, &#39;ORDER&#39; =&gt; &#39;asc&#39; ]</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos"> 6</span><span class="c1">// Get capability by key</span>
-<span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">cookie</span><span class="p">(</span><span class="s1">&#39;ORDER&#39;</span><span class="p">);</span> <span class="c1">// &#39;asc&#39;</span>
-</span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">cookie</span><span class="p">(</span><span class="s1">&#39;OFFSET&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
-</span><span class="linenos"> 9</span>
-<span class="linenos">10</span><span class="cp">?&gt;</span><span class="x"></span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos">2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos">3</span><span class="c1">// $_COOKIE = [ &#39;OFFSET&#39; =&gt; 1, &#39;ORDER&#39; =&gt; &#39;asc&#39; ]</span>
+<span class="linenos">4</span>
+<span class="hll"><span class="linenos">5</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">cookie</span><span class="p">(</span><span class="s1">&#39;ORDER&#39;</span><span class="p">);</span> <span class="c1">// &#39;asc&#39;</span>
+</span><span class="hll"><span class="linenos">6</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">cookie</span><span class="p">(</span><span class="s1">&#39;OFFSET&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
+</span><span class="linenos">7</span>
+<span class="linenos">8</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>
@@ -353,12 +353,10 @@
 <span class="linenos"> 9</span><span class="c1">//     &#39;size&#39;      =&gt; 3028</span>
 <span class="linenos">10</span><span class="c1">// ];</span>
 <span class="linenos">11</span>
-<span class="linenos">12</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos">13</span><span class="c1">// Get capability by key</span>
-<span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
-</span><span class="hll"><span class="linenos">15</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
-</span><span class="linenos">16</span>
-<span class="linenos">17</span><span class="cp">?&gt;</span><span class="x"></span>
+<span class="hll"><span class="linenos">12</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
+</span><span class="hll"><span class="linenos">13</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
+</span><span class="linenos">14</span>
+<span class="linenos">15</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>
@@ -394,16 +392,14 @@
 <span class="linenos"> 9</span><span class="c1">//     &#39;size&#39;      =&gt; [ 0 =&gt; 3028             ]</span>
 <span class="linenos">10</span><span class="c1">// ];</span>
 <span class="linenos">11</span>
-<span class="linenos">12</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos">13</span><span class="c1">// Get capability by key</span>
-<span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
-</span><span class="hll"><span class="linenos">15</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
-</span><span class="linenos">16</span>
-<span class="linenos">17</span><span class="cp">?&gt;</span><span class="x"></span>
+<span class="hll"><span class="linenos">12</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
+</span><span class="hll"><span class="linenos">13</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
+</span><span class="linenos">14</span>
+<span class="linenos">15</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>
-<p class="wy-text-right"><a class="reference internal" href="../functions/request.html#request-functions"><span class="std std-ref">Back to list</span></a></p>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
 <hr class="docutils" />
@@ -444,19 +440,79 @@
 <span class="linenos">10</span><span class="c1">//   x-custom-header-1: Random Text</span>
 <span class="linenos">11</span><span class="c1">//   x-custom-header-2: 12345</span>
 <span class="linenos">12</span>
-<span class="linenos">13</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos">14</span><span class="c1">// Get capability by key</span>
-<span class="hll"><span class="linenos">15</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;accept-encoding&#39;</span><span class="p">);</span> <span class="c1">// &#39;gzip, deflate&#39;</span>
-</span><span class="hll"><span class="linenos">16</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
-</span><span class="hll"><span class="linenos">17</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;x-custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
+<span class="hll"><span class="linenos">13</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;accept-encoding&#39;</span><span class="p">);</span> <span class="c1">// &#39;gzip, deflate&#39;</span>
+</span><span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
+</span><span class="hll"><span class="linenos">15</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;x-custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
+</span><span class="linenos">16</span>
+<span class="hll"><span class="linenos">17</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;custom-header-2&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 12345</span>
 </span><span class="linenos">18</span>
-<span class="hll"><span class="linenos">19</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;custom-header-2&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 12345</span>
-</span><span class="linenos">20</span>
-<span class="linenos">21</span><span class="cp">?&gt;</span><span class="x"></span>
+<span class="linenos">19</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>
-<p class="wy-text-right"><a class="reference internal" href="../functions/request.html#request-functions"><span class="std std-ref">Back to list</span></a></p>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-host"></span><dl class="php function">
+<dt class="sig sig-object php" id="host">
+<span class="sig-name descname"><span class="pre">host</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#host" title="Permalink to this definition"></a></dt>
+<dd><p>Get requester host name</p>
+<p>This method will return the requester’s host name using the requester’s ip address, see Request::ipAddress() for more information.</p>
+<p>Returns false if requester ip address is unknown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string|false</span></code> Host name</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-number">Example 16 </span><span class="caption-text">Get requester host name</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;8.8.8.8&#39;</span>
+<span class="hll"><span class="linenos"> 5</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">host</span><span class="p">();</span> <span class="c1">// &#39;dns.google&#39;</span>
+</span><span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;123456&#39;</span>
+<span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">host</span><span class="p">());</span> <span class="c1">// false</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-ip"></span><dl class="php function">
+<dt class="sig sig-object php" id="ip">
+<span class="sig-name descname"><span class="pre">ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ip" title="Permalink to this definition"></a></dt>
+<dd><p>Get requester ip address</p>
+<p>This method will return the requester’s ip address via the designated $_SERVER param that contains the requester’s IP Address. This is normally REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the phpcore.ini file.</p>
+<p>Returns false if $_SERVER param is not set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string|false</span></code> IP Address of requester</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-number">Example 17 </span><span class="caption-text">Get requester ip address</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;10.0.0.1&#39;</span>
+<span class="linenos"> 4</span><span class="c1">// $_SERVER[&#39;HTTP_X_FORWARDED_FOR&#39;] = &#39;192.168.0.1&#39;</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="c1">// phpcore.ini: request.ip_var = &quot;REMOTE_ADDR&quot;</span>
+<span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">ip</span><span class="p">();</span> <span class="c1">// &#39;10.0.0.1&#39;</span>
+</span><span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="c1">// phpcore.ini: request.ip_var = &quot;HTTP_X_FORWARDED_FOR&quot;</span>
+<span class="hll"><span class="linenos">10</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">ip</span><span class="p">();</span> <span class="c1">// &#39;192.168.0.1&#39;</span>
+</span><span class="linenos">11</span>
+<span class="linenos">12</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
 </section>

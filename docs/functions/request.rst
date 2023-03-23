@@ -3,11 +3,13 @@ Request Functions
 =================
 
 * `request_agent`_ - Get request agent capabilities
-* `request_body`_ - Get data from request body.
-* `request_cookie`_ - Get data from HTTP cookie.
-* `request_file`_ - Get file from request.
-* `request_files`_ - Get files from request.
-* `request_header`_ - Get data from request header.
+* `request_body`_ - Get data from request body
+* `request_cookie`_ - Get data from HTTP cookie
+* `request_file`_ - Get file from request
+* `request_files`_ - Get files from request
+* `request_header`_ - Get data from request header
+* `request_host`_ - Get requester host name
+* `request_ip`_ - Get requester ip address
 
 ----
 
@@ -38,7 +40,7 @@ Many of the request functions below are just aliases for the methods of the `PHP
       // $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      // Get capability by key
+      // Get by key
       echo request_agent('browser'); // 'Chrome'
       var_dump(request_agent('istablet')); // false
 
@@ -80,7 +82,7 @@ Many of the request functions below are just aliases for the methods of the `PHP
       // $_POST = '{ "name": "Smith", "age": "22" }'
 
       // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      // Get capability by key
+      // Get by key
       echo request_body('name'); // 'Smith'
       var_dump(request_body('name', FILTER_VALIDATE_INT)); // 22
 
@@ -115,13 +117,11 @@ Many of the request functions below are just aliases for the methods of the `PHP
    .. code-block:: php
       :caption: Get data from HTTP cookie
       :linenos:
-      :emphasize-lines: 6,7
+      :emphasize-lines: 4,5
 
       <?php
       // $_COOKIE = [ 'OFFSET' => 1, 'ORDER' => 'asc' ]
 
-      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      // Get capability by key
       echo request_cookie('ORDER'); // 'asc'
       var_dump(request_cookie('OFFSET', FILTER_VALIDATE_INT)); // 1
 
@@ -146,7 +146,7 @@ Many of the request functions below are just aliases for the methods of the `PHP
    .. code-block:: php
       :caption: Get file from request
       :linenos:
-      :emphasize-lines: 13,14
+      :emphasize-lines: 11,12
 
       <?php
       // $_FILES['test'] = [
@@ -158,8 +158,6 @@ Many of the request functions below are just aliases for the methods of the `PHP
       //     'size'      => 3028
       // ];
 
-      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      // Get capability by key
       echo request_file('test')->name; // 'image/png'
       echo request_file('test')->trueType(); // 'application/pdf'
 
@@ -183,7 +181,7 @@ Many of the request functions below are just aliases for the methods of the `PHP
    .. code-block:: php
       :caption: Get files from request
       :linenos:
-      :emphasize-lines: 13,14
+      :emphasize-lines: 11,12
 
       <?php
       // $_FILES['test'] = [
@@ -195,8 +193,6 @@ Many of the request functions below are just aliases for the methods of the `PHP
       //     'size'      => [ 0 => 3028             ]
       // ];
 
-      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      // Get capability by key
       echo request_files('test')[0]->name; // 'image/png'
       echo request_files('test')[0]->trueType(); // 'application/pdf'
 
@@ -228,7 +224,7 @@ Many of the request functions below are just aliases for the methods of the `PHP
    .. code-block:: php
       :caption: Get data from request header
       :linenos:
-      :emphasize-lines: 15,16,17,19
+      :emphasize-lines: 13,14,15,17
 
       <?php
       use \PHPCore\Request;
@@ -242,13 +238,77 @@ Many of the request functions below are just aliases for the methods of the `PHP
       //   x-custom-header-1: Random Text
       //   x-custom-header-2: 12345
 
-      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      // Get capability by key
       echo request_header('accept-encoding'); // 'gzip, deflate'
       echo request_header('custom-header-1'); // 'Random Text'
       echo request_header('x-custom-header-1'); // 'Random Text'
 
       var_dump(request_header('custom-header-2', FILTER_VALIDATE_INT)); // 12345
+
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Functions>`
+
+-----
+
+.. php:function:: request_host()
+
+   Get requester host name
+
+   This method will return the requester's host name using the requester's ip address, see Request::ipAddress() for more information.
+
+   Returns false if requester ip address is unknown.
+
+   :returns: ``string|false`` Host name
+
+   .. code-block:: php
+      :caption: Get requester host name
+      :linenos:
+      :emphasize-lines: 5,8
+
+      <?php
+      use \PHPCore\Request;
+
+      // $_SERVER['REMOTE_ADDR'] = '8.8.8.8'
+      echo request_host(); // 'dns.google'
+
+      // $_SERVER['REMOTE_ADDR'] = '123456'
+      var_dump(request_host()); // false
+
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Functions>`
+
+-----
+
+.. php:function:: request_ip()
+
+   Get requester ip address
+
+   This method will return the requester's ip address via the designated $_SERVER param that contains the requester's IP Address. This is normally REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the phpcore.ini file.
+
+   Returns false if $_SERVER param is not set.
+
+   :returns: ``string|false`` IP Address of requester
+
+   .. code-block:: php
+      :caption: Get requester ip address
+      :linenos:
+      :emphasize-lines: 7,10
+
+      <?php
+      use \PHPCore\Request;
+      // $_SERVER['REMOTE_ADDR'] = '10.0.0.1'
+      // $_SERVER['HTTP_X_FORWARDED_FOR'] = '192.168.0.1'
+
+      // phpcore.ini: request.ip_var = "REMOTE_ADDR"
+      echo request_ip(); // '10.0.0.1'
+
+      // phpcore.ini: request.ip_var = "HTTP_X_FORWARDED_FOR"
+      echo request_ip(); // '192.168.0.1'
 
       ?>
 

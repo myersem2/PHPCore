@@ -736,7 +736,16 @@ if ( ! in_array('request_header', $disabled_functions) ) {
     }
 }
 
-// TODO: document
+/**
+ * Get requester host name
+ *
+ * This method will return the requester's host name using the requester's ip
+ * address, see Request::ipAddress() for more information.
+ *
+ * Returns false if requester ip address is unknown.
+ *
+ * @return string|false Host name
+ */
 if ( ! in_array('request_host', $disabled_functions) ) {
     function request_host(): string|false
     {
@@ -744,11 +753,22 @@ if ( ! in_array('request_host', $disabled_functions) ) {
     }
 }
 
-// TODO: document
+/**
+ * Get requester ip address
+ *
+ * This method will return the requester's ip address via the designated
+ * $_SERVER param that contains the requester's IP Address. This is normally
+ * REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the phpcore.ini
+ * file.
+ *
+ * Returns false if $_SERVER param is not set.
+ *
+ * @return string|false IP Address of requester
+ */
 if ( ! in_array('request_ip', $disabled_functions) ) {
     function request_ip(): string|false
     {
-        return \PHPCore\Request::ipAddress();    
+        return \PHPCore\Request::ip();    
     }
 }
 

@@ -159,11 +159,13 @@
 <h1>Request Functions<a class="headerlink" href="#request-functions" title="Permalink to this headline"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="#request_agent">request_agent</a> - Get request agent capabilities</p></li>
-<li><p><a class="reference internal" href="#request_body">request_body</a> - Get data from request body.</p></li>
-<li><p><a class="reference internal" href="#request_cookie">request_cookie</a> - Get data from HTTP cookie.</p></li>
-<li><p><a class="reference internal" href="#request_file">request_file</a> - Get file from request.</p></li>
-<li><p><a class="reference internal" href="#request_files">request_files</a> - Get files from request.</p></li>
-<li><p><a class="reference internal" href="#request_header">request_header</a> - Get data from request header.</p></li>
+<li><p><a class="reference internal" href="#request_body">request_body</a> - Get data from request body</p></li>
+<li><p><a class="reference internal" href="#request_cookie">request_cookie</a> - Get data from HTTP cookie</p></li>
+<li><p><a class="reference internal" href="#request_file">request_file</a> - Get file from request</p></li>
+<li><p><a class="reference internal" href="#request_files">request_files</a> - Get files from request</p></li>
+<li><p><a class="reference internal" href="#request_header">request_header</a> - Get data from request header</p></li>
+<li><p><a class="reference internal" href="#request_host">request_host</a> - Get requester host name</p></li>
+<li><p><a class="reference internal" href="#request_ip">request_ip</a> - Get requester ip address</p></li>
 </ul>
 <hr class="docutils" />
 <p>Many of the request functions below are just aliases for the methods of the <a class="reference external" href="../classes/request.html">PHPCore Request Class</a>.</p>
@@ -189,12 +191,12 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-number">Example 32 </span><span class="caption-text">Get request agent capabilities</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 34 </span><span class="caption-text">Get request agent capabilities</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span><span class="c1">// $_SERVER[&#39;HTTP_USER_AGENT&#39;] = &#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36&#39;</span>
 <span class="linenos"> 3</span>
 <span class="linenos"> 4</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos"> 5</span><span class="c1">// Get capability by key</span>
+<span class="linenos"> 5</span><span class="c1">// Get by key</span>
 <span class="hll"><span class="linenos"> 6</span><span class="k">echo</span> <span class="nx">request_agent</span><span class="p">(</span><span class="s1">&#39;browser&#39;</span><span class="p">);</span> <span class="c1">// &#39;Chrome&#39;</span>
 </span><span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">request_agent</span><span class="p">(</span><span class="s1">&#39;istablet&#39;</span><span class="p">));</span> <span class="c1">// false</span>
 </span><span class="linenos"> 8</span>
@@ -234,12 +236,12 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-number">Example 33 </span><span class="caption-text">Get data from request body</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 35 </span><span class="caption-text">Get data from request body</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span><span class="c1">// $_POST = &#39;{ &quot;name&quot;: &quot;Smith&quot;, &quot;age&quot;: &quot;22&quot; }&#39;</span>
 <span class="linenos"> 3</span>
 <span class="linenos"> 4</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos"> 5</span><span class="c1">// Get capability by key</span>
+<span class="linenos"> 5</span><span class="c1">// Get by key</span>
 <span class="hll"><span class="linenos"> 6</span><span class="k">echo</span> <span class="nx">request_body</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">);</span> <span class="c1">// &#39;Smith&#39;</span>
 </span><span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">request_body</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 22</span>
 </span><span class="linenos"> 8</span>
@@ -278,16 +280,14 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-number">Example 34 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 36 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos">2</span><span class="c1">// $_COOKIE = [ &#39;OFFSET&#39; =&gt; 1, &#39;ORDER&#39; =&gt; &#39;asc&#39; ]</span>
 <span class="linenos">3</span>
-<span class="linenos">4</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos">5</span><span class="c1">// Get capability by key</span>
-<span class="hll"><span class="linenos">6</span><span class="k">echo</span> <span class="nx">request_cookie</span><span class="p">(</span><span class="s1">&#39;ORDER&#39;</span><span class="p">);</span> <span class="c1">// &#39;asc&#39;</span>
-</span><span class="hll"><span class="linenos">7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">request_cookie</span><span class="p">(</span><span class="s1">&#39;OFFSET&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
-</span><span class="linenos">8</span>
-<span class="linenos">9</span><span class="cp">?&gt;</span><span class="x"></span>
+<span class="hll"><span class="linenos">4</span><span class="k">echo</span> <span class="nx">request_cookie</span><span class="p">(</span><span class="s1">&#39;ORDER&#39;</span><span class="p">);</span> <span class="c1">// &#39;asc&#39;</span>
+</span><span class="hll"><span class="linenos">5</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">request_cookie</span><span class="p">(</span><span class="s1">&#39;OFFSET&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
+</span><span class="linenos">6</span>
+<span class="linenos">7</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>
@@ -311,7 +311,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-number">Example 35 </span><span class="caption-text">Get file from request</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 37 </span><span class="caption-text">Get file from request</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span><span class="c1">// $_FILES[&#39;test&#39;] = [</span>
 <span class="linenos"> 3</span><span class="c1">//     &#39;name&#39;      =&gt; &#39;sample.pdf.png&#39;,</span>
@@ -322,12 +322,10 @@
 <span class="linenos"> 8</span><span class="c1">//     &#39;size&#39;      =&gt; 3028</span>
 <span class="linenos"> 9</span><span class="c1">// ];</span>
 <span class="linenos">10</span>
-<span class="linenos">11</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos">12</span><span class="c1">// Get capability by key</span>
-<span class="hll"><span class="linenos">13</span><span class="k">echo</span> <span class="nx">request_file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
-</span><span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">request_file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
-</span><span class="linenos">15</span>
-<span class="linenos">16</span><span class="cp">?&gt;</span><span class="x"></span>
+<span class="hll"><span class="linenos">11</span><span class="k">echo</span> <span class="nx">request_file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
+</span><span class="hll"><span class="linenos">12</span><span class="k">echo</span> <span class="nx">request_file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
+</span><span class="linenos">13</span>
+<span class="linenos">14</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>
@@ -351,7 +349,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-number">Example 36 </span><span class="caption-text">Get files from request</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 38 </span><span class="caption-text">Get files from request</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span><span class="c1">// $_FILES[&#39;test&#39;] = [</span>
 <span class="linenos"> 3</span><span class="c1">//     &#39;name&#39;      =&gt; [ 0 =&gt; &#39;sample.pdf.png&#39; ],</span>
@@ -362,12 +360,10 @@
 <span class="linenos"> 8</span><span class="c1">//     &#39;size&#39;      =&gt; [ 0 =&gt; 3028             ]</span>
 <span class="linenos"> 9</span><span class="c1">// ];</span>
 <span class="linenos">10</span>
-<span class="linenos">11</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos">12</span><span class="c1">// Get capability by key</span>
-<span class="hll"><span class="linenos">13</span><span class="k">echo</span> <span class="nx">request_files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
-</span><span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">request_files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
-</span><span class="linenos">15</span>
-<span class="linenos">16</span><span class="cp">?&gt;</span><span class="x"></span>
+<span class="hll"><span class="linenos">11</span><span class="k">echo</span> <span class="nx">request_files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
+</span><span class="hll"><span class="linenos">12</span><span class="k">echo</span> <span class="nx">request_files</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
+</span><span class="linenos">13</span>
+<span class="linenos">14</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>
@@ -399,7 +395,7 @@
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-number">Example 37 </span><span class="caption-text">Get data from request header</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 39 </span><span class="caption-text">Get data from request header</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
 <span class="linenos"> 3</span><span class="c1">// Request Headers</span>
@@ -412,15 +408,75 @@
 <span class="linenos">10</span><span class="c1">//   x-custom-header-1: Random Text</span>
 <span class="linenos">11</span><span class="c1">//   x-custom-header-2: 12345</span>
 <span class="linenos">12</span>
-<span class="linenos">13</span><span class="c1">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="linenos">14</span><span class="c1">// Get capability by key</span>
-<span class="hll"><span class="linenos">15</span><span class="k">echo</span> <span class="nx">request_header</span><span class="p">(</span><span class="s1">&#39;accept-encoding&#39;</span><span class="p">);</span> <span class="c1">// &#39;gzip, deflate&#39;</span>
-</span><span class="hll"><span class="linenos">16</span><span class="k">echo</span> <span class="nx">request_header</span><span class="p">(</span><span class="s1">&#39;custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
-</span><span class="hll"><span class="linenos">17</span><span class="k">echo</span> <span class="nx">request_header</span><span class="p">(</span><span class="s1">&#39;x-custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
+<span class="hll"><span class="linenos">13</span><span class="k">echo</span> <span class="nx">request_header</span><span class="p">(</span><span class="s1">&#39;accept-encoding&#39;</span><span class="p">);</span> <span class="c1">// &#39;gzip, deflate&#39;</span>
+</span><span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">request_header</span><span class="p">(</span><span class="s1">&#39;custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
+</span><span class="hll"><span class="linenos">15</span><span class="k">echo</span> <span class="nx">request_header</span><span class="p">(</span><span class="s1">&#39;x-custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
+</span><span class="linenos">16</span>
+<span class="hll"><span class="linenos">17</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">request_header</span><span class="p">(</span><span class="s1">&#39;custom-header-2&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 12345</span>
 </span><span class="linenos">18</span>
-<span class="hll"><span class="linenos">19</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">request_header</span><span class="p">(</span><span class="s1">&#39;custom-header-2&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 12345</span>
-</span><span class="linenos">20</span>
-<span class="linenos">21</span><span class="cp">?&gt;</span><span class="x"></span>
+<span class="linenos">19</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-functions"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="php function">
+<dt class="sig sig-object php" id="request_host">
+<span class="sig-name descname"><span class="pre">request_host</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#request_host" title="Permalink to this definition"></a></dt>
+<dd><p>Get requester host name</p>
+<p>This method will return the requester’s host name using the requester’s ip address, see Request::ipAddress() for more information.</p>
+<p>Returns false if requester ip address is unknown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string|false</span></code> Host name</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-number">Example 40 </span><span class="caption-text">Get requester host name</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;8.8.8.8&#39;</span>
+<span class="hll"><span class="linenos"> 5</span><span class="k">echo</span> <span class="nx">request_host</span><span class="p">();</span> <span class="c1">// &#39;dns.google&#39;</span>
+</span><span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;123456&#39;</span>
+<span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">request_host</span><span class="p">());</span> <span class="c1">// false</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-functions"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="php function">
+<dt class="sig sig-object php" id="request_ip">
+<span class="sig-name descname"><span class="pre">request_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#request_ip" title="Permalink to this definition"></a></dt>
+<dd><p>Get requester ip address</p>
+<p>This method will return the requester’s ip address via the designated $_SERVER param that contains the requester’s IP Address. This is normally REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the phpcore.ini file.</p>
+<p>Returns false if $_SERVER param is not set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string|false</span></code> IP Address of requester</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-number">Example 41 </span><span class="caption-text">Get requester ip address</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;10.0.0.1&#39;</span>
+<span class="linenos"> 4</span><span class="c1">// $_SERVER[&#39;HTTP_X_FORWARDED_FOR&#39;] = &#39;192.168.0.1&#39;</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="c1">// phpcore.ini: request.ip_var = &quot;REMOTE_ADDR&quot;</span>
+<span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">request_ip</span><span class="p">();</span> <span class="c1">// &#39;10.0.0.1&#39;</span>
+</span><span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="c1">// phpcore.ini: request.ip_var = &quot;HTTP_X_FORWARDED_FOR&quot;</span>
+<span class="hll"><span class="linenos">10</span><span class="k">echo</span> <span class="nx">request_ip</span><span class="p">();</span> <span class="c1">// &#39;192.168.0.1&#39;</span>
+</span><span class="linenos">11</span>
+<span class="linenos">12</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>

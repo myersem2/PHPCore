@@ -295,18 +295,23 @@ final class Request
     }
 
     /**
-     * Get requester internet host name
+     * Get requester host name
      *
-     * This method will return the requester's internet host name using the
-     * requester's ip address, see Request::ipAddress() for more information.
+     * This method will return the requester's host name using the requester's
+     * ip address, see Request::ipAddress() for more information.
      *
      * Returns false if requester ip address is unknown.
      *
-     * @return string|false Internet host name
+     * @return string|false Host name
      */
     public static function host(): string|false
     {
-        return gethostbyaddr(self::ipAddress());
+        $ip = self::ip();
+        if ($ip !== false) {
+          return @gethostbyaddr($ip);
+        } else {
+          return false;
+        }
     }
 
     /**
@@ -314,26 +319,26 @@ final class Request
      *
      * This method will return the requester's ip address via the designated
      * $_SERVER param that contains the requester's IP Address. This is normally
-     * REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the core
-     * ini.
+     * REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the 
+     * phpcore.ini file.
      *
      * Returns false if $_SERVER param is not set.
      *
      * @return string|false IP Address of requester
      */
-    public static function ipAddress(): string|false
+    public static function ip(): string|false
     {
-        static $ipAaddress;
+        static $ip;
 
         if ( ! isset($ipAaddress)) {
             $svr_var = core_ini_get('request.ip_var');
-            $ipAaddress = match (true) {
+            $ip = match (true) {
                 isset($_SERVER[$svr_var]) => $_SERVER[$svr_var],
                 default                   => false,
             };
         }
 
-        return $ipAaddress;
+        return $ip;
     }
 
     /**
