@@ -180,7 +180,7 @@
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">host</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">ip</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">param</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">path</span><span class="p">(</span><span class="o">?</span><span class="nx">int</span> <span class="nv">$pos</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">segment</span><span class="p">(</span><span class="o">?</span><span class="nx">int</span> <span class="nv">$pos</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -196,6 +196,8 @@
 <li><p><a class="reference internal" href="#request-method-header"><span class="std std-ref">Request::header</span></a> - Get data from request header</p></li>
 <li><p><a class="reference internal" href="#request-method-host"><span class="std std-ref">Request::host</span></a> - Get requester host name</p></li>
 <li><p><a class="reference internal" href="#request-method-ip"><span class="std std-ref">Request::ip</span></a> - Get requester ip address</p></li>
+<li><p><a class="reference internal" href="#request-method-param"><span class="std std-ref">Request::param</span></a> - Get parameter from requested URI</p></li>
+<li><p><a class="reference internal" href="#request-method-segment"><span class="std std-ref">Request::segment</span></a> - Get segment from requested URI</p></li>
 </ul>
 </section>
 <section id="request-class-methods">
@@ -509,6 +511,90 @@
 <span class="hll"><span class="linenos">10</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">ip</span><span class="p">();</span> <span class="c1">// &#39;192.168.0.1&#39;</span>
 </span><span class="linenos">11</span>
 <span class="linenos">12</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-param"></span><dl class="php function">
+<dt class="sig sig-object php" id="param">
+<span class="sig-name descname"><span class="pre">param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#param" title="Permalink to this definition"></a></dt>
+<dd><p>Get parameter from requested URI</p>
+<p>This method will return the variable passed to the current script via the URL parameters (aka. query string) by a given $key using $_GET superglobal varable. If the key is not passed then an array of all the variables will be returned.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">$key</span></code> is not passed the entire query be returned and the <code class="docutils literal notranslate"><span class="pre">$filter</span></code> and <code class="docutils literal notranslate"><span class="pre">$options</span></code> will be ignored.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.
+<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the filter_var() function.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string</strong> – The key of the query to retrieve</p></li>
+<li><p><strong>integer</strong> – The ID of the filter to apply</p></li>
+<li><p><strong>array|int</strong> – Associative array of options or bitwise disjunction of flags</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return mixed<code class="docutils literal notranslate"><span class="pre">mixed</span></code></dt>
+<dd class="field-even"><p>The requested query item</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-number">Example 18 </span><span class="caption-text">Get parameter from requested URI</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="c1">// $_SERVER[&#39;REQUEST_URI&#39;] = &#39;/index.php?text=abc&amp;num=12345&#39;</span>
+<span class="linenos"> 4</span>
+<span class="hll"><span class="linenos"> 5</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">param</span><span class="p">());</span> <span class="c1">// [ &quot;text&quot; =&gt; &quot;abc&quot;, &quot;num&quot; =&gt; &quot;12345&quot; ]</span>
+</span><span class="linenos"> 6</span>
+<span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">param</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">));</span> <span class="c1">// &#39;abc&#39;</span>
+</span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">param</span><span class="p">(</span><span class="s1">&#39;num&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 12345</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-segment"></span><dl class="php function">
+<dt class="sig sig-object php" id="segment">
+<span class="sig-name descname"><span class="pre">segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?int</span> <span class="pre">$pos</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#segment" title="Permalink to this definition"></a></dt>
+<dd><p>Get segment from requested URI</p>
+<p>This method will return a segment of the requested URI with a given $pos using the REQUEST_URI.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">$pos</span></code> is not passed the entire segment array will be returned and the <code class="docutils literal notranslate"><span class="pre">$filter</span></code> and <code class="docutils literal notranslate"><span class="pre">$options</span></code> will be ignored.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.
+<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the filter_var() function.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>integer</strong> – The pos index of the path to retrieve</p></li>
+<li><p><strong>integer</strong> – The ID of the filter to apply</p></li>
+<li><p><strong>array|int</strong> – Associative array of options or bitwise disjunction of flags</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return mixed<code class="docutils literal notranslate"><span class="pre">mixed</span></code></dt>
+<dd class="field-even"><p>The requested segment item</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-number">Example 19 </span><span class="caption-text">Get segment from requested URI</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 3</span><span class="c1">// $_SERVER[&#39;REQUEST_URI&#39;] = &#39;/sections/articles/12345.html&#39;</span>
+<span class="linenos"> 4</span>
+<span class="hll"><span class="linenos"> 5</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">segment</span><span class="p">());</span> <span class="c1">// [ &quot;sections&quot;, &quot;articles&quot;, &quot;12345&quot; ]</span>
+</span><span class="linenos"> 6</span>
+<span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">segment</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span> <span class="c1">// &#39;articles&#39;</span>
+</span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">segment</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 12345</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>

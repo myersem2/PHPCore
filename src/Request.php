@@ -377,13 +377,13 @@ final class Request
     }
 
     /**
-     * Get path from requested URI
+     * Get segment from requested URI
      *
-     * This method will return the part of path by a given $pos using the
-     * REQUEST_URI.
+     * This method will return a segment of the requested URI with a given $pos
+     * using the REQUEST_URI.
      *
-     * If ``$pos`` is not passed the entire path array will be returned and the
-     * ``$filter`` and ``$options`` will be ignored.
+     * If ``$pos`` is not passed the entire segment array will be returned and
+     * the ``$filter`` and ``$options`` will be ignored.
      *
      * Supported Filters & Options:
      * https://www.php.net/manual/en/filter.filters.php
@@ -392,20 +392,18 @@ final class Request
      * @param integer $filter The ID of the filter to apply
      * @param array|int $options Associative array of options or bitwise
      *                           disjunction of flags
-     * @return mixed The requested path item
+     * @return mixed The requested segment item
      */
-    public static function path(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
+    public static function segment(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
     {
-        static $pathString;
         static $pathArray;
 
-        if ( ! isset($pathString)) {
-            list($pathString) = explode('?', $_SERVER['REQUEST_URI']);
-        }
-
         if ( ! isset($pathArray)) {
-            $dotLocation = strripos($pathString, '.');
-            $pathArray = explode('/', substr($pathString, 1, $dotLocation - 1));
+            $uri = $_SERVER['REQUEST_URI'];
+            if (strpos($uri, '/') === 0) {
+                $uri = substr($uri, 1);
+            }
+            $pathArray = explode('/', strtok(strtok($uri, '?'), '.'));
         }
 
         if (isset($pos)) {
@@ -432,16 +430,19 @@ final class Request
  */
 final class RequestFile
 {
-    private $true_type = null;
+    /**
+     * True Type
+     * @var string
+     */
+    private $true_type = 'UNKNOWN';
 
+    // ---------------------------------------------------------------------
+
+    /**
+     * Constructor
+     */
     public function __construct($file)
     {
-        static $finfo;
-
-        if ( ! isset($finfo)) {
-          $finfo = new \finfo(FILEINFO_MIME);
-        }
-
         foreach (array_keys($file) as $key) {
             $this->$key = $file[$key];
         }
@@ -451,6 +452,17 @@ final class RequestFile
         }
     }
 
+    /**
+     * Get file contents
+     *
+     * This method will invoke file_get_contents() on the file using tmp_name
+     * to return the file contents as a string.
+     *
+     * If there is no file or if there was an error uploading NULL will be
+     * returned.
+     *
+     * @return string File contents as a string
+     */
     public function getContents(): string|null
     {
         if (empty($this->tmp_name) || ! empty($this->error)) {
@@ -459,6 +471,16 @@ final class RequestFile
         return file_get_contents($this->tmp_name);
     }
 
+    /**
+     * Get upload error
+     *
+     * This method will invoke file_get_contents() on the file using tmp_name
+     * to return the file contents as a string.
+     *
+     * If there is no error NULL will be returned.
+     *
+     * @return string Error message
+     */
     public function getError(): string|null
     {
         switch($this->error) {
@@ -495,20 +517,28 @@ final class RequestFile
         }
     }
 
-    public function moveTo(string $toPath): bool
-    {
-        if ( ! empty($this->error)) {
-            return false;
-        }
-        return move_uploaded_file($this->tmp_name, $toPath);
-    }
-
+    /**
+     * File true type
+     *
+     * This method uses PHP finfo class to determine the uploaded file's true
+     * type.
+     *
+     * @see https://www.php.net/manual/en/class.finfo.php
+     * 
+     * @return string Error message
+     */
     public function trueType(): string
     {
-        if (empty($this->true_type) && ! empty($this->tmp_name)) {
+        static $finfo;
+
+        if ( ! isset($finfo)) {
             $finfo = new \finfo(FILEINFO_MIME);
+        }
+
+        if (empty($this->true_type) && ! empty($this->tmp_name)) {
             list($this->true_type) = explode(';', $finfo->buffer(file_get_contents($this->tmp_name)));
         }
+
         return $this->true_type;
     }
 }

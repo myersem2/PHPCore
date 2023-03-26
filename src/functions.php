@@ -772,7 +772,26 @@ if ( ! in_array('request_ip', $disabled_functions) ) {
     }
 }
 
-// TODO: document
+/**
+ * Get parameter from requested URI
+ *
+ * This method will return the variable passed to the current script via the URL
+ * parameters (aka. query string) by a given $key using $_GET superglobal
+ * varable. If the key is not passed then an array of all the variables will be
+ * returned.
+ *
+ * If ``$key`` is not passed the entire query be returned and the ``$filter``
+ * and ``$options`` will be ignored.
+ *
+ * Supported Filters & Options:
+ * https://www.php.net/manual/en/filter.filters.php
+ *
+ * @param string $key The key of the query to retrieve
+ * @param integer $filter The ID of the filter to apply
+ * @param array|int $options Associative array of options or bitwise
+ *                           disjunction of flags
+ * @return mixed The requested query item
+ */
 if ( ! in_array('request_param', $disabled_functions) ) {
     function request_param(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
     {
@@ -780,11 +799,28 @@ if ( ! in_array('request_param', $disabled_functions) ) {
     }
 }
 
-// TODO: document
-if ( ! in_array('request_path', $disabled_functions) ) {
-    function request_path(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
+/**
+ * Get segment from requested URI
+ *
+ * This method will return a segment of the requested URI with a given $pos
+ * using the REQUEST_URI.
+ *
+ * If ``$pos`` is not passed the entire segment array will be returned and the
+ * ``$filter`` and ``$options`` will be ignored.
+ *
+ * Supported Filters & Options:
+ * https://www.php.net/manual/en/filter.filters.php
+ *
+ * @param integer $pos The pos index of the path to retrieve
+ * @param integer $filter The ID of the filter to apply
+ * @param array|int $options Associative array of options or bitwise disjunction
+ *                           of flags
+ * @return mixed The requested segment item
+ */
+if ( ! in_array('request_segment', $disabled_functions) ) {
+    function request_segment(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
     {
-        return \PHPCore\Request::path($pos, $filter, $options);    
+        return \PHPCore\Request::segment($pos, $filter, $options);    
     }
 }
 

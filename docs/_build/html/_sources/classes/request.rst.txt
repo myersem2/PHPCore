@@ -26,7 +26,7 @@ Request Class synopsis
        public static function host(): string|false
        public static function ip(): string|false
        public static function param(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
-       public static function path(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
+       public static function segment(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
    }
 
 Request Class Table of Contents
@@ -40,6 +40,8 @@ Request Class Table of Contents
 * :ref:`Request::header<request-method-header>` - Get data from request header
 * :ref:`Request::host<request-method-host>` - Get requester host name
 * :ref:`Request::ip<request-method-ip>` - Get requester ip address
+* :ref:`Request::param<request-method-param>` - Get parameter from requested URI
+* :ref:`Request::segment<request-method-segment>` - Get segment from requested URI
 
 Request Class methods
 #####################
@@ -346,6 +348,86 @@ Request Class methods
 
       // phpcore.ini: request.ip_var = "HTTP_X_FORWARDED_FOR"
       echo Request::ip(); // '192.168.0.1'
+
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Class Table Of Contents>`
+
+-----
+
+.. _request-method-param:
+.. php:function:: param(?string $key = null, ?int $filter = null, array|int $options = 0)
+
+   Get parameter from requested URI
+
+   This method will return the variable passed to the current script via the URL parameters (aka. query string) by a given $key using $_GET superglobal varable. If the key is not passed then an array of all the variables will be returned.
+
+   If ``$key`` is not passed the entire query be returned and the ``$filter`` and ``$options`` will be ignored.
+
+   .. seealso::
+      `PHP Types of filters`_ - List of available filters and options. 
+      `PHP Filter Variable`_ - Information on the operation of the filter_var() function.
+
+   :param string: The key of the query to retrieve
+   :param integer: The ID of the filter to apply
+   :param array|int: Associative array of options or bitwise disjunction of flags
+   :return ``mixed``: The requested query item
+
+   .. code-block:: php
+      :caption: Get parameter from requested URI
+      :linenos:
+      :emphasize-lines: 5,7,8
+
+      <?php
+      use \PHPCore\Request;
+      // $_SERVER['REQUEST_URI'] = '/index.php?text=abc&num=12345'
+
+      var_dump(Request::param()); // [ "text" => "abc", "num" => "12345" ]
+
+      var_dump(Request::param('text')); // 'abc'
+      var_dump(Request::param('num', FILTER_VALIDATE_INT)); // 12345
+
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Class Table Of Contents>`
+
+-----
+
+.. _request-method-segment:
+.. php:function:: segment(?int $pos = null, ?int $filter = null, array|int $options = 0)
+
+   Get segment from requested URI
+
+   This method will return a segment of the requested URI with a given $pos using the REQUEST_URI.
+
+   If ``$pos`` is not passed the entire segment array will be returned and the ``$filter`` and ``$options`` will be ignored.
+
+   .. seealso::
+      `PHP Types of filters`_ - List of available filters and options. 
+      `PHP Filter Variable`_ - Information on the operation of the filter_var() function.
+
+   :param integer: The pos index of the path to retrieve
+   :param integer: The ID of the filter to apply
+   :param array|int: Associative array of options or bitwise disjunction of flags
+   :return ``mixed``: The requested segment item
+
+   .. code-block:: php
+      :caption: Get segment from requested URI
+      :linenos:
+      :emphasize-lines: 5,7,8
+
+      <?php
+      use \PHPCore\Request;
+      // $_SERVER['REQUEST_URI'] = '/sections/articles/12345.html'
+
+      var_dump(Request::segment()); // [ "sections", "articles", "12345" ]
+
+      var_dump(Request::segment(1)); // 'articles'
+      var_dump(Request::segment(2, FILTER_VALIDATE_INT)); // 12345
 
       ?>
 

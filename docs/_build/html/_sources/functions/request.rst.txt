@@ -10,6 +10,8 @@ Request Functions
 * `request_header`_ - Get data from request header
 * `request_host`_ - Get requester host name
 * `request_ip`_ - Get requester ip address
+* `request_param`_ - Get parameter from requested URI
+* `request_segment`_ - Get segment from requested URI
 
 ----
 
@@ -224,10 +226,9 @@ Many of the request functions below are just aliases for the methods of the `PHP
    .. code-block:: php
       :caption: Get data from request header
       :linenos:
-      :emphasize-lines: 13,14,15,17
+      :emphasize-lines: 12,13,14,16
 
       <?php
-      use \PHPCore\Request;
       // Request Headers
       //   Accept: */*
       //   Accept-Encoding: gzip, deflate
@@ -265,10 +266,9 @@ Many of the request functions below are just aliases for the methods of the `PHP
    .. code-block:: php
       :caption: Get requester host name
       :linenos:
-      :emphasize-lines: 5,8
+      :emphasize-lines: 4,7
 
       <?php
-      use \PHPCore\Request;
 
       // $_SERVER['REMOTE_ADDR'] = '8.8.8.8'
       echo request_host(); // 'dns.google'
@@ -297,10 +297,9 @@ Many of the request functions below are just aliases for the methods of the `PHP
    .. code-block:: php
       :caption: Get requester ip address
       :linenos:
-      :emphasize-lines: 7,10
+      :emphasize-lines: 6,9
 
       <?php
-      use \PHPCore\Request;
       // $_SERVER['REMOTE_ADDR'] = '10.0.0.1'
       // $_SERVER['HTTP_X_FORWARDED_FOR'] = '192.168.0.1'
 
@@ -309,6 +308,84 @@ Many of the request functions below are just aliases for the methods of the `PHP
 
       // phpcore.ini: request.ip_var = "HTTP_X_FORWARDED_FOR"
       echo request_ip(); // '192.168.0.1'
+
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Functions>`
+
+-----
+
+.. php:function:: request_param(?string $key = null, ?int $filter = null, array|int $options = 0)
+
+   Get parameter from requested URI
+
+   This method will return the variable passed to the current script via the URL parameters (aka. query string) by a given $key using $_GET superglobal varable. If the key is not passed then an array of all the variables will be returned.
+
+   If ``$key`` is not passed the entire query be returned and the ``$filter`` and ``$options`` will be ignored.
+
+   .. seealso::
+      `PHP Types of filters`_ - List of available filters and options. 
+      `PHP Filter Variable`_ - Information on the operation of the filter_var() function.
+
+   :param string: The key of the query to retrieve
+   :param integer: The ID of the filter to apply
+   :param array|int: Associative array of options or bitwise disjunction of flags
+   :return ``mixed``: The requested query item
+
+   .. code-block:: php
+      :caption: Get parameter from requested URI
+      :linenos:
+      :emphasize-lines: 4,6,7
+
+      <?php
+      // $_SERVER['REQUEST_URI'] = '/index.php?text=abc&num=12345'
+
+      var_dump(Request::param()); // [ "text" => "abc", "num" => "12345" ]
+
+      var_dump(Request::param('text')); // 'abc'
+      var_dump(Request::param('num', FILTER_VALIDATE_INT)); // 12345
+
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Functions>`
+
+
+-----
+
+.. php:function:: request_segment(?int $pos = null, ?int $filter = null, array|int $options = 0)
+
+   Get segment from requested URI
+
+   This method will return a segment of the requested URI with a given $pos using the REQUEST_URI.
+
+   If ``$pos`` is not passed the entire segment array will be returned and the ``$filter`` and ``$options`` will be ignored.
+
+   .. seealso::
+      `PHP Types of filters`_ - List of available filters and options. 
+      `PHP Filter Variable`_ - Information on the operation of the filter_var() function.
+
+   :param integer: The pos index of the path to retrieve
+   :param integer: The ID of the filter to apply
+   :param array|int: Associative array of options or bitwise disjunction of flags
+   :return ``mixed``: The requested segment item
+
+   .. code-block:: php
+      :caption: Get segment from requested URI
+      :linenos:
+      :emphasize-lines: 5,7,8
+
+      <?php
+      use \PHPCore\Request;
+      // $_SERVER['REQUEST_URI'] = '/sections/articles/12345.html'
+
+      var_dump(Request::segment()); // [ "sections", "articles", "12345" ]
+
+      var_dump(Request::segment(1)); // 'articles'
+      var_dump(Request::segment(2, FILTER_VALIDATE_INT)); // 12345
 
       ?>
 
