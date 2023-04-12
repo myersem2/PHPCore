@@ -20,6 +20,35 @@ $ds = DIRECTORY_SEPARATOR;
 $bootstrap = __DIR__ . "{$ds}..{$ds}src{$ds}bootstrap.php";
 include $bootstrap;
 
+function apache_request_headers_alt() {
+  $arh = array();
+  $rx_http = '/\AHTTP_/';
+  foreach($_SERVER as $key => $val) {
+    if( preg_match($rx_http, $key) ) {
+      $arh_key = preg_replace($rx_http, '', $key);
+      $rx_matches = array();
+      // do some nasty string manipulations to restore the original letter case
+      // this should work in most cases
+      $rx_matches = explode('_', $arh_key);
+      if( count($rx_matches) > 0 and strlen($arh_key) > 2 ) {
+        foreach($rx_matches as $ak_key => $ak_val) $rx_matches[$ak_key] = ucfirst($ak_val);
+        $arh_key = implode('-', $rx_matches);
+      }
+      $arh[$arh_key] = $val;
+    }
+  }
+  return( $arh );
+}
+
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
+    echo json_encode([
+      "custom_header_1"=>request_header('custom-header-1'),
+      "custom_header_2"=>request_header('custom-header-2', FILTER_VALIDATE_INT),
+      "accept-encoding"=>request_header('accept-encoding'),
+    ]);
+    exit;
+}
+
 // =============================================================================
 // Paths and Directives
 // =============================================================================
@@ -70,7 +99,17 @@ function var_type_display($var) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/favicon.ico">
     <script>
-
+      function testHeader() {
+        let headers = new Headers()
+        headers.append("X-Custom-Header-1", "Random value 1")
+        headers.append("X-Custom-header-2", "12345")
+        fetch('/playground/request.html', {headers: headers,method:"POST"}).then(
+          async response => {
+            const json = await response.json()
+            console.log(json)
+          }
+        )
+      }
     </script>
     <style>
       /* reset */
@@ -106,6 +145,7 @@ function var_type_display($var) {
     </style>
   </head>
   <body>
+  <button onClick="testHeader()">Header Test</button>
     <h1>PHPCore Request Playground</h1>
     <hr>
     <p style="padding:0.5em;color:#A71C20;font-weight:bold;">

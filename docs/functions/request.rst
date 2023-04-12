@@ -376,7 +376,7 @@ Many of the request functions below are just aliases for the methods of the `PHP
    .. code-block:: php
       :caption: Get segment from requested URI
       :linenos:
-      :emphasize-lines: 5,7,8
+      :emphasize-lines: 5,7,8,11
 
       <?php
       use \PHPCore\Request;
@@ -386,6 +386,9 @@ Many of the request functions below are just aliases for the methods of the `PHP
 
       var_dump(Request::segment(1)); // 'articles'
       var_dump(Request::segment(2, FILTER_VALIDATE_INT)); // 12345
+
+      // phpcore.ini: request.segment_offset = 1
+      var_dump(Request::segment(0)); // 'articles'
 
       ?>
 

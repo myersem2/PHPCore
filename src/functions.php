@@ -753,6 +753,14 @@ if ( ! in_array('request_host', $disabled_functions) ) {
     }
 }
 
+// TODO: Document
+if ( ! in_array('request_id', $disabled_functions) ) {
+    function request_id(): string
+    {
+        return \PHPCore\Request::id();    
+    }
+}
+
 /**
  * Get requester ip address
  *
@@ -824,6 +832,30 @@ if ( ! in_array('request_segment', $disabled_functions) ) {
     }
 }
 
+// TODO: document
+if ( ! in_array('response_add', $disabled_functions) ) {
+    function response_add(string|array $key, mixed $data = null): void
+    {
+        \PHPCore\Response::add($key, $data);    
+    }
+}
+
+// TODO: document
+if ( ! in_array('response_error', $disabled_functions) ) {
+    function response_error(float $code, array $params = [], int $flags = 0): void
+    {
+        \PHPCore\Response::error($code, $params, $flags);    
+    }
+}
+
+// TODO: document
+if ( ! in_array('response_send', $disabled_functions) ) {
+    function response_send(mixed $data = null, ?int $statusCode = null): void
+    {
+        \PHPCore\Response::send($data, $statusCode);    
+    }
+}
+
 /**
  * Time to array
  *
@@ -853,7 +885,7 @@ if ( ! in_array('timetoarray', $disabled_functions) ) {
 if ( ! in_array('xml_encode', $disabled_functions) ) {
     define('XML_ENCODE_AS_XML_OBJ', 1);
     define('XML_ENCODE_PRETTY_PRINT', 2);
-    function xml_encode(array $array, int $flags = 0)
+    function xml_encode(mixed $array, int $flags = 0)
     {
         static $sub_func = null;
         if (empty($sub_func)) {

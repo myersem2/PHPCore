@@ -232,7 +232,7 @@ final class Request
             $contentType = match ($_SERVER['CONTENT_TYPE'] ?? null) {
                 'text/json', 'application/json'     => 'json',
                 'application/x-www-form-urlencoded' => 'xml',
-                'text/yaml', 'application/x-yaml'   => 'yaml',
+                'text/yaml', 'application/yaml'     => 'yaml',
                 'text/csv'                          => 'csv',
                 default => null
             };
@@ -312,6 +312,18 @@ final class Request
         } else {
           return false;
         }
+    }
+
+    // TODO: Document
+    public static function id(): string
+    {
+        static $id;
+
+        if ( ! isset($id)) {
+            $id = md5($_SERVER['REQUEST_TIME_FLOAT'].'['.self::ip().']'.$_SERVER['REQUEST_URI']);
+        }
+
+        return $id;
     }
 
     /**
@@ -404,6 +416,12 @@ final class Request
                 $uri = substr($uri, 1);
             }
             $pathArray = explode('/', strtok(strtok($uri, '?'), '.'));
+
+            $segment_offset = core_ini_get('request.segment_offset');
+            if ( ! empty($segment_offset)) {
+                $pathArray = array_slice($pathArray, intval($segment_offset));
+            }
+
         }
 
         if (isset($pos)) {

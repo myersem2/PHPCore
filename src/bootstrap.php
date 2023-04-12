@@ -141,4 +141,7 @@ if (core_ini_get('auto_start', 'Session')) {
     PHPCore\Session::getInstance();
 }
 
+// TODO: 
+//register_shutdown_function('Response::send')
+
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////
