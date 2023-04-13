@@ -178,6 +178,7 @@
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">format</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">header</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">host</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">id</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">ip</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">param</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">segment</span><span class="p">(</span><span class="o">?</span><span class="nx">int</span> <span class="nv">$pos</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
@@ -195,6 +196,7 @@
 <li><p><a class="reference internal" href="#request-method-files"><span class="std std-ref">Request::files</span></a> - Get files from request</p></li>
 <li><p><a class="reference internal" href="#request-method-header"><span class="std std-ref">Request::header</span></a> - Get data from request header</p></li>
 <li><p><a class="reference internal" href="#request-method-host"><span class="std std-ref">Request::host</span></a> - Get requester host name</p></li>
+<li><p><a class="reference internal" href="#request-method-id"><span class="std std-ref">Request::id</span></a> - Get request ID</p></li>
 <li><p><a class="reference internal" href="#request-method-ip"><span class="std std-ref">Request::ip</span></a> - Get requester ip address</p></li>
 <li><p><a class="reference internal" href="#request-method-param"><span class="std std-ref">Request::param</span></a> - Get parameter from requested URI</p></li>
 <li><p><a class="reference internal" href="#request-method-segment"><span class="std std-ref">Request::segment</span></a> - Get segment from requested URI</p></li>
@@ -206,8 +208,8 @@
 <dt class="sig sig-object php" id="agent">
 <span class="sig-name descname"><span class="pre">agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#agent" title="Permalink to this definition"></a></dt>
 <dd><p>Get request agent capabilities</p>
-<p>Attempts to determine the capabilities of the user’s browser, by looking up the browser’s information in the browscap.ini file. Then returns the capability by the given <code class="docutils literal notranslate"><span class="pre">$key</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">$key</span></code> is not passed the entire capabilities object will be returned.</p>
+<p>Attempts to determine the capabilities of the user’s browser, by looking up the browser’s information in the browscap.ini file. Then returns the capability by the given <strong>$key</strong>.</p>
+<p>If <strong>$key</strong> is not passed the entire capabilities object will be returned.</p>
 <p>Returns <strong>NULL</strong> if get_browser() fails or requested capability is unknown.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -246,12 +248,12 @@
 <dt class="sig sig-object php" id="body">
 <span class="sig-name descname"><span class="pre">body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#body" title="Permalink to this definition"></a></dt>
 <dd><p>Get data from request body</p>
-<p>Will parsed the request body based on the format, then return data from the parsed body by a given $key for data passed via the HTTP POST method. The option <code class="docutils literal notranslate"><span class="pre">$filter</span></code> and <code class="docutils literal notranslate"><span class="pre">$options</span></code> parameters may be given to invoke filter_var() before the value is returned.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">$key</span></code> is not passed the request body be returned and the <code class="docutils literal notranslate"><span class="pre">$filter</span></code> and <code class="docutils literal notranslate"><span class="pre">$options</span></code> will be ignored.</p>
+<p>Will parsed the request body based on the format, then return data from the parsed body by a given <strong>$key</strong> for data passed via the HTTP POST method. The option <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
+<p>If <strong>$key</strong> is not passed the request body be returned and the <strong>$filter</strong> and <strong>$options</strong> will be ignored.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.
-<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the filter_var() function.</p>
+<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -292,11 +294,11 @@
 <dt class="sig sig-object php" id="cookie">
 <span class="sig-name descname"><span class="pre">cookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cookie" title="Permalink to this definition"></a></dt>
 <dd><p>Get data from HTTP cookie</p>
-<p>Will return data from cookie by a given $key for data passed via HTTP Cookies. The option <code class="docutils literal notranslate"><span class="pre">$filter</span></code> and <code class="docutils literal notranslate"><span class="pre">$options</span></code> parameters may be given to invoke filter_var() before the value is returned.</p>
+<p>Will return data from cookie by a given <strong>$key</strong> for data passed via HTTP Cookies. The option <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.
-<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the filter_var() function.</p>
+<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -331,7 +333,7 @@
 <dt class="sig sig-object php" id="file">
 <span class="sig-name descname"><span class="pre">file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#file" title="Permalink to this definition"></a></dt>
 <dd><p>Get file from request</p>
-<p>Will return the file by a given $key for the files that was uploaded via the HTTP POST method using the $_FILES superglobal variable.</p>
+<p>Will return the file by a given <strong>$key</strong> for the files that was uploaded via the HTTP POST method using the <code class="docutils literal notranslate"><span class="pre">$_FILES</span></code> superglobal variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -370,7 +372,7 @@
 <dt class="sig sig-object php" id="files">
 <span class="sig-name descname"><span class="pre">files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#files" title="Permalink to this definition"></a></dt>
 <dd><p>Get files from request</p>
-<p>Will return an array of files for a given $key that were uploaded via the HTTP POST method using the $_FILES superglobal variable.</p>
+<p>Will return an array of files for a given <strong>$key</strong> that were uploaded via the HTTP POST method using the <code class="docutils literal notranslate"><span class="pre">$_FILES</span></code> superglobal variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -409,12 +411,12 @@
 <dt class="sig sig-object php" id="header">
 <span class="sig-name descname"><span class="pre">header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#header" title="Permalink to this definition"></a></dt>
 <dd><p>Get data from request header</p>
-<p>Will return data from the HTTP request headers for a given $key. The option <code class="docutils literal notranslate"><span class="pre">$filter</span></code> and <code class="docutils literal notranslate"><span class="pre">$options</span></code> parameters may be given to invoke filter_var() before the value is returned.</p>
+<p>Will return data from the HTTP request headers for a given <strong>$key</strong>. The option <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
 <p>The key will be searched for both without then with the prefix “x-” to be compatiable with older conventions. Therfore there is no need include the prefix “x-” in your code moving forward.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.
-<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the filter_var() function.</p>
+<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -460,7 +462,7 @@
 <dt class="sig sig-object php" id="host">
 <span class="sig-name descname"><span class="pre">host</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#host" title="Permalink to this definition"></a></dt>
 <dd><p>Get requester host name</p>
-<p>This method will return the requester’s host name using the requester’s ip address, see Request::ipAddress() for more information.</p>
+<p>This method will return the requester’s host name using the requester’s ip address, see <code class="docutils literal notranslate"><span class="pre">Request::ip()</span></code> for more information.</p>
 <p>Returns false if requester ip address is unknown.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -486,19 +488,47 @@
 </dd></dl>
 
 <hr class="docutils" />
+<span class="target" id="request-method-id"></span><dl class="php function">
+<dt class="sig sig-object php" id="id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id" title="Permalink to this definition"></a></dt>
+<dd><p>Get request ID</p>
+<p>Gets the unique identifier based on the <strong>REQUEST_TIME_FLOAT</strong>, <code class="docutils literal notranslate"><span class="pre">Request::ip()</span></code> and the <strong>REQUEST_URI</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code> Request ID</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-number">Example 17 </span><span class="caption-text">Get request ID</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos">2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos">3</span><span class="c1">// $_SERVER[&#39;REQUEST_TIME_FLOAT&#39;] = 1681363597.2922</span>
+<span class="linenos">4</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;10.0.0.101&#39;</span>
+<span class="linenos">5</span><span class="c1">// $_SERVER[&#39;REQUEST_URI&#39;] = &#39;/test.php&#39;</span>
+<span class="linenos">6</span>
+<span class="hll"><span class="linenos">7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">id</span><span class="p">();</span> <span class="c1">// &#39;9e86384b69d5abe885fe33baff74bf37&#39;</span>
+</span><span class="linenos">8</span>
+<span class="linenos">9</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
 <span class="target" id="request-method-ip"></span><dl class="php function">
 <dt class="sig sig-object php" id="ip">
 <span class="sig-name descname"><span class="pre">ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ip" title="Permalink to this definition"></a></dt>
 <dd><p>Get requester ip address</p>
-<p>This method will return the requester’s ip address via the designated $_SERVER param that contains the requester’s IP Address. This is normally REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the phpcore.ini file.</p>
-<p>Returns false if $_SERVER param is not set.</p>
+<p>This method will return the requester’s ip address via the designated <code class="docutils literal notranslate"><span class="pre">$_SERVER</span></code> param that contains the requester’s IP Address. This is normally <strong>REMOTE_ADDR</strong> or <strong>HTTP_X_FORWARDED_FOR</strong> and can be configured in the phpcore.ini file.</p>
+<p>Returns false if <code class="docutils literal notranslate"><span class="pre">$_SERVER</span></code> param is not set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string|false</span></code> IP Address of requester</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-number">Example 17 </span><span class="caption-text">Get requester ip address</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-number">Example 18 </span><span class="caption-text">Get requester ip address</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
 <span class="linenos"> 3</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;10.0.0.1&#39;</span>
@@ -522,27 +552,27 @@
 <dt class="sig sig-object php" id="param">
 <span class="sig-name descname"><span class="pre">param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#param" title="Permalink to this definition"></a></dt>
 <dd><p>Get parameter from requested URI</p>
-<p>This method will return the variable passed to the current script via the URL parameters (aka. query string) by a given $key using $_GET superglobal varable. If the key is not passed then an array of all the variables will be returned.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">$key</span></code> is not passed the entire query be returned and the <code class="docutils literal notranslate"><span class="pre">$filter</span></code> and <code class="docutils literal notranslate"><span class="pre">$options</span></code> will be ignored.</p>
+<p>This method will return the variable passed to the current script via the URL parameters (aka. query string) by a given <strong>$key</strong> using <code class="docutils literal notranslate"><span class="pre">$_GET</span></code> superglobal varable. If the key is not passed then an array of all the variables will be returned.</p>
+<p>If <strong>$key</strong> is not passed the entire query be returned and the <strong>$filter</strong> and <strong>$options</strong> will be ignored.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.
-<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the filter_var() function.</p>
+<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>string</strong> – The key of the query to retrieve</p></li>
-<li><p><strong>integer</strong> – The ID of the filter to apply</p></li>
-<li><p><strong>array|int</strong> – Associative array of options or bitwise disjunction of flags</p></li>
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the query to retrieve</p></li>
+<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">integer</span></code></span>) – The ID of the filter to apply</p></li>
+<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return mixed<code class="docutils literal notranslate"><span class="pre">mixed</span></code></dt>
 <dd class="field-even"><p>The requested query item</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-number">Example 18 </span><span class="caption-text">Get parameter from requested URI</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-number">Example 19 </span><span class="caption-text">Get parameter from requested URI</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
 <span class="linenos"> 3</span><span class="c1">// $_SERVER[&#39;REQUEST_URI&#39;] = &#39;/index.php?text=abc&amp;num=12345&#39;</span>
@@ -564,27 +594,27 @@
 <dt class="sig sig-object php" id="segment">
 <span class="sig-name descname"><span class="pre">segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?int</span> <span class="pre">$pos</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#segment" title="Permalink to this definition"></a></dt>
 <dd><p>Get segment from requested URI</p>
-<p>This method will return a segment of the requested URI with a given $pos using the REQUEST_URI.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">$pos</span></code> is not passed the entire segment array will be returned and the <code class="docutils literal notranslate"><span class="pre">$filter</span></code> and <code class="docutils literal notranslate"><span class="pre">$options</span></code> will be ignored.</p>
+<p>This method will return a segment of the requested URI with a given <strong>$pos</strong> using the <strong>REQUEST_URI</strong>.</p>
+<p>If <strong>$pos</strong> is not passed the entire segment array will be returned and the <strong>$filter</strong> and <strong>$options</strong> will be ignored.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.
-<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the filter_var() function.</p>
+<a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>integer</strong> – The pos index of the path to retrieve</p></li>
-<li><p><strong>integer</strong> – The ID of the filter to apply</p></li>
-<li><p><strong>array|int</strong> – Associative array of options or bitwise disjunction of flags</p></li>
+<li><p><strong>$pos</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">integer</span></code></span>) – The pos index of the path to retrieve</p></li>
+<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">integer</span></code></span>) – The ID of the filter to apply</p></li>
+<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return mixed<code class="docutils literal notranslate"><span class="pre">mixed</span></code></dt>
 <dd class="field-even"><p>The requested segment item</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-number">Example 19 </span><span class="caption-text">Get segment from requested URI</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-number">Example 20 </span><span class="caption-text">Get segment from requested URI</span><a class="headerlink" href="#id11" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
 <span class="linenos"> 3</span><span class="c1">// $_SERVER[&#39;REQUEST_URI&#39;] = &#39;/sections/articles/12345.html&#39;</span>
@@ -594,7 +624,10 @@
 <span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">segment</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span> <span class="c1">// &#39;articles&#39;</span>
 </span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">segment</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 12345</span>
 </span><span class="linenos"> 9</span>
-<span class="linenos">10</span><span class="cp">?&gt;</span><span class="x"></span>
+<span class="linenos">10</span><span class="c1">// phpcore.ini: request.segment_offset = 1</span>
+<span class="hll"><span class="linenos">11</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">segment</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span> <span class="c1">// &#39;articles&#39;</span>
+</span><span class="linenos">12</span>
+<span class="linenos">13</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>

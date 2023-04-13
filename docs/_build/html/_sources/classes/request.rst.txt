@@ -24,6 +24,7 @@ Request Class synopsis
        public static function format(): string
        public static function header(string $key, ?int $filter = null, array|int $options = 0): mixed
        public static function host(): string|false
+       public static function id(): string
        public static function ip(): string|false
        public static function param(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
        public static function segment(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
@@ -39,6 +40,7 @@ Request Class Table of Contents
 * :ref:`Request::files<request-method-files>` - Get files from request
 * :ref:`Request::header<request-method-header>` - Get data from request header
 * :ref:`Request::host<request-method-host>` - Get requester host name
+* :ref:`Request::id<request-method-id>` - Get request ID
 * :ref:`Request::ip<request-method-ip>` - Get requester ip address
 * :ref:`Request::param<request-method-param>` - Get parameter from requested URI
 * :ref:`Request::segment<request-method-segment>` - Get segment from requested URI
@@ -51,9 +53,9 @@ Request Class methods
 
    Get request agent capabilities
 
-   Attempts to determine the capabilities of the user's browser, by looking up the browser's information in the browscap.ini file. Then returns the capability by the given ``$key``.
+   Attempts to determine the capabilities of the user's browser, by looking up the browser's information in the browscap.ini file. Then returns the capability by the given **$key**.
 
-   If ``$key`` is not passed the entire capabilities object will be returned.
+   If **$key** is not passed the entire capabilities object will be returned.
 
    Returns **NULL** if get_browser() fails or requested capability is unknown.
 
@@ -91,13 +93,13 @@ Request Class methods
 
    Get data from request body
 
-   Will parsed the request body based on the format, then return data from the parsed body by a given $key for data passed via the HTTP POST method. The option ``$filter`` and ``$options`` parameters may be given to invoke filter_var() before the value is returned.
+   Will parsed the request body based on the format, then return data from the parsed body by a given **$key** for data passed via the HTTP POST method. The option **$filter** and **$options** parameters may be given to invoke ``filter_var()`` before the value is returned.
 
-   If ``$key`` is not passed the request body be returned and the ``$filter`` and ``$options`` will be ignored.
+   If **$key** is not passed the request body be returned and the **$filter** and **$options** will be ignored.
 
    .. seealso::
-      `PHP Types of filters`_ - List of available filters and options. 
-      `PHP Filter Variable`_ - Information on the operation of the filter_var() function.
+      `PHP Types of filters`_ - List of available filters and options.
+      `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
 
    :param string $key: The key of the body's data to retrieve
    :param integer $filter: The ID of the filter to apply
@@ -135,11 +137,11 @@ Request Class methods
 
    Get data from HTTP cookie
 
-   Will return data from cookie by a given $key for data passed via HTTP Cookies. The option ``$filter`` and ``$options`` parameters may be given to invoke filter_var() before the value is returned.
+   Will return data from cookie by a given **$key** for data passed via HTTP Cookies. The option **$filter** and **$options** parameters may be given to invoke ``filter_var()`` before the value is returned.
 
    .. seealso::
-      `PHP Types of filters`_ - List of available filters and options. 
-      `PHP Filter Variable`_ - Information on the operation of the filter_var() function.
+      `PHP Types of filters`_ - List of available filters and options.
+      `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
 
    :param string $key: The key of the cookie to retrieve
    :param integer $filter: The ID of the filter to apply
@@ -171,7 +173,7 @@ Request Class methods
 
    Get file from request
 
-   Will return the file by a given $key for the files that was uploaded via the HTTP POST method using the $_FILES superglobal variable.
+   Will return the file by a given **$key** for the files that was uploaded via the HTTP POST method using the ``$_FILES`` superglobal variable.
 
    :param string $key: The key of the file to retrieve
    :returns: ``object|null`` RequestFile object
@@ -208,7 +210,7 @@ Request Class methods
 
    Get files from request
 
-   Will return an array of files for a given $key that were uploaded via the HTTP POST method using the $_FILES superglobal variable.
+   Will return an array of files for a given **$key** that were uploaded via the HTTP POST method using the ``$_FILES`` superglobal variable.
 
    :param string $key: The key of the array of files to retrieve
    :returns: ``array`` Array of RequestFile objects
@@ -245,13 +247,13 @@ Request Class methods
 
    Get data from request header
 
-   Will return data from the HTTP request headers for a given $key. The option ``$filter`` and ``$options`` parameters may be given to invoke filter_var() before the value is returned.
+   Will return data from the HTTP request headers for a given **$key**. The option **$filter** and **$options** parameters may be given to invoke ``filter_var()`` before the value is returned.
 
    The key will be searched for both without then with the prefix "x-" to be compatiable with older conventions. Therfore there is no need include the prefix "x-" in your code moving forward.
 
    .. seealso::
-      `PHP Types of filters`_ - List of available filters and options. 
-      `PHP Filter Variable`_ - Information on the operation of the filter_var() function.
+      `PHP Types of filters`_ - List of available filters and options.
+      `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
 
    :param string $key: The key of the header's data to retrieve
    :param integer $filter: The ID of the filter to apply
@@ -294,7 +296,7 @@ Request Class methods
 
    Get requester host name
 
-   This method will return the requester's host name using the requester's ip address, see Request::ipAddress() for more information.
+   This method will return the requester's host name using the requester's ip address, see ``Request::ip()`` for more information.
 
    Returns false if requester ip address is unknown.
 
@@ -322,14 +324,44 @@ Request Class methods
 
 -----
 
+.. _request-method-id:
+.. php:function:: id()
+
+   Get request ID
+
+   Gets the unique identifier based on the **REQUEST_TIME_FLOAT**, ``Request::ip()`` and the **REQUEST_URI**.
+
+   :returns: ``string`` Request ID
+
+   .. code-block:: php
+      :caption: Get request ID
+      :linenos:
+      :emphasize-lines: 7
+
+      <?php
+      use \PHPCore\Request;
+      // $_SERVER['REQUEST_TIME_FLOAT'] = 1681363597.2922
+      // $_SERVER['REMOTE_ADDR'] = '10.0.0.101'
+      // $_SERVER['REQUEST_URI'] = '/test.php'
+
+      echo Request::id(); // '9e86384b69d5abe885fe33baff74bf37'
+
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Class Table Of Contents>`
+
+-----
+
 .. _request-method-ip:
 .. php:function:: ip()
 
    Get requester ip address
 
-   This method will return the requester's ip address via the designated $_SERVER param that contains the requester's IP Address. This is normally REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the phpcore.ini file.
+   This method will return the requester's ip address via the designated ``$_SERVER`` param that contains the requester's IP Address. This is normally **REMOTE_ADDR** or **HTTP_X_FORWARDED_FOR** and can be configured in the phpcore.ini file.
 
-   Returns false if $_SERVER param is not set.
+   Returns false if ``$_SERVER`` param is not set.
 
    :returns: ``string|false`` IP Address of requester
 
@@ -362,17 +394,17 @@ Request Class methods
 
    Get parameter from requested URI
 
-   This method will return the variable passed to the current script via the URL parameters (aka. query string) by a given $key using $_GET superglobal varable. If the key is not passed then an array of all the variables will be returned.
+   This method will return the variable passed to the current script via the URL parameters (aka. query string) by a given **$key** using ``$_GET`` superglobal varable. If the key is not passed then an array of all the variables will be returned.
 
-   If ``$key`` is not passed the entire query be returned and the ``$filter`` and ``$options`` will be ignored.
+   If **$key** is not passed the entire query be returned and the **$filter** and **$options** will be ignored.
 
    .. seealso::
-      `PHP Types of filters`_ - List of available filters and options. 
-      `PHP Filter Variable`_ - Information on the operation of the filter_var() function.
+      `PHP Types of filters`_ - List of available filters and options.
+      `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
 
-   :param string: The key of the query to retrieve
-   :param integer: The ID of the filter to apply
-   :param array|int: Associative array of options or bitwise disjunction of flags
+   :param string $key: The key of the query to retrieve
+   :param integer $filter: The ID of the filter to apply
+   :param array|int $options: Associative array of options or bitwise disjunction of flags
    :return ``mixed``: The requested query item
 
    .. code-block:: php
@@ -402,23 +434,23 @@ Request Class methods
 
    Get segment from requested URI
 
-   This method will return a segment of the requested URI with a given $pos using the REQUEST_URI.
+   This method will return a segment of the requested URI with a given **$pos** using the **REQUEST_URI**.
 
-   If ``$pos`` is not passed the entire segment array will be returned and the ``$filter`` and ``$options`` will be ignored.
+   If **$pos** is not passed the entire segment array will be returned and the **$filter** and **$options** will be ignored.
 
    .. seealso::
-      `PHP Types of filters`_ - List of available filters and options. 
-      `PHP Filter Variable`_ - Information on the operation of the filter_var() function.
+      `PHP Types of filters`_ - List of available filters and options.
+      `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
 
-   :param integer: The pos index of the path to retrieve
-   :param integer: The ID of the filter to apply
-   :param array|int: Associative array of options or bitwise disjunction of flags
+   :param integer $pos: The pos index of the path to retrieve
+   :param integer $filter: The ID of the filter to apply
+   :param array|int $options: Associative array of options or bitwise disjunction of flags
    :return ``mixed``: The requested segment item
 
    .. code-block:: php
       :caption: Get segment from requested URI
       :linenos:
-      :emphasize-lines: 5,7,8
+      :emphasize-lines: 5,7,8,11
 
       <?php
       use \PHPCore\Request;
@@ -428,6 +460,9 @@ Request Class methods
 
       var_dump(Request::segment(1)); // 'articles'
       var_dump(Request::segment(2, FILTER_VALIDATE_INT)); // 12345
+
+      // phpcore.ini: request.segment_offset = 1
+      var_dump(Request::segment(0)); // 'articles'
 
       ?>
 

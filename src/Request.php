@@ -9,7 +9,7 @@
 namespace PHPCore;
 
 // -------------------------------------------------------------------------------------------------
- 
+
 /**
  * Request Class
  *
@@ -26,7 +26,7 @@ final class Request
      *
      * Attempts to determine the capabilities of the user's browser, by looking
      * up the browser's information in the browscap.ini file. Then returns the
-     * capability by the given ``$key``.
+     * capability by the given **$key**.
      *
      * If $key is not passed the entire capabilities object will be returned.
      *
@@ -73,12 +73,12 @@ final class Request
      * Get data from request body
      *
      * Will parsed the request body based on the format, then return data from
-     * the parsed body by a given $key for data passed via the HTTP POST method.
-     * The option ``$filter`` and ``$options`` parameters may be given to invoke
-     * filter_var() before the value is returned.
+     * the parsed body by a given **$key** for data passed via the HTTP POST
+     * method. The option **$filter** and **$options** parameters may be given
+     * to invoke ``filter_var()`` before the value is returned.
      *
-     * If ``$key`` is not passed the request body be returned and the
-     * ``$filter`` and ``$options`` will be ignored.
+     * If **$key** is not passed the request body be returned and the
+     * **$filter** and **$options** will be ignored.
      *
      * Supported Filters & Options:
      * https://www.php.net/manual/en/filter.filters.php
@@ -124,9 +124,9 @@ final class Request
     /**
      * Get data from HTTP cookie
      *
-     * Will return data from cookie by a given $key for data passed via HTTP
-     * Cookies. The option ``$filter`` and ``$options`` parameters may be given
-     * to invoke filter_var() before the value is returned.
+     * Will return data from cookie by a given **$key** for data passed via HTTP
+     * Cookies. The option **$filter** and **$options** parameters may be given
+     * to invoke ``filter_var()`` before the value is returned.
      *
      * Supported Filters & Options:
      * https://www.php.net/manual/en/filter.filters.php
@@ -151,8 +151,8 @@ final class Request
     /**
      * Get file from request
      *
-     * Will return the file by a given $key for the files that was uploaded via
-     * the HTTP POST method using the $_FILES superglobal variable.
+     * Will return the file by a given **$key** for the files that was uploaded
+     * via the HTTP POST method using the ``$_FILES`` superglobal variable.
      *
      * @param string $key The key of the file to retrieve
      * @return object|null RequestFile object
@@ -175,8 +175,8 @@ final class Request
     /**
      * Get files from request
      *
-     * Will return an array of files for a given $key that were uploaded via the
-     * HTTP POST method using the $_FILES superglobal variable.
+     * Will return an array of files for a given **$key** that were uploaded via
+     * the HTTP POST method using the ``$_FILES`` superglobal variable.
      *
      * @param string $key The key of the array of files to retrieve
      * @return array Array of RequestFile objects
@@ -210,7 +210,7 @@ final class Request
      * This method will return the request format by first looking at the
      * requested CONTENT_TYPE, if unknown then it will attempt to decipher using
      * the REQUEST_URI extention. If format cannot be determine then the
-     * default_format set in the INI will be used.     
+     * default_format set in the INI will be used.
      *
      * @return string Format extention
      */
@@ -254,9 +254,9 @@ final class Request
     /**
      * Get data from request header
      *
-     * Will return data from the HTTP request headers for a given $key. The 
-     * option ``$filter`` and ``$options`` parameters may be given to invoke
-     * filter_var() before the value is returned.
+     * Will return data from the HTTP request headers for a given **$key**. The
+     * option **$filter** and **$options** parameters may be given to invoke
+     * ``filter_var()`` before the value is returned.
      *
      * The key will be searched for both without then with the prefix "x-" to be
      * compatiable with older conventions. Therfore there is no need include the
@@ -298,7 +298,7 @@ final class Request
      * Get requester host name
      *
      * This method will return the requester's host name using the requester's
-     * ip address, see Request::ipAddress() for more information.
+     * ip address, see ``Request::ip()`` for more information.
      *
      * Returns false if requester ip address is unknown.
      *
@@ -314,7 +314,14 @@ final class Request
         }
     }
 
-    // TODO: Document
+    /**
+     * Get request ID
+     *
+     * Gets the unique identifier based on the **REQUEST_TIME_FLOAT**,
+     * ``Request::ip()`` and the **REQUEST_URI**.
+     *
+     * @return string Request ID
+     */
     public static function id(): string
     {
         static $id;
@@ -330,11 +337,11 @@ final class Request
      * Get requester ip address
      *
      * This method will return the requester's ip address via the designated
-     * $_SERVER param that contains the requester's IP Address. This is normally
-     * REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the 
+     * ``$_SERVER`` param that contains the requester's IP Address. This is
+     * normally REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the
      * phpcore.ini file.
      *
-     * Returns false if $_SERVER param is not set.
+     * Returns false if ``$_SERVER`` param is not set.
      *
      * @return string|false IP Address of requester
      */
@@ -357,12 +364,12 @@ final class Request
      * Get parameter from requested URI
      *
      * This method will return the variable passed to the current script via the
-     * URL parameters (aka. query string) by a given $key using $_GET
+     * URL parameters (aka. query string) by a given **$key** using ``$_GET``
      * superglobal varable. If the key is not passed then an array of all the
      * variables will be returned.
      *
-     * If ``$key`` is not passed the entire query be returned and the
-     * ``$filter`` and ``$options`` will be ignored.
+     * If **$key** is not passed the entire query be returned and the
+     * **$filter** and **$options** will be ignored.
      *
      * Supported Filters & Options:
      * https://www.php.net/manual/en/filter.filters.php
@@ -391,11 +398,11 @@ final class Request
     /**
      * Get segment from requested URI
      *
-     * This method will return a segment of the requested URI with a given $pos
-     * using the REQUEST_URI.
+     * This method will return a segment of the requested URI with a given
+     * **$pos** using the **REQUEST_URI**.
      *
-     * If ``$pos`` is not passed the entire segment array will be returned and
-     * the ``$filter`` and ``$options`` will be ignored.
+     * If **$pos** is not passed the entire segment array will be returned and
+     * the **$filter** and **$options** will be ignored.
      *
      * Supported Filters & Options:
      * https://www.php.net/manual/en/filter.filters.php
@@ -542,7 +549,7 @@ final class RequestFile
      * type.
      *
      * @see https://www.php.net/manual/en/class.finfo.php
-     * 
+     *
      * @return string Error message
      */
     public function trueType(): string

@@ -54,7 +54,7 @@ if ( ! in_array('array_find', $disabled_functions) ) {
 if ( ! in_array('core_ini_get', $disabled_functions) ) {
     function core_ini_get(string $directive, string $section = 'PHPCore'): string|false
     {
-        //print_r($GLOBALS['_CORE_INI'][$section]);      
+        //print_r($GLOBALS['_CORE_INI'][$section]);
         return $GLOBALS['_CORE_INI'][$section][$directive] ?? false;
     }
 }
@@ -109,7 +109,7 @@ if ( ! in_array('core_ini_set', $disabled_functions) ) {
         $oldValue =  $GLOBALS['_CORE_INI'][$section][$directive] ?? '';
         if (isset($GLOBALS['_CORE_INI'][$section])) {
             $GLOBALS['_CORE_INI'][$section] = [];
-        }  
+        }
         $GLOBALS['_CORE_INI'][$section][$directive] = $value;
         return $oldValue;
     }
@@ -118,7 +118,7 @@ if ( ! in_array('core_ini_set', $disabled_functions) ) {
 /**
  * Get PHPCore Information
  *
- * @todo: Build HTML pretty output 
+ * @todo: Build HTML pretty output
  *
  * @return string List or HTML formated PHPCore information.
  */
@@ -142,7 +142,7 @@ if ( ! in_array('coreinfo', $disabled_functions) ) {
                     foreach ($directives as $directive=>$value) {
                         $output .= str_color($directive, 'green')." => $value" . $eol;
                     }
-                } 
+                }
                 $output .= PHP_EOL;
                 $output .= str_color(str_style('$_CORE', 'underline'), 'brown') . $eol;
                 foreach ($GLOBALS['_CORE'] as $name=>$value) {
@@ -437,7 +437,7 @@ if ( ! in_array('session_grant', $disabled_functions) and ! in_array('Session', 
  * @param string|array $groups ACL group or array of ACL groups to check
  *                             access for
  * @param integer $flags Bitwise flags for this method
- * @flag Session::HAS_ACCESS_ANY Has Access check true on ANY match 
+ * @flag Session::HAS_ACCESS_ANY Has Access check true on ANY match
  * @flag Session::HAS_ACCESS_ALL Has Access check true if ALL match
  * @return boolean If has session access
  */
@@ -505,7 +505,7 @@ if ( ! in_array('session_user', $disabled_functions) and ! in_array('Session', $
 /**
  * Returns terminal colored string
  *
- * This is done by escape character so we can actually define a output color. This is done with \033 (\e). 
+ * This is done by escape character so we can actually define a output color. This is done with \033 (\e).
  *
  * @param string $string         String to be colorized
  * @param string $str_color_name String color name
@@ -560,7 +560,7 @@ if ( ! in_array('str_color', $disabled_functions) ) {
 /**
  * Returns terminal styled string
  *
- * This is done by escape character so we can actually define a output color. This is done with \033 (\e). 
+ * This is done by escape character so we can actually define a output color. This is done with \033 (\e).
  *
  * @param string $string     String to be styled
  * @param string $style_name Style name
@@ -595,7 +595,7 @@ if ( ! in_array('str_style', $disabled_functions) ) {
  *
  * Attempts to determine the capabilities of the user's browser, by looking
  * up the browser's information in the browscap.ini file. Then returns the
- * capability by the given ``$key``.
+ * capability by the given **$key**.
  *
  * If ``$key ``is not passed the entire capabilities object will be returned.
  *
@@ -607,7 +607,7 @@ if ( ! in_array('str_style', $disabled_functions) ) {
 if ( ! in_array('request_agent', $disabled_functions) ) {
     function request_agent(?string $key = null): ?object
     {
-        return \PHPCore\Request::agent($key);    
+        return \PHPCore\Request::agent($key);
     }
 }
 
@@ -615,34 +615,35 @@ if ( ! in_array('request_agent', $disabled_functions) ) {
  * Get data from request body
  *
  * Will parsed the request body based on the format, then return data from the
- * parsed body by a given $key for data passed via the HTTP POST method. The
- * option ``$filter`` and ``$options`` parameters may be given to invoke
- * filter_var() before the value is returned.
+ * parsed body by a given **$key** for data passed via the HTTP POST method. The
+ * option **$filter** and **$options** parameters may be given to invoke
+ * ``filter_var()`` before the value is returned.
  *
- * If ``$key`` is not passed the request body be returned and the ``$filter``
- * and ``$options`` will be ignored.
+ * If **$key** is not passed the request body be returned and the **$filter**
+ * and **$options** will be ignored.
  *
  * Supported Filters & Options:
  * https://www.php.net/manual/en/filter.filters.php
  *
  * @param string $key The key of the body's data to retrieve
  * @param integer $filter The ID of the filter to apply
- * @param array|int $options Associative array of options or bitwise disjunction of flags
+ * @param array|int $options Associative array of options or bitwise disjunction
+ *                           of flags
  * @return mixed The requested data item
  */
 if ( ! in_array('request_body', $disabled_functions) ) {
     function request_body(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
     {
-        return \PHPCore\Request::agent($key);    
+        return \PHPCore\Request::agent($key);
     }
 }
 
 /**
  * Get data from HTTP cookie
  *
- * Will return data from cookie by a given $key for data passed via HTTP 
- * Cookies. The option ``$filter`` and ``$options`` parameters may be given to
- * invoke filter_var() before the value is returned.
+ * Will return data from cookie by a given **$key** for data passed via HTTP
+ * Cookies. The option **$filter** and **$options** parameters may be given to
+ * invoke ``filter_var()`` before the value is returned.
  *
  * Supported Filters & Options:
  * https://www.php.net/manual/en/filter.filters.php
@@ -656,15 +657,15 @@ if ( ! in_array('request_body', $disabled_functions) ) {
 if ( ! in_array('request_cookie', $disabled_functions) ) {
     function request_cookie(string $key, ?int $filter = null, array|int $options = 0): mixed
     {
-        return \PHPCore\Request::cookie($key, $filter, $options);    
+        return \PHPCore\Request::cookie($key, $filter, $options);
     }
 }
 
 /**
  * Get file from request
  *
- * Will return the file by a given $key for the files that was uploaded via the
- * HTTP POST method using the $_FILES superglobal variable.
+ * Will return the file by a given **$key** for the files that was uploaded via
+ * the HTTP POST method using the ``$_FILES`` superglobal variable.
  *
  * @param string $key The key of the file to retrieve
  * @return object|null RequestFile object
@@ -672,15 +673,15 @@ if ( ! in_array('request_cookie', $disabled_functions) ) {
 if ( ! in_array('request_file', $disabled_functions) ) {
     function request_file(string $key): object|null
     {
-        return \PHPCore\Request::file($key);    
+        return \PHPCore\Request::file($key);
     }
 }
 
 /**
  * Get files from request
  *
- * Will return an array of files for a given $key that were uploaded via the
- * HTTP POST method using the $_FILES superglobal variable.
+ * Will return an array of files for a given **$key** that were uploaded via the
+ * HTTP POST method using the ``$_FILES`` superglobal variable.
  *
  * @param string $key The key of the array of files to retrieve
  * @return array Array of RequestFile objects
@@ -688,7 +689,7 @@ if ( ! in_array('request_file', $disabled_functions) ) {
 if ( ! in_array('request_files', $disabled_functions) ) {
     function request_files(string $key): array
     {
-        return \PHPCore\Request::files($key);    
+        return \PHPCore\Request::files($key);
     }
 }
 
@@ -698,23 +699,23 @@ if ( ! in_array('request_files', $disabled_functions) ) {
  * This method will return the request format by first looking at the
  * requested CONTENT_TYPE, if unknown then it will attempt to decipher using
  * the REQUEST_URI extention. If format cannot be determine then the
- * default_format set in the INI will be used.     
+ * default_format set in the INI will be used.
  *
  * @return string Format extention
  */
 if ( ! in_array('request_format', $disabled_functions) ) {
     function request_format(): string
     {
-        return \PHPCore\Request::format();    
+        return \PHPCore\Request::format();
     }
 }
 
 /**
  * Get data from request header
  *
- * Will return data from the HTTP request headers for a given $key. The option
- * ``$filter`` and ``$options`` parameters may be given to invoke filter_var()
- * before the value is returned.
+ * Will return data from the HTTP request headers for a given **$key**. The
+ * option **$filter** and **$options** parameters may be given to invoke
+ * ``filter_var()`` before the value is returned.
  *
  * The key will be searched for both without then with the prefix "x-" to be
  * compatiable with older conventions. Therfore there is no need include the
@@ -732,7 +733,7 @@ if ( ! in_array('request_format', $disabled_functions) ) {
 if ( ! in_array('request_header', $disabled_functions) ) {
     function request_header(string $key, ?int $filter = null, array|int $options = 0): mixed
     {
-        return \PHPCore\Request::header($key, $filter, $options);    
+        return \PHPCore\Request::header($key, $filter, $options);
     }
 }
 
@@ -740,7 +741,7 @@ if ( ! in_array('request_header', $disabled_functions) ) {
  * Get requester host name
  *
  * This method will return the requester's host name using the requester's ip
- * address, see Request::ipAddress() for more information.
+ * address, see ``Request::ip()`` for more information.
  *
  * Returns false if requester ip address is unknown.
  *
@@ -749,15 +750,22 @@ if ( ! in_array('request_header', $disabled_functions) ) {
 if ( ! in_array('request_host', $disabled_functions) ) {
     function request_host(): string|false
     {
-        return \PHPCore\Request::host();    
+        return \PHPCore\Request::host();
     }
 }
 
-// TODO: Document
+/**
+ * Get request ID
+ *
+ * Gets the unique identifier based on the **REQUEST_TIME_FLOAT**,
+ * ``Request::ip()`` and the **REQUEST_URI**.
+ *
+ * @return string Request ID
+ */
 if ( ! in_array('request_id', $disabled_functions) ) {
     function request_id(): string
     {
-        return \PHPCore\Request::id();    
+        return \PHPCore\Request::id();
     }
 }
 
@@ -765,18 +773,18 @@ if ( ! in_array('request_id', $disabled_functions) ) {
  * Get requester ip address
  *
  * This method will return the requester's ip address via the designated
- * $_SERVER param that contains the requester's IP Address. This is normally
+ * ``$_SERVER`` param that contains the requester's IP Address. This is normally
  * REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the phpcore.ini
  * file.
  *
- * Returns false if $_SERVER param is not set.
+ * Returns false if ``$_SERVER`` param is not set.
  *
  * @return string|false IP Address of requester
  */
 if ( ! in_array('request_ip', $disabled_functions) ) {
     function request_ip(): string|false
     {
-        return \PHPCore\Request::ip();    
+        return \PHPCore\Request::ip();
     }
 }
 
@@ -784,12 +792,12 @@ if ( ! in_array('request_ip', $disabled_functions) ) {
  * Get parameter from requested URI
  *
  * This method will return the variable passed to the current script via the URL
- * parameters (aka. query string) by a given $key using $_GET superglobal
- * varable. If the key is not passed then an array of all the variables will be
- * returned.
+ * parameters (aka. query string) by a given **$key** using ``$_GET``
+ * superglobal varable. If the key is not passed then an array of all the
+ * variables will be returned.
  *
- * If ``$key`` is not passed the entire query be returned and the ``$filter``
- * and ``$options`` will be ignored.
+ * If **$key** is not passed the entire query be returned and the **$filter**
+ * and **$options** will be ignored.
  *
  * Supported Filters & Options:
  * https://www.php.net/manual/en/filter.filters.php
@@ -803,18 +811,18 @@ if ( ! in_array('request_ip', $disabled_functions) ) {
 if ( ! in_array('request_param', $disabled_functions) ) {
     function request_param(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
     {
-        return \PHPCore\Request::param($key, $filter, $options);    
+        return \PHPCore\Request::param($key, $filter, $options);
     }
 }
 
 /**
  * Get segment from requested URI
  *
- * This method will return a segment of the requested URI with a given $pos
- * using the REQUEST_URI.
+ * This method will return a segment of the requested URI with a given **$pos**
+ * using the **REQUEST_URI**.
  *
- * If ``$pos`` is not passed the entire segment array will be returned and the
- * ``$filter`` and ``$options`` will be ignored.
+ * If **$pos** is not passed the entire segment array will be returned and the
+ * **$filter** and **$options** will be ignored.
  *
  * Supported Filters & Options:
  * https://www.php.net/manual/en/filter.filters.php
@@ -828,7 +836,7 @@ if ( ! in_array('request_param', $disabled_functions) ) {
 if ( ! in_array('request_segment', $disabled_functions) ) {
     function request_segment(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
     {
-        return \PHPCore\Request::segment($pos, $filter, $options);    
+        return \PHPCore\Request::segment($pos, $filter, $options);
     }
 }
 
@@ -836,7 +844,7 @@ if ( ! in_array('request_segment', $disabled_functions) ) {
 if ( ! in_array('response_add', $disabled_functions) ) {
     function response_add(string|array $key, mixed $data = null): void
     {
-        \PHPCore\Response::add($key, $data);    
+        \PHPCore\Response::add($key, $data);
     }
 }
 
@@ -844,7 +852,7 @@ if ( ! in_array('response_add', $disabled_functions) ) {
 if ( ! in_array('response_error', $disabled_functions) ) {
     function response_error(float $code, array $params = [], int $flags = 0): void
     {
-        \PHPCore\Response::error($code, $params, $flags);    
+        \PHPCore\Response::error($code, $params, $flags);
     }
 }
 
@@ -852,7 +860,7 @@ if ( ! in_array('response_error', $disabled_functions) ) {
 if ( ! in_array('response_send', $disabled_functions) ) {
     function response_send(mixed $data = null, ?int $statusCode = null): void
     {
-        \PHPCore\Response::send($data, $statusCode);    
+        \PHPCore\Response::send($data, $statusCode);
     }
 }
 
@@ -877,7 +885,7 @@ if ( ! in_array('timetoarray', $disabled_functions) ) {
 }
 
 /**
- * Returns the XML representation of a array 
+ * Returns the XML representation of a array
  *
  * @param array $array Array to be encoded as XML
  * @return string Returns a string containing the XML representation of the supplied array.
