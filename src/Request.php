@@ -16,11 +16,16 @@ namespace PHPCore;
  * The Request class is used to simplify working with data send via the http
  * protocal.
  *
- * @see https://manual.phpcore.org/class/request
+ * @seealso `PHPCore Request Functions`_ - Simplified functions that interface
+ *           directly with the `PHPCore Request Class`_.
+ *
+ * @refence PHPCore Request Class: ../classes/request.html
+ * @refence PHPCore Request Functions: ../functions/request.html
+ * @refence PHP Filter Variable: https://www.php.net/manual/en/function.filter-var.php
+ * @refence PHP Types of filters: https://www.php.net/manual/en/filter.filters.php
  */
 final class Request
 {
-
     /**
      * Get request agent capabilities
      *
@@ -30,10 +35,23 @@ final class Request
      *
      * If $key is not passed the entire capabilities object will be returned.
      *
-     * Returns **NULL** if get_browser() fails or requested capability is
+     * @note Returns **NULL** if get_browser() fails or requested capability is
      * unknown.
      *
-     * @param string $key The key of the capability data item to retrieve
+     * @example Get request agent capabilities
+     * <code linenos="true" emphasize-lines="8,9">
+     *
+     * use \PHPCore\Request;
+     * 
+     * // $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
+     * 
+     * // Get by key
+     * echo Request::agent('browser'); // 'Chrome'
+     * var_dump(Request::agent('istablet')); // false
+     * 
+     * </code>
+     *
+     * @param ?string $key The key of the capability data item to retrieve
      * @return mixed The request capability or the entire capability object
      */
     public static function agent(?string $key = null): mixed
@@ -51,7 +69,7 @@ final class Request
         ];
 
         if ( ! isset($agent) && isset($_SERVER['HTTP_USER_AGENT'])) {
-            $agent = get_browser() ?? null;
+            $agent = get_browser($_SERVER['HTTP_USER_AGENT']) ?? null;
             if (isset($agent)) {
                 foreach ($booleans as $prop) {
                     $agent->$prop = boolval($agent->$prop);
@@ -80,11 +98,24 @@ final class Request
      * If **$key** is not passed the request body be returned and the
      * **$filter** and **$options** will be ignored.
      *
-     * Supported Filters & Options:
-     * https://www.php.net/manual/en/filter.filters.php
+     * @seealso `PHP Types of filters`_ - List of available filters and options.
+     * @seealso `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
      *
-     * @param string $key The key of the body's data to retrieve
-     * @param integer $filter The ID of the filter to apply
+     * @example Get data from request body
+     * <code linenos="true" emphasize-lines="8,9">
+     *
+     * use \PHPCore\Request;
+     * 
+     * // $_POST = '{ "name": "Smith", "age": "22" }'
+     * 
+     * // Get by key
+     * echo Request::body('name'); // 'Smith'
+     * var_dump(Request::body('name', FILTER_VALIDATE_INT)); // 22
+     * 
+     * </code>
+     *
+     * @param ?string $key The key of the body's data to retrieve
+     * @param ?int $filter The ID of the filter to apply
      * @param array|int $options Associative array of options or bitwise
      *                           disjunction of flags
      * @return mixed The requested data item
@@ -128,11 +159,23 @@ final class Request
      * Cookies. The option **$filter** and **$options** parameters may be given
      * to invoke ``filter_var()`` before the value is returned.
      *
-     * Supported Filters & Options:
-     * https://www.php.net/manual/en/filter.filters.php
+     * @seealso `PHP Types of filters`_ - List of available filters and options.
+     * @seealso `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
+     *
+     * @example Get data from HTTP cookie
+     * <code linenos="true" emphasize-lines="7,8">
+     *
+     * use \PHPCore\Request;
+     * 
+     * // $_COOKIE = [ 'OFFSET' => 1, 'ORDER' => 'asc' ]
+     * 
+     * echo Request::cookie('ORDER'); // 'asc'
+     * var_dump(Request::cookie('OFFSET', FILTER_VALIDATE_INT)); // 1
+     * 
+     * </code>
      *
      * @param string $key The key of the body's data to retrieve
-     * @param integer $filter The ID of the filter to apply
+     * @param ?int $filter The ID of the filter to apply
      * @param array|int $options Associative array of options or bitwise
      *                           disjunction of flags
      * @return mixed The requested data item
@@ -153,6 +196,25 @@ final class Request
      *
      * Will return the file by a given **$key** for the files that was uploaded
      * via the HTTP POST method using the ``$_FILES`` superglobal variable.
+     *
+     * @example Get file from request
+     * <code linenos="true" emphasize-lines="14,15">
+     *
+     * use \PHPCore\Request;
+     *
+     * // $_FILES['test'] = [
+     * //     'name'      => 'sample.pdf.png',
+     * //     'full_path' => 'sample.pdf.png',
+     * //     'type'      => 'image/png',
+     * //     'tmp_name'  => '/tmp/php059gDH',
+     * //     'error'     => 0,
+     * //     'size'      => 3028
+     * // ];
+     * 
+     * echo Request::file('test')->type; // 'image/png'
+     * echo Request::file('test')->trueType(); // 'application/pdf'
+     * 
+     * </code>
      *
      * @param string $key The key of the file to retrieve
      * @return object|null RequestFile object
@@ -177,6 +239,25 @@ final class Request
      *
      * Will return an array of files for a given **$key** that were uploaded via
      * the HTTP POST method using the ``$_FILES`` superglobal variable.
+     *
+     * @example Get files from request
+     * <code linenos="true" emphasize-lines="14,15">
+     *
+     * use \PHPCore\Request;
+     *
+     * // $_FILES['test'] = [
+     * //     'name'      => [ 'sample_1.pdf.png', 'sample_2.csv' ],
+     * //     'full_path' => [ 'sample_1.pdf.png', 'sample_2.csv' ],
+     * //     'type'      => [ 'image/png', text/csv', ],
+     * //     'tmp_name'  => [ '/tmp/php059gDH', '/tmp/phpWGy7GA' ],
+     * //     'error'     => [ 0, 0 ],
+     * //     'size'      => [ 3028, 1037 ],
+     * // ];
+     * 
+     * echo Request::file('test')[0]->name; // 'sample_1.pdf.png'
+     * echo Request::file('test')[1]->name; // 'sample_2.csv'
+     * 
+     * </code>
      *
      * @param string $key The key of the array of files to retrieve
      * @return array Array of RequestFile objects
@@ -211,6 +292,20 @@ final class Request
      * requested CONTENT_TYPE, if unknown then it will attempt to decipher using
      * the REQUEST_URI extention. If format cannot be determine then the
      * default_format set in the INI will be used.
+     *
+     * @example Get the requested format
+     * <code linenos="true" emphasize-lines="7,10">
+     *
+     * use \PHPCore\Request;
+     *
+     * // $_SERVER['REQUEST_URI'] = '/test.php'
+     * // $_SERVER['CONTENT_TYPE'] = 'application/json'
+     * echo Request::format(); // 'json'
+     *
+     * // $_SERVER['REQUEST_URI'] = '/test.csv'
+     * echo Request::format(); // 'csv'
+     *
+     * </code>
      *
      * @return string Format extention
      */
@@ -262,11 +357,33 @@ final class Request
      * compatiable with older conventions. Therfore there is no need include the
      * prefix "x-" in your code moving forward.
      *
-     * Supported Filters & Options:
-     * https://www.php.net/manual/en/filter.filters.php
+     * @seealso `PHP Types of filters`_ - List of available filters and options.
+     * @seealso `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
+     *
+     * @example Get data from request header
+     * <code linenos="true" emphasize-lines="14,15,16,18">
+     *
+     * use \PHPCore\Request;
+     *
+     * // Request Headers
+     * //   Accept-Encoding: gzip, deflate
+     * //   Accept-Language: en-US,en;q=0.9
+     * //   Connection: keep-alive
+     * //   Content-Length: 0
+     * //   User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36
+     * //   x-custom-header-1: Random Text
+     * //   x-custom-header-2: 12345
+     * 
+     * echo Request::header('accept-encoding'); // 'gzip, deflate'
+     * echo Request::header('custom-header-1'); // 'Random Text'
+     * echo Request::header('x-custom-header-1'); // 'Random Text'
+     * 
+     * var_dump(Request::header('custom-header-2', FILTER_VALIDATE_INT)); // 12345
+     * 
+     * </code>
      *
      * @param string $key The key of the header's data to retrieve
-     * @param integer $filter The ID of the filter to apply
+     * @param ?int $filter The ID of the filter to apply
      * @param array|int $options Associative array of options or bitwise
      *                           disjunction of flags
      * @return mixed The requested header item
@@ -300,7 +417,20 @@ final class Request
      * This method will return the requester's host name using the requester's
      * ip address, see ``Request::ip()`` for more information.
      *
-     * Returns false if requester ip address is unknown.
+     * @note Returns false if requester ip address is unknown.
+     *
+     * @example Get requester host name
+     * <code linenos="true" emphasize-lines="6,9">
+     *
+     * use \PHPCore\Request;
+     * 
+     * // $_SERVER['REMOTE_ADDR'] = '8.8.8.8'
+     * echo Request::host(); // 'dns.google'
+     * 
+     * // $_SERVER['REMOTE_ADDR'] = '123456'
+     * var_dump(Request::host()); // false
+     *
+     * </code>
      *
      * @return string|false Host name
      */
@@ -320,11 +450,25 @@ final class Request
      * Gets the unique identifier based on the **REQUEST_TIME_FLOAT**,
      * ``Request::ip()`` and the **REQUEST_URI**.
      *
+     * @example Get request ID
+     * <code linenos="true" emphasize-lines="9">
+     *
+     * use \PHPCore\Request;
+     *
+     * // $_SERVER['REQUEST_TIME_FLOAT'] = 1681363597.2922
+     * // $_SERVER['REMOTE_ADDR'] = '10.0.0.101'
+     * // $_SERVER['REQUEST_URI'] = '/test.php'
+     * 
+     * echo Request::id(); // '9e86384b69d5abe885fe33baff74bf37'
+     *
+     * </code>
+     *
      * @return string Request ID
      */
     public static function id(): string
     {
-        static $id;
+        // TODO: enable static var for performace, diabled for testing
+        //static $id;
 
         if ( ! isset($id)) {
             $id = md5($_SERVER['REQUEST_TIME_FLOAT'].'['.self::ip().']'.$_SERVER['REQUEST_URI']);
@@ -341,13 +485,30 @@ final class Request
      * normally REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the
      * phpcore.ini file.
      *
-     * Returns false if ``$_SERVER`` param is not set.
+     * @note Returns false if ``$_SERVER`` param is not set.
+     *
+     * @example Get requester ip address
+     * <code linenos="true" emphasize-lines="9,12">
+     *
+     * use \PHPCore\Request;
+     *
+     * // $_SERVER['REMOTE_ADDR'] = '10.0.0.1'
+     * // $_SERVER['HTTP_X_FORWARDED_FOR'] = '192.168.0.1'
+     * 
+     * // phpcore.ini: request.ip_var = "REMOTE_ADDR"
+     * echo Request::ip(); // '10.0.0.1'
+     * 
+     * // phpcore.ini: request.ip_var = "HTTP_X_FORWARDED_FOR"
+     * echo Request::ip(); // '192.168.0.1'
+     *
+     * </code>
      *
      * @return string|false IP Address of requester
      */
     public static function ip(): string|false
     {
-        static $ip;
+        // TODO: enable static var for performace, diabled for testing
+        //static $ip;
 
         if ( ! isset($ipAaddress)) {
             $svr_var = core_ini_get('request.ip_var');
@@ -371,11 +532,25 @@ final class Request
      * If **$key** is not passed the entire query be returned and the
      * **$filter** and **$options** will be ignored.
      *
-     * Supported Filters & Options:
-     * https://www.php.net/manual/en/filter.filters.php
+     * @seealso `PHP Types of filters`_ - List of available filters and options.
+     * @seealso `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
      *
-     * @param string $key The key of the query to retrieve
-     * @param integer $filter The ID of the filter to apply
+     * @example Get parameter from requested URI
+     * <code linenos="true" emphasize-lines="7,9,10">
+     *
+     * use \PHPCore\Request;
+     *
+     * // $_SERVER['REQUEST_URI'] = '/index.php?text=abc&num=12345'
+     * 
+     * var_dump(Request::param()); // [ "text" => "abc", "num" => "12345" ]
+     * 
+     * var_dump(Request::param('text')); // 'abc'
+     * var_dump(Request::param('num', FILTER_VALIDATE_INT)); // 12345
+     *
+     * </code>
+     *
+     * @param ?string $key The key of the query to retrieve
+     * @param ?int $filter The ID of the filter to apply
      * @param array|int $options Associative array of options or bitwise
      *                           disjunction of flags
      * @return mixed The requested query item
@@ -404,11 +579,28 @@ final class Request
      * If **$pos** is not passed the entire segment array will be returned and
      * the **$filter** and **$options** will be ignored.
      *
-     * Supported Filters & Options:
-     * https://www.php.net/manual/en/filter.filters.php
+     * @seealso `PHP Types of filters`_ - List of available filters and options.
+     * @seealso `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
      *
-     * @param integer $pos The pos index of the path to retrieve
-     * @param integer $filter The ID of the filter to apply
+     * @example Get segment from requested URI
+     * <code linenos="true" emphasize-lines="7,9,10,13">
+     *
+     * use \PHPCore\Request;
+     *
+     * // $_SERVER['REQUEST_URI'] = '/sections/articles/12345.html'
+     *
+     * var_dump(Request::segment()); // [ "sections", "articles", "12345" ]
+     *
+     * var_dump(Request::segment(1)); // 'articles'
+     * var_dump(Request::segment(2, FILTER_VALIDATE_INT)); // 12345
+     *
+     * // phpcore.ini: request.segment_offset = 1
+     * var_dump(Request::segment(0)); // 'articles'
+     *
+     * </code>
+     *
+     * @param ?int $pos The pos index of the path to retrieve
+     * @param ?int $filter The ID of the filter to apply
      * @param array|int $options Associative array of options or bitwise
      *                           disjunction of flags
      * @return mixed The requested segment item

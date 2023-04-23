@@ -54,9 +54,10 @@ final class Database
     const RETURN_ROWS_AFFECTED      = 32;   // Returns integer of rows affected
     const RETURN_LAST_INSERT_ID     = 64;   // Returns last insert id
     const RETURN_FIRST_RESULT_ONLY  = 128;  // Return first row only
-    const INSERT_IGNORE             = 256;  // Use IGNORE modifier for the INSERT statement
-    const ON_DUPLICATE_UPDATE       = 512;  // Use ON DUPLICATE UPDATE for INSERT statement
-    const DISABLE_PLACEHOLDERS      = 1024; // Do not user statement placeholders, USE WITH CAUTION
+    const RETURN_FLATTEN_ARRAY      = 256;  // Return results as single dimensional array (one column)
+    const INSERT_IGNORE             = 512;  // Use IGNORE modifier for the INSERT statement
+    const ON_DUPLICATE_UPDATE       = 1024; // Use ON DUPLICATE UPDATE for INSERT statement
+    const DISABLE_PLACEHOLDERS      = 2048; // Do not user statement placeholders, USE WITH CAUTION
 
     // -----------------------------------------------------------------------------------------
 
@@ -683,15 +684,92 @@ final class Database
     {
         if (empty($whereArr) === false) {
             foreach ($whereArr as $column=>$value) {
-                $columnInjectionSafe = $this->_cleanName($column);
-                $columnWhereName = 'w_'.str_replace('.', '_', $this->_cleanName($column, false));
                 if (empty($whereStr)) {
                     $whereStr = 'WHERE ';
                 } else {
                     $whereStr .= ' AND ';
                 }
-                $whereStr .= "$columnInjectionSafe = :$columnWhereName";
-                $params[$columnWhereName] = $value;
+
+                $parts = explode(' ', $column);
+                if (count($parts) === 1) {
+                    $parts[] = '=';
+                }
+
+                $col_where_name = 'w_'.str_replace([' ', '.'], '_', $this->_cleanName($column, false));
+                $col_inject_safe = $this->_cleanName(array_shift($parts));
+
+                $not_str = '';
+                if (in_array('NOT', $parts)) {
+                    $not_str = 'NOT ';
+                    $parts = array_filter($parts, function($item) {
+                        return ($item !== 'NOT');
+                    });
+                }
+
+                switch ($parts[1]) {
+                    case 'IN':
+                        if ( ! is_array($value)) {
+                            trigger_error("Value for `$column` MUST be an array");
+                        }
+
+                        $param_aliases = [];
+                        foreach ($value as $index=>$item) {
+                            $col_where_name_in = "{$col_where_name}_{$index}_";
+                            $param_aliases[] = ":$col_where_name_in";
+                            $params[$col_where_name_in] = $item;
+                        }
+
+                        $param_aliases_str = implode(',', $param_aliases);
+                        $whereStr .= "$col_inject_safe {$not_str}IN ($param_aliases_str)";
+                    break;
+
+                    case 'IS':
+                        $whereStr .= "$col_inject_safe IS {$not_str}NULL";
+                    break;
+
+                    case 'BETWEEN':
+                        if ( ! is_array($value) || count($value) !== 2) {
+                            trigger_error("Value for `$column` MUST be an array with exactly 2 items");
+                        }
+
+                        $col_low = ":{$col_where_name}_low";
+                        if (str_starts_with($value[0], '::')) {
+                            $col_low = substr($value[0], 2);
+                        } else {
+                            $params[$col_low] = $value;
+                        }
+
+                        $col_high = ":{$col_where_name}_high";
+                        if (str_starts_with($value[1], '::')) {
+                            $col_high = substr($value[1], 2);
+                        } else {
+                            $params[$col_high] = $value;
+                        }
+
+                        $whereStr .= "$col_inject_safe BETWEEN $col_low AND $col_high";
+                    break;
+
+                    case 'LIKE':
+                        $whereStr .= "$col_inject_safe {$not_str}LIKE :$col_where_name";
+                        $params[$col_where_name] = $value;
+                    break;
+
+                    default:
+                        $operator = preg_replace("/[^=><!]/", '', $parts[1]);
+                        if (empty($operator) || strlen($operator) > 2) {
+                            trigger_error("Unknown operator '$operator' for `$column`");
+                        }
+
+                        $val = ":{$col_where_name}";
+                        if (str_starts_with($value, '::')) {
+                            $val = substr($value, 2);
+                        } else {
+                            $params[$col_where_name] = $value;
+                        }
+
+                        $whereStr .= "$col_inject_safe $operator $val";
+                    break;
+                }
             }
         }
     }
@@ -769,6 +847,8 @@ final class Database
             $results = $this->getRowsAffected();
         } elseif($flags & self::RETURN_LAST_INSERT_ID) {
             $results = $this->getLastInsertId();
+        } elseif($flags & self::RETURN_FLATTEN_ARRAY) {
+            $results = array_flatten($statement->fetchAll());
         } else {
             if (($flags & self::USE_ROWSETS) or ($flags & self::MERGED_ROWSETS)) {
                 do {

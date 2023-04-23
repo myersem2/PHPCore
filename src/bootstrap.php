@@ -9,6 +9,8 @@
 
 // -------------------------------------------------------------------------------------------------
 
+// @codeCoverageIgnoreStart
+
 // =============================================================================
 // PHPCore defines
 // =============================================================================
@@ -78,14 +80,14 @@ spl_autoload_register(function(string $class_name) {
                 return;
             }
         }
-        include $GLOBALS['_CORE']['PATH'] . "$file.php";
+        require "{$GLOBALS['_CORE']['PATH']}$file.php";
     }
 });
 
 // =============================================================================
 // PHPCore functions
 // =============================================================================
-include $GLOBALS['_CORE']['PATH'] . DIRECTORY_SEPARATOR . 'functions.php';
+require $GLOBALS['_CORE']['PATH'] . DIRECTORY_SEPARATOR . 'functions.php';
 
 // =============================================================================
 // Other autoloaders
@@ -99,7 +101,7 @@ if ( ! empty($autoloaders)) {
         foreach ($autoloaders as $spl_namespace=>$spl_path) {
             if (str_starts_with($class_name, $spl_namespace.'\\')) {
                 $file = str_replace('\\', DIRECTORY_SEPARATOR, substr($class_name, strlen($spl_namespace)));
-                include $spl_path . "$file.php";
+                require $spl_path . "$file.php";
             }
         }
         
@@ -111,7 +113,7 @@ if ( ! empty($autoloaders)) {
 // =============================================================================
 $function_file = core_ini_get('function_file');
 if ( ! empty($function_file)) {
-  include $function_file;
+  require $function_file;
 }
 
 // =============================================================================
@@ -143,5 +145,7 @@ if (core_ini_get('auto_start', 'Session')) {
 
 // TODO: 
 //register_shutdown_function('Response::send')
+
+// @codeCoverageIgnoreEnd
 
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////

@@ -22,28 +22,28 @@ final class Response
      *
      * @var array
      */
-    private static $buffer = [];
+    private static array $Buffer = [];
 
     /**
      * Error buffer to be sent
      *
      * @var array
      */
-    private static $errorBuffer = null;
+    private static ?array $ErrorBuffer = [];
 
     /**
      * Header buffer to be sent
      *
      * @var array
      */
-    private static $headerBuffer = [];
+    private static array $HeaderBuffer = [];
 
     /**
      * Prevent client from page caching
      *
      * @var boolean
      */
-    private static $preventCaching = true;
+    private static bool $PreventCaching = true;
 
     // ---------------------------------------------------------------------
 
@@ -52,10 +52,10 @@ final class Response
     {
         if (is_array($key)) {
             foreach ($key as $index => $value) {
-                self::$buffer[$index] = $value;
+                self::$Buffer[$index] = $value;
             }
         } else {
-            self::$buffer[$key] = $data;
+            self::$Buffer[$key] = $data;
         }
     }
 
@@ -73,7 +73,7 @@ final class Response
     {
         list($name) = explode(':', $header);
         $key = md5(strtolower(trim($header)));
-        self::$headerBuffer[$key] = [
+        self::$HeaderBuffer[$key] = [
             'name'    => $name,
             'string'  => $header,
             'replace' => $replace,
@@ -108,7 +108,7 @@ final class Response
             }
         }
 
-        self::$errorBuffer = $data;
+        self::$ErrorBuffer = $data;
         self::send();
 
     }
@@ -148,14 +148,14 @@ final class Response
     {
         if ($byName) {
             list($name) = explode(':', $header);
-            foreach (self::$headerBuffer as $key => $header) {
+            foreach (self::$HeaderBuffer as $key => $header) {
                 if ($header['name'] === $name) {
-                    unset(self::$headerBuffer[$key]);
+                    unset(self::$HeaderBuffer[$key]);
                 }
             }
         } else {
             $key = md5(strtolower(trim($header)));
-            unset(self::$headerBuffer[$key]);
+            unset(self::$HeaderBuffer[$key]);
         }
     }
 
@@ -190,20 +190,20 @@ final class Response
           $baseResponse['params'] = $params;
         }
 
-        if (isset(self::$errorBuffer)) {
-            $statusCode = $statusCode ?? intval(floor(self::$errorBuffer['code']));
-            self::$buffer['error'] = self::$errorBuffer;
-        } else {
+        if (empty(self::$ErrorBuffer)) {
             $statusCode = $statusCode ?? 200;
             if (isset($data)) {
-                self::$buffer['data'] = $data;
+                self::$Buffer['data'] = $data;
             }
+        } else {
+            $statusCode = $statusCode ?? intval(floor(self::$ErrorBuffer['code']));
+            self::$Buffer['error'] = self::$ErrorBuffer;
         }
 
         http_response_code($statusCode);
 
-        echo self::export(array_merge($baseResponse, self::$buffer));
-        exit(intval(isset(self::$errorBuffer)));
+        echo self::export(array_merge($baseResponse, self::$Buffer));
+        exit(intval( ! empty(self::$ErrorBuffer)));
     }
 
     /**
@@ -218,7 +218,7 @@ final class Response
 
       header('Powered-By: PHPCore');
 
-      if (self::$preventCaching) {
+      if (self::$PreventCaching) {
           header('Expires: Tue, 01 Jan 2000 00:00:00 GMT');
           header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
           header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
@@ -235,7 +235,7 @@ final class Response
           case 'xml':  header('Content-type: text/xml');          break;
       }
 
-      foreach (self::$headerBuffer as $header) {
+      foreach (self::$HeaderBuffer as $header) {
           header($header['string'], $header['replace']);
       }
 

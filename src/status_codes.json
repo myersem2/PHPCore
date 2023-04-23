@@ -1,0 +1,4 @@
+{
+    "201.001": { "message": "Created", "help": "https://www.google.com" },
+    "403.001": { "message": "Custom message {REPLACE}", "help": "https://www.google.com" }
+}

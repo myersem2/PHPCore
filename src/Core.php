@@ -24,7 +24,7 @@ trait Core
      * The following for reference only and is required to be set in the class
      * that is using this traits.
      */
-    // const DEFAULT_INSTANCE_NAME = 'main';
+    //public const DEFAULT_INSTANCE_NAME = 'main';
 
     // -----------------------------------------------------------------------------------------
 
@@ -49,14 +49,14 @@ trait Core
      *
      * @var array   
      */
-    protected $Config = [];
+    protected array $Config = [];
 
     /**
      * This PDO handler
      *
      * @var object   
      */
-    protected $Handler = null;
+    protected ?object $Handler = null;
 
     // -----------------------------------------------------------------------------------------
 

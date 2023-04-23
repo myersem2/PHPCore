@@ -10,37 +10,38 @@ namespace PHPCore;
 
 use \Memcached;
 use \Exception;
-use \SessionHandler;
-use \SessionHandlerInterface;
-use \SessionIdInterface;
 
 // -------------------------------------------------------------------------------------------------
 
 /**
  * Session Class
  *
- * This class is used to interface with a session using the built-in PHP
- * **session_set_save_handler()**.
+ * The Session class is a special class that has been used to extend the
+ * built-in PHP SessionHandler for handling sessions. There are seven methods
+ * which wrap the seven internal session save handler callbacks (open, close,
+ * read, write, destroy, gc and create_sid). By default, this class will wrap
+ * whatever internal save handler is set as defined by the session.save_handler
+ * configuration directive which is usually files by default. Other internal
+ * session save handlers are provided by PHP extensions such as SQLite
+ * (as sqlite), Memcache (as memcache), and Memcached (as memcached).
  *
- * @see https://manual.phpcore.org/class/session
- * @see https://www.php.net/manual/en/function.session-set-save-handler.php
+ * @seealso `PHP Session Functions`_ - Base PHP internal session functions that
+ *          interface directly with this class.
+ * @seealso `PHP SessionHandler Class`_ - Documentation for PHP internal
+ *          SessionHandler Class.
+ * @seealso `PHPCore Session Feature`_ - The PHPCore extended session handling
+ *          features.
+ * @seealso `PHPCore Session Functions`_ - The PHPCore session handling
+ *          functions.
  */
-final class Session extends SessionHandler implements SessionHandlerInterface, SessionIdInterface
+final class Session extends \SessionHandler implements \SessionHandlerInterface, \SessionIdInterface
 {
     use Core;
 
     /**
      * The name for the default instance for this class
      */
-    const DEFAULT_INSTANCE_NAME = 'main';
-
-    /**
-     * Constant flags
-     *
-     * @const int
-     */
-    const HAS_ACCESS_ANY = 1;  // Has Access check true on any match 
-    const HAS_ACCESS_ALL = 2;  // Has Access check true if ALL match
+    public const DEFAULT_INSTANCE_NAME = 'main';
 
     // -----------------------------------------------------------------------------------------
 
@@ -49,21 +50,21 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
      *
      * @var array   
      */
-    protected $ExpireData = [];
+    protected array $ExpireData = [];
 
     /**
      * Flash Data
      *
      * @var array   
      */
-    protected $FlashData = [];
+    protected array $FlashData = [];
   
     /**
      * Metadata
      *
      * @var array 
      */
-    protected $Metadata = null;
+    protected ?array $Metadata = null;
 
     // -----------------------------------------------------------------------------------------
 
@@ -188,10 +189,10 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
         $handler = $this->_getHandler();
         switch ($this->Config['save_handler']) {
             case 'memcached':
-            $cookie_autodestroy = $this->Config['cookie_autodestroy'] ?? false;
-            if ($cookie_autodestroy) {
-                delcookie(ini_get('session.name'), ini_get('session.cookie_path'), ini_get('session.cookie_domain'));
-            }
+                $cookie_autodestroy = $this->Config['cookie_autodestroy'] ?? false;
+                if ($cookie_autodestroy) {
+                    delcookie(ini_get('session.name'), ini_get('session.cookie_path'), ini_get('session.cookie_domain'));
+                }
                 return $handler->flush();
             break;
             default:
@@ -333,61 +334,6 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
     }
 
     /**
-     * Grant session access
-     *
-     * This method grants session access via adding it the the ``acl_groups``
-     * array in the sessions metadata.
-     *
-     * @param string|array $groups ACL group or array of ACL groups to be granted
-     * @return void
-     */
-    public function grant(string|array $groups): void
-    {
-        $groups = is_string($groups) ? [$groups] : $groups;
-        $acl_groups = array_merge($this->Metadata['acl_groups'], $groups);
-        $this->Metadata['acl_groups'] = array_unique($acl_groups);
-    }
-
-    /**
-     * Check if has access
-     *
-     * This method checks if a session has access via checking if in the
-     * ``acl_groups`` array in the sessions metadata. By default is will match
-     * **ANY** of the groups, You may pass the optional flag ``Session::HAS_ACCESS_ALL``
-     * if you want to preform a match on all groups for the check to be true.
-     *
-     * @param string|array $groups ACL group or array of ACL groups to check
-     *                             access for
-     * @param integer $flags Bitwise flags for this method
-     * @flag Session::HAS_ACCESS_ANY Has Access check true on ANY match 
-     * @flag Session::HAS_ACCESS_ALL Has Access check true if ALL match
-     * @return boolean If has session access
-     */
-    public function hasAccess(string|array $groups, int $flags = 0): bool
-    {
-        $groups = is_string($groups) ? [$groups] : $groups;
-        if ( ! ($flags & self::HAS_ACCESS_ANY) and ! ($flags & self::HAS_ACCESS_ALL)) {
-            $flags += self::HAS_ACCESS_ANY;
-        }
-        if ($flags & self::HAS_ACCESS_ALL) {
-            foreach ($groups as $group) {
-                if ( ! in_array($group, $this->Metadata['acl_groups'])) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        if ($flags & self::HAS_ACCESS_ANY) {
-            foreach ($groups as $group) {
-                if (in_array($group, $this->Metadata['acl_groups'])) {
-                    return true;
-                }
-            }
-            return false;  
-        }
-    }
-
-    /**
      * Initialize session
      *
      * Create new session, or re-initialize existing session. Called internally
@@ -452,40 +398,22 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
         }
         $this->ExpireData = $ExpireData;
 
-        $this->Metadata['timeleft'] = null;
+        $this->Metadata['TimeLeft'] = null;
         $gc_maxlength = $this->Config['gc_maxlength'] ?? null;
         if (empty($gc_maxlength) === false) {
-            $timeleft = $this->Metadata['started'] + intval($gc_maxlength) - time();
-            $this->Metadata['timeleft'] = $timeleft;
+            $timeleft = $this->Metadata['Started'] + intval($gc_maxlength) - time();
+            $this->Metadata['TimeLeft'] = $timeleft;
             if ($timeleft < 0) {
                 $this->ExpireData = [];
                 $this->Metadata = $this->_defaultMetadata();
-                $this->Metadata['timeleft'] = intval($gc_maxlength);
+                $this->Metadata['TimeLeft'] = intval($gc_maxlength);
                 $clean_data = [];
             }
-            $clean_data['_META']['timeleft'] = $this->Metadata['timeleft'];
+            $clean_data['_META']['TimeLeft'] = $this->Metadata['TimeLeft'];
         }
 
         $data = serialize($clean_data);
         return $data;
-    }
-
-    /**
-     * Revoke session access
-     *
-     * This method removes session access via removing from ``acl_groups`` array in
-     * the sessions metadata.
-     *
-     * @param string|array $groups ACL group or array of ACL groups to be revoked
-     * @return void
-     */
-    public function revoke(string|array $groups): void
-    {
-        $groups = is_string($groups) ? [$groups] : $groups;
-        $filtered_acl_groups = array_filter($this->Metadata['acl_groups'], function($group) use(&$groups) {
-            return ! in_array($group, $groups);
-        });
-        $this->Metadata['acl_groups'] = $filtered_acl_groups;
     }
 
     /**
@@ -509,25 +437,40 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
     }
 
     /**
-     * Get and/or set the current session user
+     * Set the session metadata
      *
-     * If the ``$user`` parameter is used the acl_groups will be replaced with the ones
-     * declared in the acl_group.default_user directive and the session start time will
-     * also be reset.
+     * This method is used to store a session metadata data item.
      *
-     * @param string|int $user The user to bind to the current session
-     * @return string|null User of the current session
+     * @param string $key Key of session data item to set.
+     * @param mixed $value Value of session data item to set.
      */
-    public function user(?string $user = null): string|null
+    public function setMetadata(string $key, mixed $value): void
     {
-        if ($user === null) {
-            return $this->Metadata['user'] ?? null;
-        } else {
-            $this->Metadata['user'] = $user;
-            $this->Metadata['started'] = time();
-            $this->Metadata['acl_groups'] = explode(',', $this->Config['acl_group.default_user']);
-            return $user;
+        switch ($key) {
+            case 'UserTempRoles':
+                if ( ! is_array($value)) {
+                    throw new Exception("session metadata item UserTempRoles MUST be an array");
+                }
+                $this->Metadata['UserTempRoles'] = $value;
+            break;
+
+            case 'UserId':
+                $this->Metadata['UserId'] = empty($user_id) ? null : intVal($user_id);
+                $this->Metadata['UserTempRoles'] = [];
+            break;
+
+            case 'Started':
+            case 'SessionId':
+            case 'TimeLeft':
+            case 'Updated':
+                throw new Exception("$key cannot be set manually");
+            break;
+
+            default:
+                $this->Metadata[$key] = $value;
+            break;
         }
+
     }
 
     /**
@@ -547,7 +490,7 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
     public function write(string $id, string $data): bool
     {
         $clean_data = unserialize($data);
-        $this->Metadata['updated'] = time();
+        $this->Metadata['Updated'] = time();
         $clean_data['_META'] = $this->Metadata;
 
         unset($clean_data['_FLASH']);
@@ -575,14 +518,13 @@ final class Session extends SessionHandler implements SessionHandlerInterface, S
 
     private function _defaultMetadata(): array
     {
-        $acl_groups = explode(',', $this->Config['acl_group.default_guest']);
         return [
-            'acl_groups' => $acl_groups,
-            'started'    => time(),
-            'session_id' => session_id(),
-            'timeleft'   => null,
-            'updated'    => time(),
-            'user'       => null,
+            'UserTempRoles' => [],
+            'Started'       => time(),
+            'SessionId'     => session_id(),
+            'TimeLeft'      => null,
+            'Updated'       => time(),
+            'UserId'        => null,
         ];
     }
     private function _decrypt(string $data, string $key_phase): string

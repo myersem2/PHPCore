@@ -11,25 +11,11 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * Global Test Fixture
- *
- * This test fixture is uses to test global functions.
- *
  * @backupGlobals enabled
+ * @backupStaticAttributes enabled
  */
 final class Test extends TestCase
 {
-    /**
-     * @var array $_CORE Backup
-     */
-    private $core_bkup = [];
-
-    /**
-     * @var array $_CORE_INI Backup
-     */
-    private $core_ini_bkup = [];
-
-    // -----------------------------------------------------------------------------------------
 
     /**
      * This method is used to perform any setup actions (e.g. connect to db) for
@@ -38,7 +24,7 @@ final class Test extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
-        // Place Holder
+
     }
 
     /**
@@ -48,7 +34,7 @@ final class Test extends TestCase
      */
     public static function tearDownAfterClass(): void
     {
-        // Place Holder
+
     }
   
     /**
@@ -57,15 +43,7 @@ final class Test extends TestCase
      */
     public function setUp(): void
     {
-        list($setUp) = explode(' ', 'setUp' . substr($this->getName(), 4));
 
-        if (str_starts_with($this->getName(), 'testCoreIni')) {
-            $this->helperCoreBackup();
-        }
-
-        if (method_exists($this, $setUp)) {
-            $this->$setUp();
-        }
     }
 
     /**
@@ -74,15 +52,7 @@ final class Test extends TestCase
      */
     public function tearDown(): void
     {
-        list($tearDown) = explode(' ', 'tearDown' . substr($this->getName(), 4));
-    
-        if (str_starts_with($this->getName(), 'testCoreIn')) {
-            $this->helperCoreRestore();
-        }
-        
-        if (method_exists($this, $tearDown)) {
-            $this->$tearDown();
-        }
+
     }
 
     // -----------------------------------------------------------------------------------------
@@ -105,7 +75,7 @@ final class Test extends TestCase
             "$function() function does not exist"
         );
     }
-    public function dataProviderFunctionExists(): array
+    public static function dataProviderFunctionExists(): array
     {
       return [
         ['core_ini_get'],
@@ -117,20 +87,6 @@ final class Test extends TestCase
         ['str_style'],
         ['xml_encode'],
       ];
-    }
-
-
-    private function helperCoreBackup(): void
-    {
-        $this->core_bkup = $GLOBALS['_CORE'];
-        $this->core_ini_bkup = $GLOBALS['_CORE_INI'];
-    }
-    private function helperCoreRestore(): void
-    {
-        $GLOBALS['_CORE'] = $this->core_bkup;
-        $GLOBALS['_CORE_INI'] = $this->core_ini_bkup;
-        $this->core_bkup = [];
-        $this->core_ini_bkup = [];
     }
 
     /**
@@ -155,7 +111,7 @@ final class Test extends TestCase
             );  
         }
     }
-    private function dataProviderCoreIniSetGet(): array
+    public static function dataProviderCoreIniSetGet(): array
     {
         return [
             [
@@ -175,7 +131,7 @@ final class Test extends TestCase
      * @covers ::core_ini_get_all
      * @depends testFunctionExists
      * @dataProvider dataProviderCoreIniGetAll
-     */
+     *
     public function testCoreIniGetAll(array $expected, string|null $section = null, string|null $sub_section = null): void
     {
       $this->assertEquals(
@@ -196,7 +152,7 @@ final class Test extends TestCase
             ],
         ];
     }
-    private function dataProviderCoreIniGetAll(): array
+    public static function dataProviderCoreIniGetAll(): array
     {
         return [
             [
@@ -236,7 +192,7 @@ final class Test extends TestCase
      * @covers ::str_style
      * @covers ::str_color
      * @dataProvider dataproviderCoreinfo
-     */
+     *
     public function testCoreinfo(string $format): void
     {
         $GLOBALS['_CORE']['FORMAT'] = $format;
@@ -312,7 +268,7 @@ final class Test extends TestCase
             'phpinof did not return expected array'
         );
     }
-    private function dataProviderCoreinfo(): array
+    public static function dataProviderCoreinfo(): array
     {
         return [
             [  'text' ],
@@ -325,7 +281,7 @@ final class Test extends TestCase
     /**
      * @covers ::parse_dsn
      * @dataProvider dataProviderParseDsn
-     */
+     *
     public function testParseDsn(string $dsn, array $valid_resp, string $assert): void
     {
         switch ($assert) {
@@ -340,7 +296,7 @@ final class Test extends TestCase
             break;
         }
     }
-    private function dataProviderParseDsn(): array
+    public static function dataProviderParseDsn(): array
     {
         return [
             [
@@ -386,7 +342,7 @@ final class Test extends TestCase
     /**
      * @covers ::str_color
      * @dataProvider dataProviderStrColor
-     */
+     *
     public function testStrColor(string $color, string $color_code, $bkg, string $bkg_code): void
     {
         if ($color === 'unsupported-color') {
@@ -408,7 +364,7 @@ final class Test extends TestCase
             $output, "\e[{$color_code};{$bkg_code}mstring\e[0m"
         );
     }
-    private function dataProviderStrColor(): array
+    public static function dataProviderStrColor(): array
     {
         return [
             [ 'black',         '0;30', 'white',   '47' ],
@@ -436,7 +392,7 @@ final class Test extends TestCase
     /**
      * @covers ::str_style
      * @dataProvider dataProviderStrStyle
-     */
+     *
     public function testStrStyle(string $style, string $code): void
     {
         if ($style === 'unsupported-style') {
@@ -449,7 +405,7 @@ final class Test extends TestCase
             $output, "\e[{$code}mstring\e[0m"
         );
     }
-    private function dataProviderStrStyle(): array
+    public static function dataProviderStrStyle(): array
     {
         return [
             [ 'bold',              '1' ],
@@ -468,7 +424,7 @@ final class Test extends TestCase
     /**
      * @covers ::xml_encode
      * @dataProvider dataProviderXmlEncode
-     */
+     *
     public function testXmlEncode(array $data, int $flags,  string $valid_resp): void
     {
         $xml = xml_encode($data, $flags);
@@ -478,7 +434,7 @@ final class Test extends TestCase
             $this->assertEquals($xml, $valid_resp);
         }
     }
-    private function dataProviderXmlEncode(): array
+    public static function dataProviderXmlEncode(): array
     {
         return [
             [
@@ -519,6 +475,7 @@ final class Test extends TestCase
             ],
         ];
     }
+    /* */
 
 }
 
