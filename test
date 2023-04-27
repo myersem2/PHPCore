@@ -1,0 +1,38 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+/**
+ * Test Launcher
+ *
+ * @author    Everett Myers <Me@EverettMyers.com>
+ * @copyright Copyright (c) 2023
+ */
+
+// -------------------------------------------------------------------------------------------------
+
+$short_options = 'f:a::';
+$long_options = ['file:','all'];
+$options = getopt($short_options, $long_options);
+
+$file = null;
+if (isset($options['f']) || isset($options['file'])) {
+    $file = isset($options['f']) ? $options['f'] : $options['file'];
+    $parts = explode('/', $file);
+    $class_name = substr(end($parts), 0, -4);
+}
+if ( ! file_exists($file)) {
+    trigger_error("Could not open $file", E_USER_ERROR);
+}
+include $file;
+
+$class_reflection = new ReflectionClass("PHPCore\\$class_name");
+
+$test_file = null;
+foreach ($class_reflection->getAttributes() as $attribute) {
+    if ($attribute->getName() == 'PHPCore\Test') {
+        $test_file = $attribute->getArguments()[0];
+    }
+}
+
+die('Not Built');
+
+// EOF /////////////////////////////////////////////////////////////////////////////////////////////

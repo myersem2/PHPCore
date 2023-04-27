@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang ="en">
+<head>
+  <title>Socket Test</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+</head>
+<body>
+<script>
+
+/*
+let socket = new WebSocket("wss://52.52.201.121:8080/");
+
+socket.onopen = function(e) {
+  console.log("[open] Connection established");
+  console.log("Sending to server");
+  socket.send("My name is John");
+};
+
+socket.onmessage = function(event) {
+  console.log(`[message] Data received from server: ${event.data}`);
+};
+
+socket.onclose = function(event) {
+  if (event.wasClean) {
+    console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+  } else {
+    // e.g. server process killed or network down
+    // event.code is usually 1006 in this case
+    console.log('[close] Connection died');
+  }
+};
+
+socket.onerror = function(error) {
+  console.error(error);
+};
+*/
+//setTimeout( () => {console.log('re-loaded');location.reload()}, 3000 )
+
+var conn = new WebSocket('ws://dev.warsupremacy.com:8080/test');
+conn.onopen = function(e) {
+    console.log("Connection established!");
+    conn.send('Hello World!');
+};
+
+conn.onmessage = function(e) {
+    console.log(e.data);
+    console.log(e);
+};
+</script>
+</body>

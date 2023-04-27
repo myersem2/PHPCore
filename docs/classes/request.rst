@@ -54,9 +54,9 @@ Request Class Methods
 
    Get request agent capabilities
 
-   Attempts to determine the capabilities of the user's browser, by looking up the browser's information in the browscap.ini file. Then returns the capability by the given **$key**.
+   Attempts to determine the capabilities of the user's browser by looking up the browser's information in the browscap.ini file. Then returns the capability by the given **$key**.
 
-   If $key is not passed the entire capabilities object will be returned.
+   If **$key** is not passed the entire capabilities object will be returned.
 
    .. note::
       Returns **NULL** if get_browser() fails or requested capability is unknown.

@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Session Class" href="session.html" />
+    <link rel="next" title="Response Class" href="response.html" />
     <link rel="prev" title="Model Class" href="model.html" /> 
 </head>
 
@@ -93,6 +93,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#request-class-synopsis">Request Class Synopsis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#request-class-table-of-contents">Request Class Table of Contents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#request-class-methods">Request Class Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="response.html">Response</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="response.html#response-class-synopsis">Response Class Synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="response.html#response-class-table-of-contents">Response Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="response.html#response-class-methods">Response Class Methods</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="session.html">Session</a><ul>
@@ -207,8 +213,8 @@
 <dt class="sig sig-object php" id="agent">
 <span class="sig-name descname"><span class="pre">agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#agent" title="Permalink to this definition"></a></dt>
 <dd><p>Get request agent capabilities</p>
-<p>Attempts to determine the capabilities of the user’s browser, by looking up the browser’s information in the browscap.ini file. Then returns the capability by the given <strong>$key</strong>.</p>
-<p>If $key is not passed the entire capabilities object will be returned.</p>
+<p>Attempts to determine the capabilities of the user’s browser by looking up the browser’s information in the browscap.ini file. Then returns the capability by the given <strong>$key</strong>.</p>
+<p>If <strong>$key</strong> is not passed the entire capabilities object will be returned.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Returns <strong>NULL</strong> if get_browser() fails or requested capability is unknown.</p>
@@ -701,7 +707,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="model.html" class="btn btn-neutral float-left" title="Model Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="session.html" class="btn btn-neutral float-right" title="Session Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="response.html" class="btn btn-neutral float-right" title="Response Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

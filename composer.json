@@ -5,6 +5,9 @@
         ]
     },
     "require": {
-        "filp/whoops": "^2.14"
+        "filp/whoops": "^2.14",
+        "react/http": "^1.8",
+        "react/socket": "^1.12",
+        "cboden/ratchet": "^0.4.4"
     }
 }

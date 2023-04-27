@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Database Class &mdash; PHPCore dev-initial-build
+  <title>Response Class &mdash; PHPCore dev-initial-build
  Manual</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Email Class" href="email.html" />
-    <link rel="prev" title="Controller Class" href="controller.html" /> 
+    <link rel="next" title="Session Class" href="session.html" />
+    <link rel="prev" title="Request Class" href="request.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -86,7 +86,7 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Classes</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="controller.html">Controller</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html">Database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="email.html">Email</a></li>
 <li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="request.html">Request</a><ul>
@@ -95,10 +95,10 @@
 <li class="toctree-l3"><a class="reference internal" href="request.html#request-class-methods">Request Class Methods</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="response.html">Response</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="response.html#response-class-synopsis">Response Class Synopsis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="response.html#response-class-table-of-contents">Response Class Table of Contents</a></li>
-<li class="toctree-l3"><a class="reference internal" href="response.html#response-class-methods">Response Class Methods</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Response</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#response-class-synopsis">Response Class Synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#response-class-table-of-contents">Response Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#response-class-methods">Response Class Methods</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="session.html">Session</a><ul>
@@ -151,9 +151,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="index.html">PHPCore Built-In Classes</a> &raquo;</li>
-      <li>Database Class</li>
+      <li>Response Class</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/myersem2/PHPCore/blob/dev-initial-build/docs/classes/database.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/myersem2/PHPCore/blob/dev-initial-build/docs/classes/response.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -161,54 +161,84 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="database-class">
-<h1>Database Class<a class="headerlink" href="#database-class" title="Permalink to this headline"></a></h1>
-<p>Placeholder…</p>
-<hr class="docutils" />
-<dl class="php class">
-<dt class="sig sig-object php" id="Database">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Database</span></span><a class="headerlink" href="#Database" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+  <section id="response-class">
+<h1>Response Class<a class="headerlink" href="#response-class" title="Permalink to this headline"></a></h1>
+<section id="response-class-synopsis">
+<h2>Response Class Synopsis<a class="headerlink" href="#response-class-synopsis" title="Permalink to this headline"></a></h2>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">final</span> <span class="k">class</span> <span class="nc">Response</span> <span class="p">{</span>
 
-<span class="target" id="session-getinstance"></span><dl class="php method">
-<dt class="sig sig-object php" id="Database::__getInstance">
-<span class="sig-prename descclassname"><span class="pre">Database::</span></span><span class="sig-name descname"><span class="pre">__getInstance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$name</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Database::__getInstance" title="Permalink to this definition"></a></dt>
-<dd><p>Get database class instance</p>
-<p>Returns the database instance for a given name name. If the database handler has not been initiated yet it will be before the instance is returned.</p>
-<p>If the <strong>$name</strong> is not provided the instance with the name Database::MAIN_INSTANCE_NAME</p>
+    <span class="k">use</span> <span class="nx">PHPCore\Core</span>
+
+    <span class="cm">/* Static Properties */</span>
+    <span class="k">private</span> <span class="k">static</span> <span class="k">array</span> <span class="nv">$Buffer</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">private</span> <span class="k">static</span> <span class="o">?</span><span class="k">array</span> <span class="nv">$ErrorBuffer</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">private</span> <span class="k">static</span> <span class="k">array</span> <span class="nv">$HeaderBuffer</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">private</span> <span class="k">static</span> <span class="nx">bool</span> <span class="nv">$PreventCaching</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+
+    <span class="cm">/* Static Methods */</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">add</span><span class="p">(</span><span class="k">array</span><span class="o">|</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="nx">mixed</span> <span class="nv">$data</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">addHeader</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$header</span><span class="p">,</span> <span class="nx">bool</span> <span class="nv">$replace</span> <span class="o">=</span> <span class="k">true</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="response-class-table-of-contents">
+<h2>Response Class Table of Contents<a class="headerlink" href="#response-class-table-of-contents" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#response-method-add"><span class="std std-ref">Response::add</span></a> - TODO: Document</p></li>
+<li><p><a class="reference internal" href="#response-method-addheader"><span class="std std-ref">Response::addHeader</span></a> - Add Header</p></li>
+</ul>
+</section>
+<section id="response-class-methods">
+<h2>Response Class Methods<a class="headerlink" href="#response-class-methods" title="Permalink to this headline"></a></h2>
+<span class="target" id="response-method-add"></span><dl class="php method">
+<dt class="sig sig-object php" id="add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">array|string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">mixed</span> <span class="pre">$data</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#add" title="Permalink to this definition"></a></dt>
+<dd><p>TODO: Document</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>$name</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – Name of the database instance</p></li>
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|string</span></code></span>) – Key</p></li>
+<li><p><strong>$data</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">mixed</span></code></span>) – Data to be added</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>object Database class instance</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
 </dd>
 </dl>
+<p class="wy-text-right"><a class="reference internal" href="#response-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
-<dl class="php method">
-<dt class="sig sig-object php" id="Database::__construct">
-<span class="sig-prename descclassname"><span class="pre">Database::</span></span><span class="sig-name descname"><span class="pre">__construct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$name</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">string</span> <span class="pre">$dsn</span> <span class="pre">=</span> <span class="pre">''</span></em>, <em class="sig-param"><span class="pre">string|null</span> <span class="pre">$usr</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">string|null</span> <span class="pre">$pwd</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Database::__construct" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Throws</dt>
+<hr class="docutils" />
+<span class="target" id="response-method-addheader"></span><dl class="php method">
+<dt class="sig sig-object php" id="addHeader">
+<span class="sig-name descname"><span class="pre">addHeader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$header</span></em>, <em class="sig-param"><span class="pre">bool</span> <span class="pre">$replace</span> <span class="pre">=</span> <span class="pre">true</span></em><span class="sig-paren">)</span><a class="headerlink" href="#addHeader" title="Permalink to this definition"></a></dt>
+<dd><p>Add Header</p>
+<p>Add a header to the header buffer that will be sent right before the response is sent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><code class="xref php php-exc docutils literal notranslate"><span class="pre">Exception</span></code></span> – if instance is not found</p></li>
-<li><p><span><code class="xref php php-exc docutils literal notranslate"><span class="pre">PDOException</span></code></span> – if instance is not found</p></li>
+<li><p><strong>$header</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – Header</p></li>
+<li><p><strong>$replace</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">bool</span></code></span>) – Replace</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
 </dl>
+<p class="wy-text-right"><a class="reference internal" href="#response-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="controller.html" class="btn btn-neutral float-left" title="Controller Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="email.html" class="btn btn-neutral float-right" title="Email Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="request.html" class="btn btn-neutral float-left" title="Request Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="session.html" class="btn btn-neutral float-right" title="Session Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

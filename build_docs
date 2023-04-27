@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php declare(strict_types=1);
 /**
  * PHPCore - Build Docs
@@ -21,10 +22,10 @@ $classes = [
     'files' => [
         //'Database',
         'Request',
+        'Response',
         //'Session',
     ],
     'src_path' => realpath(__DIR__ . "{$ds}src"),
-    'out_path' => realpath(__DIR__ . "{$ds}docs_new{$ds}classes"),
 ];
 
 /**
@@ -111,15 +112,18 @@ function nested_tag(string $tag, object $docblock, int $level = 1)
     return $rst;
 }
 
-foreach ($classes['files'] as $file) {
+foreach ($classes['files'] as $class) {
 
-    $reflection = new ReflectionClass(__NAMESPACE__."\\$file");
+    $reflection = new ReflectionClass(__NAMESPACE__."\\$class");
     $rst = '';
     $rst_indent = indent();
     $code_indent = indent(4);
 
     $class_short_name = $reflection->getShortName();
 
+    if ( ! $reflection->getDocComment()) {
+        trigger_error("docblock is missing for $class_short_name class declaration", E_USER_ERROR);
+    }
     $docblock = parse_docblock($reflection->getDocComment());
     $table_of_contents = '';
 
@@ -228,6 +232,9 @@ foreach ($classes['files'] as $file) {
             continue;
         }
 
+        if ( ! $method->getDocComment()) {
+            trigger_error("docblock is missing for $class_short_name::{$method->name}()", E_USER_ERROR);
+        }
         $method_docblock = parse_docblock($method->getDocComment());
         if (empty($method_docblock) || ! empty($method_docblock->ignore)) {
             continue;
@@ -263,11 +270,18 @@ foreach ($classes['files'] as $file) {
             }
             $params_arr[] = "$type \${$param->name}$defult";
 
+            if (empty($method_docblock->params)) {
+                trigger_error("parameter doc block does not match declared @param for \${$param->name} in $class_short_name::{$method->name}()", E_USER_ERROR);
+            }
+
             $param_docblock = array_find($method_docblock->params, function($item) use($param) {
-                return ($item->varable == "\${$param->name}");
+                return ($item->name == "\${$param->name}");
             });
-            if ( ! isset($param_docblock) || $param_docblock->type != strval($type)) {
-                trigger_error("parameter doc block does not match declared params for \${$param->name} in $class_short_name::{$method->name}()", E_USER_ERROR);
+            if ( ! isset($param_docblock)) {
+                trigger_error("parameter doc block does not contain @param for \${$param->name} in $class_short_name::{$method->name}()", E_USER_ERROR);
+            }
+            if ($param_docblock->type != strval($type)) {
+                trigger_error("parameter doc block does not match declared @param for \${$param->name} in $class_short_name::{$method->name}()", E_USER_ERROR);
             }
             $param_return_details[] = "{$rst_indent}:param $type \${$param->name}: {$param_docblock->description}";
         }
@@ -357,16 +371,23 @@ foreach ($classes['files'] as $file) {
         }
     }
 
-    //var_dump(file_get_contents(__DIR__.'/docs/classes/request.rst'));exit;
-    file_put_contents(__DIR__.'/docs/classes/request.rst', $rst);
-    
-    //echo $rst;
-    //var_dump($db->title);
-    //var_dump($db->description);
-    //var_dump($db->title);
-    //var_dump($db->return);
-    //var_dump($db->all_params);
-    //var_dump(trim(str_replace(array('/', '*'), '', substr($rc->getDocComment(), 0, strpos($rc->getDocComment(), '@')))));
+    $attributes = $reflection->getAttributes("{$reflection->getNamespaceName()}\Documentation");
+    if (empty($attributes)) {
+        trigger_error("Missing Documentation attribute for {$reflection->getName()}", E_USER_ERROR);
+    }
+
+    $attr_arguments = $attributes[0]->getArguments();
+    if (count($attr_arguments) !== 1) {
+        trigger_error("Documentation attribute for {$reflection->getName()} is malformed", E_USER_ERROR);
+    }
+    $rst_file = $classes['src_path'].'/'.$attr_arguments[0];
+    file_put_contents($rst_file, $rst);
+
+    echo "+ Documentation for ".str_color($class, 'green')." was create in ".str_color($rst_file, 'magenta')."\n";
 }
+
+chdir('docs');
+passthru('find . *.rst -exec touch {} \;;make html');
+chdir('..');
 
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////

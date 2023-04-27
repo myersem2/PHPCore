@@ -13,6 +13,7 @@ namespace PHPCore;
 /**
  * Response Class
  */
+#[Documentation('../docs/classes/response.rst')]
 final class Response
 {
     use Core;
@@ -47,8 +48,14 @@ final class Response
 
     // ---------------------------------------------------------------------
 
-    // TODO: Document
-    public static function add(string|array $key, mixed $data = null): void
+    /**
+     * TODO: Document
+     *
+     * @param array|string $key Key
+     * @param mixed $data Data to be added
+     * @return void
+     */
+    public static function add(array|string $key, mixed $data = null): void
     {
         if (is_array($key)) {
             foreach ($key as $index => $value) {
@@ -66,7 +73,7 @@ final class Response
      * response is sent.
      *
      * @param string $header Header
-     * @param boolean $replace Replace
+     * @param bool $replace Replace
      * @return void
      */
     public static function addHeader(string $header, bool $replace = true): void
@@ -82,6 +89,7 @@ final class Response
 
     /**
      * TODO: Document
+     * @ignore
      */
     public static function error(float $code, array $params = []): void
     {
@@ -115,6 +123,7 @@ final class Response
 
     /**
      * TODO: Document
+     * @ignore
      */
     public static function export(mixed $data): string
     {
@@ -143,6 +152,7 @@ final class Response
      * @param string $header Header
      * @param boolean $byName By Name
      * @return void
+     * @ignore
      */
     public static function removeHeader(string $header, bool $byName = false): void
     {
@@ -167,6 +177,7 @@ final class Response
      * @param mixed $data Data
      * @param integer $statusCode Status Code
      * @return void
+     * @ignore
      */
     public static function send(mixed $data = null, ?int $statusCode = null): void
     {
@@ -212,6 +223,7 @@ final class Response
      * Send the raw HTTP headers
      *
      * @return void
+     * @ignore
      */
     public static function sendHeaders(): void
     {
