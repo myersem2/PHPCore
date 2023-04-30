@@ -8,8 +8,15 @@
 
 // -------------------------------------------------------------------------------------------------
 
+$disable_functions = [];
+$disable_classes = [];
+if (class_exists('\PHPCore\Config')) {
+$disable_functions = \PHPCore\Config::get('disable_functions') ?? [];
+$disable_classes = \PHPCore\Config::get('disable_classes') ?? [];
+}
+
 // TODO: document
-if ( ! in_array('array_every', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('array_every', $disable_functions) ) {
     function array_every(array $arr, callable $func): bool
     {
         foreach ($arr as $item) {
@@ -32,8 +39,8 @@ if ( ! in_array('array_every', \PHPCore\Config::get('disable_functions')) ) {
  *                    callable function.
  *                    Returns null if not found.
  */
-if ( ! in_array('array_find', \PHPCore\Config::get('disable_functions')) ) {
-    function array_find($arr, $func): mixed
+if ( ! in_array('array_find', $disable_functions) ) {
+    function array_find(array $arr, $func): mixed
     {
         foreach ($arr as $item) {
             if (call_user_func($func, $item)) {
@@ -54,7 +61,7 @@ if ( ! in_array('array_find', \PHPCore\Config::get('disable_functions')) ) {
  * @param array $flattened Items that are already flattened
  * @return array Returns flatten array
  */
-if ( ! in_array('array_flatten', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('array_flatten', $disable_functions) ) {
     function array_flatten(array $arr, array $flattened = []): array
     {
         foreach ($arr as $item) {
@@ -71,7 +78,7 @@ if ( ! in_array('array_flatten', \PHPCore\Config::get('disable_functions')) ) {
 }
 
 // TODO: document
-if ( ! in_array('array_some', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('array_some', $disable_functions) ) {
     function array_some(array $arr, callable $func): bool
     {
         foreach ($arr as $item) {
@@ -94,7 +101,7 @@ if ( ! in_array('array_some', \PHPCore\Config::get('disable_functions')) ) {
  * @param string $retrieve_directive Directive to retrieve
  * @return mixed The value of the directive
  */
-if ( ! in_array('phpcore_ini_get', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('phpcore_ini_get', $disable_functions) ) {
     function phpcore_ini_get(string $retrieve_directive): mixed
     {
         return \PHPCore\Config::get($retrieve_directive);
@@ -112,7 +119,7 @@ if ( ! in_array('phpcore_ini_get', \PHPCore\Config::get('disable_functions')) ) 
  * @param string $retrieve_section Section to retrieve
  * @return array An array of the directives for a give section
  */
-if ( ! in_array('phpcore_ini_get_all', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('phpcore_ini_get_all', $disable_functions) ) {
     function phpcore_ini_get_all(string $retrieve_section): array
     {
         return \PHPCore\Config::getAll($retrieve_section);
@@ -130,7 +137,7 @@ if ( ! in_array('phpcore_ini_get_all', \PHPCore\Config::get('disable_functions')
  * @param string $set_directive Directive to set
  * @param mixed $new_value New value
  */
-if ( ! in_array('phpcore_ini_set', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('phpcore_ini_set', $disable_functions) ) {
     function phpcore_ini_set(string $set_directive, mixed $new_value): bool
     {
         return \PHPCore\Config::set($set_directive, $new_value);
@@ -144,7 +151,7 @@ if ( ! in_array('phpcore_ini_set', \PHPCore\Config::get('disable_functions')) ) 
  *
  * @return string List or HTML formated PHPCore information.
  */
-if ( ! in_array('coreinfo', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('coreinfo', $disable_functions) ) {
     function coreinfo(): void
     {
         $output = '';
@@ -244,7 +251,7 @@ hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
  * @param string $name Name of instance
  * @return object Database
  */
-if ( ! in_array('database', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('database', $disable_functions) ) {
     function &database(?string $name = null): object
     {
         return \PHPCore\Database::getInstance($name);
@@ -262,7 +269,7 @@ if ( ! in_array('database', \PHPCore\Config::get('disable_functions')) ) {
  *                     value is the current directory that the cookie is being deleted in.
  * @param string $domain The (sub)domain that the cookie will be deleted for.
  */
-if ( ! in_array('delcookie', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('delcookie', $disable_functions) ) {
     function delcookie(string $name, string $path = '', string $domain = '')
     {
         setcookie($name, '', -1, $path, $domain);
@@ -270,7 +277,7 @@ if ( ! in_array('delcookie', \PHPCore\Config::get('disable_functions')) ) {
 }
 
 // TODO: document
-if ( ! in_array('param', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('param', $disable_functions) ) {
     function param(string $key): mixed
     {
         return match($key) {
@@ -333,8 +340,12 @@ function parse_docblock(string $doc_block): object|false
 
         // Title
         if ( ! isset($details['title'])) {
-            $details['title'] = $row;
-            continue;
+            if (strpos($row, '@') === 0) {
+                $details['title'] = '';
+            } else {
+                $details['title'] = $row;
+                continue;
+            }
         }
 
         // Description
@@ -479,7 +490,7 @@ function parse_docblock(string $doc_block): object|false
  * @param string $dsn Data Source Name (DSN) string to parse.
  * @return array Returns DSN elements as associated array.
  */
-if ( ! in_array('parse_dsn', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('parse_dsn', $disable_functions) ) {
     function parse_dsn(string $dsn): array
     {
         if (strpos($dsn, ':') === false) {
@@ -514,7 +525,7 @@ if ( ! in_array('parse_dsn', \PHPCore\Config::get('disable_functions')) ) {
 }
 
 // TODO: document
-if ( ! in_array('response_add', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('response_add', $disable_functions) ) {
     function response_add(string|array $key, mixed $data = null): void
     {
         \PHPCore\Response::add($key, $data);
@@ -522,7 +533,7 @@ if ( ! in_array('response_add', \PHPCore\Config::get('disable_functions')) ) {
 }
 
 // TODO: document
-if ( ! in_array('response_error', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('response_error', $disable_functions) ) {
     function response_error(float $code, array $params = [], int $flags = 0): void
     {
         \PHPCore\Response::error($code, $params, $flags);
@@ -530,7 +541,7 @@ if ( ! in_array('response_error', \PHPCore\Config::get('disable_functions')) ) {
 }
 
 // TODO: document
-if ( ! in_array('response_send', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('response_send', $disable_functions) ) {
     function response_send(mixed $data = null, ?int $statusCode = null): void
     {
         \PHPCore\Response::send($data, $statusCode);
@@ -545,7 +556,7 @@ if ( ! in_array('response_send', \PHPCore\Config::get('disable_functions')) ) {
  *
  * @return object Session
  */
-if ( ! in_array('session', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('session', $disable_functions) ) {
     function &session(): object
     {
         return \PHPCore\Session::getInstance();
@@ -560,7 +571,7 @@ if ( ! in_array('session', \PHPCore\Config::get('disable_functions')) ) {
  * @return boolean Returns true on success or false on failure.
  * @throws Exception If save handler does not support this method.
  */
-if ( ! in_array('session_destroy_all', \PHPCore\Config::get('disable_functions')) and ! in_array('Session', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('session_destroy_all', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_destroy_all(): bool
     {
         return \PHPCore\Session::getInstance()->destroyAll();
@@ -576,7 +587,7 @@ if ( ! in_array('session_destroy_all', \PHPCore\Config::get('disable_functions')
  * @param string $key The key of the flash data item to retrieve
  * @return mixed Returns the flash data item
  */
-if ( ! in_array('session_flash_get', \PHPCore\Config::get('disable_functions')) and ! in_array('Session', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('session_flash_get', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_flash_get(?string $key = null): mixed
     {
         return \PHPCore\Session::getInstance()->flashGet($key);
@@ -591,7 +602,7 @@ if ( ! in_array('session_flash_get', \PHPCore\Config::get('disable_functions')) 
  * @param string $key The key of the flash data item to keep
  * @return boolean Return true on success and false if not found
  */
-if ( ! in_array('session_flash_keep', \PHPCore\Config::get('disable_functions')) and ! in_array('Session', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('session_flash_keep', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_flash_keep(string $key): bool
     {
         return \PHPCore\Session::getInstance()->flashKeep($key);
@@ -607,7 +618,7 @@ if ( ! in_array('session_flash_keep', \PHPCore\Config::get('disable_functions'))
  * @param mixed $value The value of the flash data item
  * @return void
  */
-if ( ! in_array('session_flash_set', \PHPCore\Config::get('disable_functions')) and ! in_array('Session', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('session_flash_set', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_flash_set(string $key, mixed $value): void
     {
         \PHPCore\Session::getInstance()->flashSet($key, $value);
@@ -622,7 +633,7 @@ if ( ! in_array('session_flash_set', \PHPCore\Config::get('disable_functions')) 
  * @param string $key Key of session data item to retrieve
  * @return mixed Data item from session data
  */
-if ( ! in_array('session_get', \PHPCore\Config::get('disable_functions')) and ! in_array('Session', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('session_get', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_get(string $key): mixed
     {
         return \PHPCore\Session::getInstance()->get($key);
@@ -638,7 +649,7 @@ if ( ! in_array('session_get', \PHPCore\Config::get('disable_functions')) and ! 
  * @param string $key Metadata Key
  * @return mixed Session Metadata
  */
-if ( ! in_array('session_get_metadata', \PHPCore\Config::get('disable_functions')) and ! in_array('Session', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('session_get_metadata', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_get_metadata(?string $key = null): mixed
     {
         return \PHPCore\Session::getInstance()->getMetadata($key);
@@ -656,7 +667,7 @@ if ( ! in_array('session_get_metadata', \PHPCore\Config::get('disable_functions'
  * @param string|array $groups ACL group or array of ACL groups to be granted
  * @return void
  */
-if ( ! in_array('session_grant', \PHPCore\Config::get('disable_functions')) and ! in_array('Session', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('session_grant', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_grant(string|array $groups): void
     {
         \PHPCore\Session::getInstance()->grant($groups);
@@ -674,7 +685,7 @@ if ( ! in_array('session_grant', \PHPCore\Config::get('disable_functions')) and 
  * @param string|array $groups ACL group or array of ACL groups to be revoked
  * @return void
  */
-if ( ! in_array('session_revoke', \PHPCore\Config::get('disable_functions')) and ! in_array('Session', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('session_revoke', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_revoke(string|array $groups): void
     {
         \PHPCore\Session::getInstance()->revoke($groups);
@@ -691,7 +702,7 @@ if ( ! in_array('session_revoke', \PHPCore\Config::get('disable_functions')) and
  * @param mixed $value Value of session data item to set.
  * @param integer $ttl Time To Live for this data item.
  */
-if ( ! in_array('session_set', \PHPCore\Config::get('disable_functions')) and ! in_array('Session', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('session_set', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_set(string $key, mixed $value, ?int $ttl = null): void
     {
         \PHPCore\Session::getInstance()->set($key, $value, $ttl);
@@ -706,7 +717,7 @@ if ( ! in_array('session_set', \PHPCore\Config::get('disable_functions')) and ! 
  * @param string $key Key of session data item to set.
  * @param mixed $value Value of session data item to set.
  */
-if ( ! in_array('session_set_metadata', \PHPCore\Config::get('disable_functions')) and ! in_array('Session', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('session_set_metadata', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_set_metadata(string $key, mixed $value): void
     {
         \PHPCore\Session::getInstance()->setMetadata($key, $value);
@@ -723,7 +734,7 @@ if ( ! in_array('session_set_metadata', \PHPCore\Config::get('disable_functions'
  * @param string $bkg_color_name Background color name
  * @return string
  */
-if ( ! in_array('str_color', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('str_color', $disable_functions) ) {
     function str_color(string $string, string $str_color_name, string $bkg_color_name = 'black'): string
     {
         switch ($str_color_name) {
@@ -777,7 +788,7 @@ if ( ! in_array('str_color', \PHPCore\Config::get('disable_functions')) ) {
  * @param string $style_name Style name
  * @return void
  */
-if ( ! in_array('str_style', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('str_style', $disable_functions) ) {
     function str_style(string $string, string $style_name): string
     {
         switch ($style_name) {
@@ -802,6 +813,60 @@ if ( ! in_array('str_style', \PHPCore\Config::get('disable_functions')) ) {
 }
 
 /**
+ * Is string casing
+ *
+ * This method will check the provided string has proper casing.
+ *
+ * @todo offer number support?
+ *
+ * Supported Casings are:
+ *   - PascalCase
+ *   - snake_case
+ *   - camelCase
+ *   - kebab-case
+ *   - lowercase
+ *   - UPPER_CASE
+ *   - UPPERCASE
+ *
+ * @param bool
+ * @return bool
+ */
+if ( ! in_array('is_casing', $disable_functions) ) {
+    function is_casing(string $string, string $casing): bool
+    {
+        switch ($casing) {
+            case 'PascalCase':
+                return (preg_match("/^([A-Z][a-z]+)+$/", $string) != false);
+            break;
+            case 'snake_case':
+                return (preg_match("/^[a-z_]+$/", $string) != false);
+            break;
+            case 'camelCase':
+                return (preg_match("/^([a-z]+[A-Z]?)+$/", $string) != false);
+            break;
+            case 'kebab-case':
+                return (preg_match("/^[a-z\-]+$/", $string) != false);
+            break;
+            case 'lowercase':
+                return (preg_match("/^[a-z]+$/", $string) != false);
+            break;
+            case 'UPPER_CASE':
+                return (preg_match("/^[A-Z_]+$/", $string) != false);
+                return false;
+            break;
+            case 'UPPERCASE':
+                return (preg_match("/^[A-Z]+$/", $string) != false);
+            break;
+            default:
+                trigger_error(
+                    "Unknown casing `$casing` used for is_casing()",
+                    E_USER_ERROR
+                );
+        }
+    }
+}
+
+/**
  * Time to array
  *
  * Takes a provide time and returns an array of time units.
@@ -809,7 +874,7 @@ if ( ! in_array('str_style', \PHPCore\Config::get('disable_functions')) ) {
  * @param integer $time Time
  * @return array
  */
-if ( ! in_array('timetoarray', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('timetoarray', $disable_functions) ) {
     function timetoarray(int $time): array
     {
         return [
@@ -828,7 +893,7 @@ if ( ! in_array('timetoarray', \PHPCore\Config::get('disable_functions')) ) {
  *
  * @return object Session
  */
-if ( ! in_array('user', \PHPCore\Config::get('disable_functions')) and ! in_array('User', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('user', $disable_functions) and ! in_array('User', $disable_classes)) {
     function user(): object
     {
         static $user;
@@ -855,7 +920,7 @@ if ( ! in_array('user', \PHPCore\Config::get('disable_functions')) and ! in_arra
  * @flag User::HAS_ACCESS_ALL Has Access check true if ALL match
  * @return boolean If has session access
  */
-if ( ! in_array('user_has_role', \PHPCore\Config::get('disable_functions')) and ! in_array('User', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('user_has_role', $disable_functions) and ! in_array('User', $disable_classes)) {
     function user_has_role(string|array $groups, int $flags = 0): bool
     {
         return user()->hasAccess($groups, $flags);
@@ -863,7 +928,7 @@ if ( ! in_array('user_has_role', \PHPCore\Config::get('disable_functions')) and 
 }
 
 // TODO: document
-if ( ! in_array('user_add_role', \PHPCore\Config::get('disable_functions')) and ! in_array('User', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('user_add_role', $disable_functions) and ! in_array('User', $disable_classes)) {
     function user_add_role(string|array $roles, int $flags = 0): void
     {
         user()->addRole($roles, $flags);
@@ -871,7 +936,7 @@ if ( ! in_array('user_add_role', \PHPCore\Config::get('disable_functions')) and 
 }
 
 // TODO: document
-if ( ! in_array('user_remove_role', \PHPCore\Config::get('disable_functions')) and ! in_array('User', \PHPCore\Config::get('disable_classes'))) {
+if ( ! in_array('user_remove_role', $disable_functions) and ! in_array('User', $disable_classes)) {
     function user_remove_role(string|array $roles): void
     {
         user()->removeRole($roles);
@@ -884,7 +949,7 @@ if ( ! in_array('user_remove_role', \PHPCore\Config::get('disable_functions')) a
  * @param array $array Array to be encoded as XML
  * @return string Returns a string containing the XML representation of the supplied array.
  */
-if ( ! in_array('xml_encode', \PHPCore\Config::get('disable_functions')) ) {
+if ( ! in_array('xml_encode', $disable_functions) ) {
     define('XML_ENCODE_AS_XML_OBJ', 1);
     define('XML_ENCODE_PRETTY_PRINT', 2);
     function xml_encode(mixed $array, int $flags = 0)
@@ -918,5 +983,8 @@ if ( ! in_array('xml_encode', \PHPCore\Config::get('disable_functions')) ) {
         }
     }
 }
+
+unset($disable_functions);
+unset($disable_classes);
 
 // EOF /////////////////////////////////////////////////////////////////////////////////////////////

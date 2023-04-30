@@ -38,6 +38,9 @@ socket.onerror = function(error) {
 */
 //setTimeout( () => {console.log('re-loaded');location.reload()}, 3000 )
 
+
+// TODO: test the wss protocal
+//var conn = new WebSocket('wss://dev.warsupremacy.com:8080/test');
 var conn = new WebSocket('ws://dev.warsupremacy.com:8080/test');
 conn.onopen = function(e) {
     console.log("Connection established!");

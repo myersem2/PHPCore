@@ -25,16 +25,17 @@ $options = getopt('c:d:f:r:ihv', [
     'version::',
     'help::',
 ]);
-foreach ($argv as $opt) {
-    if (str_starts_with($opt, '--') === true) {
+foreach ($argv as $index=>$opt) {
+    $num = $index + 1;
+    if (str_starts_with($opt, '--')) {
         list($opt) = explode('=', $opt);
-        if (isset($options[substr($opt, 2)]) === false) {
-            echo "Error in argument 1, no argument for option $opt\n";
+        if ( ! isset($options[substr($opt, 2)])) {
+            echo "Error in argument $num, no argument for option $opt\n";
             $argv = ['--help'];
         }
-    } elseif (str_starts_with($opt, '-') == true) {
-        if (isset($options[substr($opt, 1)]) === false) {
-            echo "Error in argument 1, no argument for option $opt\n";
+    } elseif (str_starts_with($opt, '-')) {
+        if ( ! isset($options[substr($opt, 1)])) {
+            echo "Error in argument $num, no argument for option $opt\n";
             $argv = ['--help']; 
         }
     }
@@ -46,7 +47,8 @@ unset($opt);
 // =============================================================================
 if (in_array('-v', $argv) or in_array('--version', $argv)) {
     echo str_color('PHPCore', 'light_blue') . ' ' . str_color(CORE_VERSION, 'cyan') . ' (cli)' . PHP_EOL;
-    echo 'Copyright (c) The PHPCore' . PHP_EOL;
+    $date = date('Y');
+    echo "Copyright (c) $date PHPCore" . PHP_EOL;
     exit;
 }
 

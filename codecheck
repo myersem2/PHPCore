@@ -1,0 +1,183 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+/**
+ * PHPCore - Check Code Standards
+ *
+ * @author    Everett Myers <Me@EverettMyers.com>
+ * @copyright Copyright (c) 2023, PHPCore
+ */
+
+namespace PHPCore;
+
+$version = '1.0.0';
+$ds = DIRECTORY_SEPARATOR;
+
+include __DIR__ . "{$ds}src{$ds}functions.php";
+include __DIR__ . "{$ds}src{$ds}CodeCheck.php";
+
+// -------------------------------------------------------------------------------------------------
+
+/**
+ * Code check error
+ *
+ * This method will output an error message to the screen. If the additional
+ * `$stop_processing` parameter is passed as false the script will continue
+ * otherwise it will exit.
+ *
+ * @param string $message Error message
+ * @param bool $stop_processing Stop processing and exit script
+ * @return void
+ */
+function codeCheckError(string $message, $stop_processing = true): void
+{
+    echo str_color("ERROR: $message" . PHP_EOL, 'red');
+    if ($stop_processing) {
+      exit(1);
+    }
+}
+
+/**
+ * Code check header
+ *
+ * This method will output the header including the name of the script and
+ * version.
+ *
+ * @return void
+ */
+function codeCheckHeader(): void
+{
+    $ver = str_color(CodeCheck::VERSION, 'cyan');
+    echo "PHPCore Code Check $ver" . PHP_EOL;
+    $date = date('Y');
+    echo "Copyright (c) $date PHPCore". PHP_EOL;
+}
+
+/**
+ * Code check help
+ *
+ * This method will output the help screen then exit.
+ *
+ * @return void
+ */
+function codeCheckHelp(): void
+{
+    codeCheckHeader();
+
+    echo PHP_EOL;
+    echo str_color('Usage:', 'brown') . PHP_EOL;
+    echo '  codecheck [options]' . PHP_EOL;
+    echo PHP_EOL;
+    echo str_color('Targeted:', 'brown') . PHP_EOL;
+    echo str_color('  -p', 'green') . ' ' . str_color('<path> ', 'cyan');
+    echo '   Path to check all files' . PHP_EOL;
+    echo str_color('  -f', 'green') . ' ' . str_color('<file> ', 'cyan');
+    echo '   File path to check' . PHP_EOL;
+    echo str_color('  -c', 'green') . ' ' . str_color('<class>', 'cyan');
+    echo '   Class to check against code standards' . PHP_EOL;
+    echo str_color('  -e', 'green') . ' ' . str_color('<file>', 'cyan');
+    echo '   Exclude file (used with path)' . PHP_EOL;
+    echo PHP_EOL;
+    echo str_color('Miscellaneous:', 'brown') . PHP_EOL;
+    echo str_color('  -h|--help', 'green');
+    echo '   Display this help and exit' . PHP_EOL;
+    echo str_color('  -v|--version', 'green');
+    echo '   Display version and exit' . PHP_EOL;
+    echo PHP_EOL;
+    exit(0);
+}
+
+// -------------------------------------------------------------------------------------------------
+
+$options = getopt(CodeCheck::SHORT_OPTIONS, CodeCheck::LONG_OPTIONS);
+
+if (array_key_exists('h', $options) || array_key_exists('help', $options)) {
+    codeCheckHelp();
+}
+
+if (array_key_exists('v', $options) || array_key_exists('version', $options)) {
+    codeCheckHeader();
+    exit(0);
+}
+
+if (version_compare('8.1.0', PHP_VERSION, '>')) {
+    codeCheckError('This version of PHPCore Code Check requires PHP >= 8.1');
+}
+
+$by_path = array_key_exists('p', $options);
+$by_file = array_key_exists('f', $options);
+if ( ( ! $by_file && ! $by_path) || ($by_file && $by_path) ) {
+    codeCheckError('PHPCore Code Check requires either a file or path to check', false);
+    codeCheckHelp();
+}
+
+if (array_key_exists('f', $options) && is_array($options['f'])) {
+    codeCheckError('PHPCore Code Check can only have one file to check', false);
+    codeCheckHelp();
+}
+
+if (array_key_exists('p', $options) && is_array($options['p'])) {
+    codeCheckError('PHPCore Code Check can only have one path to check', false);
+    codeCheckHelp();
+}
+
+if (array_key_exists('c', $options)) {
+    if (is_array($options['c'])) {
+        codeCheckError('PHPCore Code Check can only have one class to check', false);
+        codeCheckHelp();
+    }
+    if ($by_path) {
+        codeCheckError('PHPCore Code Check cannot have class and path declared', false);
+        codeCheckHelp();
+    }
+}
+
+// -------------------------------------------------------------------------------------------------
+
+if ($by_file) {
+
+    $checker = new CodeCheck([
+        'file_path' => $options['f'],
+        'class_ame' => $options['c'] ?? null,
+    ]);
+    $checker->runAll();
+
+} else {
+
+
+    if ( ! is_dir($options['p'])) {
+        codeCheckError('PHPCore Code Check path is not valid', false);
+        codeCheckHelp();
+    }
+
+    $files = scandir($options['p']);
+    $excluded = $options['e'] ?? [];
+    if (is_string($excluded)) {
+        $excluded = [$excluded];
+    }
+    if ( ! empty($files)) {
+        foreach ($files as $file) {
+            if (str_starts_with($file, '.') || ! str_ends_with($file, '.php')) {
+                continue;
+            }
+            if (in_array($file, $excluded)) {
+                continue;
+            }
+            // TODO: Build
+            //var_dump($file);
+
+            $title = "Checking file: $file";
+            echo PHP_EOL . str_color($title, 'magenta') . PHP_EOL;
+            echo str_color(str_repeat('=', strlen($title)), 'magenta') . PHP_EOL;
+            $checker = new CodeCheck([
+                'file_path' => "{$options['p']}{$ds}{$file}",
+            ]);
+            $checker->runAll();
+            
+        }
+    }
+
+}
+
+
+
+// EOF /////////////////////////////////////////////////////////////////////////////////////////////

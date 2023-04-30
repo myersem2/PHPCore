@@ -166,6 +166,10 @@ final class Config
      */
     public static function initialize(array $runtime_config = []): void
     {
+        // TODO : add tracking for where the class was initialized
+        //$bt = debug_backtrace();
+        //$caller = array_shift($bt);
+  
         if (isset(self::$BaseIni)) {
             trigger_error('PHPCore configuration can only be initialized once.', E_USER_WARNING);
             return;

@@ -23,65 +23,21 @@ namespace PHPCore;
  * @refence PHP Filter Variable: https://www.php.net/manual/en/function.filter-var.php
  * @refence PHP Types of filters: https://www.php.net/manual/en/filter.filters.php
  */
-#[Test('../tests/RequestTest.php')]
+#[Test('../tests/RequestHttpTest.php')]
 #[Documentation('../docs/classes/request.rst')]
 final class Request
 {
     /**
-     * Agent
+     * Instance that have been created
      *
-     * @var ?object
+     * @prop array
      */
-    public readonly ?object $Agent;
-
-    /**
-     * Cookies
-     *
-     * @var array
-     */
-    public readonly array $Cookies;
-
-    /**
-     * Format
-     *
-     * @var ?string
-     */
-    public readonly ?string $Format;
-
-    /**
-     * Headers
-     *
-     * @var array
-     */
-    public readonly array $Headers;
-
-    /**
-     * Request ID
-     *
-     * @var ?string
-     */
-    public readonly ?string $Id;
-
-    /**
-     * IP Address
-     *
-     * @var string
-     */
-    public readonly bool|string $IpAddress;
-
-    /**
-     * Request Time Start
-     *
-     * @var string
-     */
-    public readonly float $RequestTimeStart;
-
-    // ---------------------------------------------------------------------
+    protected static array $Instances = [];
 
     /**
      * Agent Booleans
      *
-     * @var array
+     * @prop array
      */
     private static array $AgentBooleans = [
         'activexcontrols','alpha','backgroundsounds','beta','cookies',
@@ -93,7 +49,7 @@ final class Request
     /**
      * Agent Integers
      *
-     * @var array
+     * @prop array
      */
     private static array $AgentIntegers = [
         'aolversion','browser_bits','cssversion','majorver','minorver',
@@ -103,7 +59,95 @@ final class Request
     // ---------------------------------------------------------------------
 
     /**
-     * 
+     * Agent
+     *
+     * @prop ?object
+     */
+    public readonly ?object $Agent;
+
+    /**
+     * Cookies
+     *
+     * @prop array
+     */
+    public readonly array $Cookies;
+
+    /**
+     * Format
+     *
+     * @prop ?string
+     */
+    public readonly ?string $Format;
+
+    /**
+     * Headers
+     *
+     * @prop array
+     */
+    public readonly array $Headers;
+
+    /**
+     * IP Address
+     *
+     * @prop string
+     */
+    public readonly bool|string $IpAddress;
+
+    /**
+     * Request ID
+     *
+     * @prop ?string
+     */
+    public readonly ?string $RequestId;
+
+    /**
+     * Request Time Start
+     *
+     * @prop string
+     */
+    public readonly float $RequestTimeStart;
+
+    // ---------------------------------------------------------------------
+
+    /**
+     * Get request object
+     *
+     * This method is used to retrive a previously constructed request instance
+     * by a given `$request_id`.
+     *
+     * @param ?string $request_id Request ID
+     * @return ?PHPCore\Request Request instance
+     */
+    public static function &getRequest(?string $request_id = null): ?Request
+    {
+        if (empty(self::$Instances)) {
+            throw new Exception('PHPCore\Request::getRequest() cannot be invoked because no Request instances exist.');
+        }
+
+        if ( ! isset($request_id)) {
+            if (count(self::$Instances) > 1) {
+                throw new Exception('PHPCore\Request::getRequest() cannot be invoked without the request_id parameter with more that one Request instance.');
+            }
+            $request_id = array_keys(self::$Instances)[0];
+        }
+
+        if ( ! isset(self::$Instances[$request_id])) {
+            throw new Exception("Request ID `$request_id` was not found.");
+        }
+
+        return self::$Instances[$request_id];
+    }
+
+    // ---------------------------------------------------------------------
+
+    /**
+     * Constructor
+     *
+     * Used to construct the instance and it by reference into the
+     * self::$Instances for later use.
+     *
+     * @param array $params Parameters for request
+     * @return void
      */
     public function __construct(array $params = [])
     {
@@ -192,10 +236,18 @@ final class Request
         $this->Cookies = $cookies;
         $this->Format = $format;
         $this->Headers = $headers;
-        $this->Id = $request_id;
+        $this->requestId = $request_id;
         $this->IpAddress = $ip_address;
         $this->RequestTimeStart = $request_time;
+
+        if (isset(self::$Instances[$this->requestId])) {
+            trigger_error('PHPCore\Request was contructed with the a Request ID that already exists.', E_USER_WARNING);
+        }
+
+        self::$Instances[$this->requestId] =& $this;
     }
+
+    // ---------------------------------------------------------------------
 
     /**
      * Get request agent capabilities
@@ -370,9 +422,9 @@ final class Request
      *
      * @param string $key The key of the file to retrieve
      *
-     * @return object|null RequestFile object
+     * @return ?object RequestFile object
      */
-    public function file(string $key): object|null
+    public function file(string $key): ?object
     {
         static $request_files;
 
@@ -527,34 +579,6 @@ final class Request
     }
 
     /**
-     * Get request ID
-     *
-     * // TODO: SEE IF THIS IS NEED AND MOVE DOCUMENTATION
-     *
-     * Gets the unique identifier based on the **REQUEST_TIME_FLOAT**,
-     * ``Request::ip()`` and the **REQUEST_URI**.
-     *
-     * @example Get request ID
-     * <code linenos="true" emphasize-lines="9">
-     *
-     * use \PHPCore\Request;
-     *
-     * // $_SERVER['REQUEST_TIME_FLOAT'] = 1681363597.2922
-     * // $_SERVER['REMOTE_ADDR'] = '10.0.0.101'
-     * // $_SERVER['REQUEST_URI'] = '/test.php'
-     * 
-     * echo Request::id(); // '9e86384b69d5abe885fe33baff74bf37'
-     *
-     * </code>
-     *
-     * @return string Request ID
-     */
-    public function id(): string
-    {
-        return $this->Id;
-    }
-
-    /**
      * Get requester ip address
      *
      * // TODO: SEE IF THIS IS NEED AND MOVE DOCUMENTATION
@@ -643,6 +667,34 @@ final class Request
         }
 
         return $value;
+    }
+
+    /**
+     * Get request ID
+     *
+     * // TODO: SEE IF THIS IS NEED AND MOVE DOCUMENTATION
+     *
+     * Gets the unique identifier based on the **REQUEST_TIME_FLOAT**,
+     * ``Request::ip()`` and the **REQUEST_URI**.
+     *
+     * @example Get request ID
+     * <code linenos="true" emphasize-lines="9">
+     *
+     * use \PHPCore\Request;
+     *
+     * // $_SERVER['REQUEST_TIME_FLOAT'] = 1681363597.2922
+     * // $_SERVER['REMOTE_ADDR'] = '10.0.0.101'
+     * // $_SERVER['REQUEST_URI'] = '/test.php'
+     * 
+     * echo Request::requestId(); // '9e86384b69d5abe885fe33baff74bf37'
+     *
+     * </code>
+     *
+     * @return string Request ID
+     */
+    public function requestId(): string
+    {
+        return $this->requestId;
     }
 
     /**
