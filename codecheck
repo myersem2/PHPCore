@@ -15,6 +15,8 @@ $ds = DIRECTORY_SEPARATOR;
 include __DIR__ . "{$ds}src{$ds}functions.php";
 include __DIR__ . "{$ds}src{$ds}CodeCheck.php";
 
+// TODO: validate and fix PRS-1 2.3. Side Effects
+
 // -------------------------------------------------------------------------------------------------
 
 /**
@@ -68,20 +70,26 @@ function codeCheckHelp(): void
     echo '  codecheck [options]' . PHP_EOL;
     echo PHP_EOL;
     echo str_color('Targeted:', 'brown') . PHP_EOL;
-    echo str_color('  -p', 'green') . ' ' . str_color('<path> ', 'cyan');
-    echo '   Path to check all files' . PHP_EOL;
-    echo str_color('  -f', 'green') . ' ' . str_color('<file> ', 'cyan');
-    echo '   File path to check' . PHP_EOL;
-    echo str_color('  -c', 'green') . ' ' . str_color('<class>', 'cyan');
-    echo '   Class to check against code standards' . PHP_EOL;
-    echo str_color('  -e', 'green') . ' ' . str_color('<file>', 'cyan');
-    echo '   Exclude file (used with path)' . PHP_EOL;
+    echo str_color('  -p', 'green') . ' ' . str_color('<path>      ', 'cyan');
+    echo 'Path to check all files' . PHP_EOL;
+    echo str_color('  -f', 'green') . ' ' . str_color('<file>      ', 'cyan');
+    echo 'File path to check' . PHP_EOL;
+    echo str_color('  -c', 'green') . ' ' . str_color('<class>     ', 'cyan');
+    echo 'Class to check against code standards' . PHP_EOL;
+    echo str_color('  -e', 'green') . ' ' . str_color('<file>      ', 'cyan');
+    echo 'Exclude file (used with path)' . PHP_EOL;
+    echo PHP_EOL;
+    echo str_color('Specific Checks:', 'brown') . PHP_EOL;
+    echo str_color('  --syntax       ', 'green');
+    echo 'Syntax check only' . PHP_EOL;
+    echo str_color('  --format       ', 'green');
+    echo 'Formatting only' . PHP_EOL;
     echo PHP_EOL;
     echo str_color('Miscellaneous:', 'brown') . PHP_EOL;
-    echo str_color('  -h|--help', 'green');
-    echo '   Display this help and exit' . PHP_EOL;
-    echo str_color('  -v|--version', 'green');
-    echo '   Display version and exit' . PHP_EOL;
+    echo str_color('  -h|--help      ', 'green');
+    echo 'Display this help and exit' . PHP_EOL;
+    echo str_color('  -v|--version   ', 'green');
+    echo 'Display version and exit' . PHP_EOL;
     echo PHP_EOL;
     exit(0);
 }
@@ -139,7 +147,14 @@ if ($by_file) {
         'file_path' => $options['f'],
         'class_ame' => $options['c'] ?? null,
     ]);
-    $checker->runAll();
+
+    if (array_key_exists('syntax', $options)) {
+        $checker->checkSyntax();
+    } elseif (array_key_exists('format', $options)) {
+        $checker->checkClassFormatting();
+    } else {
+        $checker->runAll();
+    }
 
 } else {
 
@@ -168,10 +183,18 @@ if ($by_file) {
             $title = "Checking file: $file";
             echo PHP_EOL . str_color($title, 'magenta') . PHP_EOL;
             echo str_color(str_repeat('=', strlen($title)), 'magenta') . PHP_EOL;
+
             $checker = new CodeCheck([
                 'file_path' => "{$options['p']}{$ds}{$file}",
             ]);
-            $checker->runAll();
+
+            if (array_key_exists('syntax', $options)) {
+                $checker->checkSyntax();
+            } elseif (array_key_exists('format', $options)) {
+                $checker->checkClassFormatting();
+            } else {
+                $checker->runAll();
+            }
             
         }
     }

@@ -820,7 +820,7 @@ if ( ! in_array('str_style', $disable_functions) ) {
  * @todo offer number support?
  *
  * Supported Casings are:
- *   - PascalCase
+ *   - StudlyCaps
  *   - snake_case
  *   - camelCase
  *   - kebab-case
@@ -835,7 +835,7 @@ if ( ! in_array('is_casing', $disable_functions) ) {
     function is_casing(string $string, string $casing): bool
     {
         switch ($casing) {
-            case 'PascalCase':
+            case 'StudlyCaps':
                 return (preg_match("/^([A-Z][a-z]+)+$/", $string) != false);
             break;
             case 'snake_case':

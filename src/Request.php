@@ -23,8 +23,9 @@ namespace PHPCore;
  * @refence PHP Filter Variable: https://www.php.net/manual/en/function.filter-var.php
  * @refence PHP Types of filters: https://www.php.net/manual/en/filter.filters.php
  */
-#[Test('../tests/RequestHttpTest.php')]
-#[Documentation('../docs/classes/request.rst')]
+#[CodeStandardsAudit('../standards/phpcore_class_standards.json', '{FILE_HASH_CHECK_NO_ERRORS}')]
+#[Documentation('../docs/classes/request.rst', '{FILE_HASH_LAST_CREATED_DOCUMENTATION}')]
+#[Test('../tests/RequestHttpTest.php', '{FILE_HASH_LAST_SUCCESSFUL_TES}')]
 final class Request
 {
     /**
@@ -162,7 +163,7 @@ final class Request
 
         // CLI
         if ($php_sapi_name == 'cli') {
-            
+
             if ( ! $ip_address && isset($_SERVER['SSH_CONNECTION'])) {
                 list($ip_address) = explode(' ', $_SERVER['SSH_CONNECTION']);
             }
@@ -263,13 +264,13 @@ final class Request
      * <code linenos="true" emphasize-lines="8,9">
      *
      * use \PHPCore\Request;
-     * 
+     *
      * // $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
-     * 
+     *
      * // Get by key
      * echo Request::agent('browser'); // 'Chrome'
      * var_dump(Request::agent('istablet')); // false
-     * 
+     *
      * </code>
      *
      * @param ?string $key The key of the capability data item to retrieve
@@ -307,13 +308,13 @@ final class Request
      * <code linenos="true" emphasize-lines="8,9">
      *
      * use \PHPCore\Request;
-     * 
+     *
      * // $_POST = '{ "name": "Smith", "age": "22" }'
-     * 
+     *
      * // Get by key
      * echo Request::body('name'); // 'Smith'
      * var_dump(Request::body('name', FILTER_VALIDATE_INT)); // 22
-     * 
+     *
      * </code>
      *
      * @param ?string $key The key of the body's data to retrieve
@@ -370,12 +371,12 @@ final class Request
      * <code linenos="true" emphasize-lines="7,8">
      *
      * use \PHPCore\Request;
-     * 
+     *
      * // $_COOKIE = [ 'OFFSET' => 1, 'ORDER' => 'asc' ]
-     * 
+     *
      * echo Request::cookie('ORDER'); // 'asc'
      * var_dump(Request::cookie('OFFSET', FILTER_VALIDATE_INT)); // 1
-     * 
+     *
      * </code>
      *
      * @param string $key The key of the body's data to retrieve
@@ -414,10 +415,10 @@ final class Request
      * //     'error'     => 0,
      * //     'size'      => 3028
      * // ];
-     * 
+     *
      * echo Request::file('test')->type; // 'image/png'
      * echo Request::file('test')->trueType(); // 'application/pdf'
-     * 
+     *
      * </code>
      *
      * @param string $key The key of the file to retrieve
@@ -458,10 +459,10 @@ final class Request
      * //     'error'     => [ 0, 0 ],
      * //     'size'      => [ 3028, 1037 ],
      * // ];
-     * 
+     *
      * echo Request::file('test')[0]->name; // 'sample_1.pdf.png'
      * echo Request::file('test')[1]->name; // 'sample_2.csv'
-     * 
+     *
      * </code>
      *
      * @param string $key The key of the array of files to retrieve
@@ -477,15 +478,15 @@ final class Request
         }
 
         if ( ! isset($request_files[$key])) {
-          $files = [];
-          foreach ($_FILES[$key] as $param => $items) {
-              foreach ($items as $index => $value) {
-                  $files[$index][$param] = $value;
-              }
-          }
-          foreach ($files as $index => $file) {
-              $request_files[$key][$index] = new RequestFile($file);
-          }
+            $files = [];
+            foreach ($_FILES[$key] as $param => $items) {
+                foreach ($items as $index => $value) {
+                    $files[$index][$param] = $value;
+                }
+            }
+            foreach ($files as $index => $file) {
+                $request_files[$key][$index] = new RequestFile($file);
+            }
         }
 
         return $request_files[$key];
@@ -547,13 +548,13 @@ final class Request
      * //   User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36
      * //   x-custom-header-1: Random Text
      * //   x-custom-header-2: 12345
-     * 
+     *
      * echo Request::header('accept-encoding'); // 'gzip, deflate'
      * echo Request::header('custom-header-1'); // 'Random Text'
      * echo Request::header('x-custom-header-1'); // 'Random Text'
-     * 
+     *
      * var_dump(Request::header('custom-header-2', FILTER_VALIDATE_INT)); // 12345
-     * 
+     *
      * </code>
      *
      * @param string $key The key of the header's data to retrieve
@@ -640,9 +641,9 @@ final class Request
      * use \PHPCore\Request;
      *
      * // $_SERVER['REQUEST_URI'] = '/index.php?text=abc&num=12345'
-     * 
+     *
      * var_dump(Request::param()); // [ "text" => "abc", "num" => "12345" ]
-     * 
+     *
      * var_dump(Request::param('text')); // 'abc'
      * var_dump(Request::param('num', FILTER_VALIDATE_INT)); // 12345
      *
@@ -685,7 +686,7 @@ final class Request
      * // $_SERVER['REQUEST_TIME_FLOAT'] = 1681363597.2922
      * // $_SERVER['REMOTE_ADDR'] = '10.0.0.101'
      * // $_SERVER['REQUEST_URI'] = '/test.php'
-     * 
+     *
      * echo Request::requestId(); // '9e86384b69d5abe885fe33baff74bf37'
      *
      * </code>

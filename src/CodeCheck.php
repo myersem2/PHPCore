@@ -26,8 +26,10 @@ final class CodeCheck
      * @const array
      */
     const LONG_OPTIONS = [
-      'version::',
+      'format::',
       'help::',
+      'syntax::',
+      'version::',
     ];
 
     /**
@@ -47,6 +49,13 @@ final class CodeCheck
      * @const string
      */
     const SHORT_OPTIONS = 'p:f:c:e:hv';
+
+    /**
+     * Indent spaces
+     *
+     * @const integer
+     */
+    const INDENT_SAPCES = 4;
 
     /**
      * Code Checker Version
@@ -115,7 +124,7 @@ final class CodeCheck
             $this->outputError("File {$this->FilePath} is not readable");
         }
 
-        $FileContents = file_get_contents($this->FilePath);
+        $this->FileContents = file_get_contents($this->FilePath);
         include $this->FilePath;
 
         if ( ! isset($parameters['class_name'])) {
@@ -147,7 +156,7 @@ final class CodeCheck
         $order = [];
         $constants = $reflection->getConstants();
         $flag_doc_block = null;
-        foreach ($constants as $cons_name=>$value) {
+        foreach ($constants as $cons_name => $value) {
 
             if ( ! is_casing($cons_name, 'UPPER_CASE')) {
               $this->outputError("$error_prefix constant `$cons_name` does not use proper UPPER_CASE");
@@ -232,8 +241,8 @@ final class CodeCheck
         $short_name = $reflection->getShortName();
         $error_prefix = "Class `{$this->ClassName}`";
 
-        if( ! is_casing($short_name, 'PascalCase')) {
-            $this->outputError("$error_prefix does not use proper PascalCase");
+        if( ! is_casing($short_name, 'StudlyCaps')) {
+            $this->outputError("$error_prefix does not use proper StudlyCaps");
         }
 
         if (empty($this->ClassDocBlock->title) or empty($this->ClassDocBlock->description)) {
@@ -261,6 +270,73 @@ final class CodeCheck
           if ( ! file_exists($argument_file)) {
               $this->outputError("$error_prefix `$attr_name` attribute path is not valid");
           }
+        }
+
+        echo str_color('Passed', 'green') . PHP_EOL;
+    }
+
+    /**
+     * Check class formatting
+     *
+     * This method will perform checks on the class formatting.
+     *
+     * @return void
+     */
+    public function checkClassFormatting(): void
+    {
+        echo PHP_EOL . str_color('Checking formatting:', 'cyan') . PHP_EOL;
+
+        $lines = explode("\n", $this->FileContents);
+
+        foreach ($lines as $index => $line) {
+            $line_number = $index + 1;
+
+            if ($line_number === 1) {
+                if ($line !== '<?php declare(strict_types=1);') {
+                    $this->outputError("Missing strict_types decleration on line $line_number");
+                }
+                continue;
+            }
+
+            // check white space as end
+            if (str_ends_with($line, ' ')) {
+                $this->outputError("Line $line_number has extra white space at the end of the line");
+            }
+
+            // check indentation
+            preg_match('/^([ ]+).*/', $line, $matches);
+            $indent_sapces = $matches[1] ?? '';
+            if (isset($line[strlen($indent_sapces)]) && $line[strlen($indent_sapces)] === '*') {
+                $indent_sapces = substr($indent_sapces, 0, -1);
+            }
+            if (strlen($indent_sapces) % self::INDENT_SAPCES !== 0) {
+                $this->outputError("Line $line_number has improper indentation");
+            }
+
+            // check class decleration
+            if (preg_match('/^((\s+)?(final\s+)?class|abstract|interface|trait)\s+\w+(\s+extends\s+\w+)?(\s+implements\s+\w+)?/', $line, $matches)) {
+                $spaces_reemoved = trim(preg_replace('/\s+/', ' ', $line));
+                if ($spaces_reemoved !== $line) {
+                    $this->outputError("Line $line_number has extra white space");
+                }
+                if ($line[strlen($line) - 1] === '{') {
+                    $this->outputError("Line $line_number ends with a curly bracket, should be on next line");
+                }
+            }
+
+            // check method decleration
+            if (preg_match('/^((\s+)?(final\s+)?(public|protected|private))\s+(static\s+)?(function).+/', $line, $matches)) {
+                $spaces_reemoved = trim(preg_replace('/\s+/', ' ', $line));
+                if ($spaces_reemoved !== trim($line)) {
+                    $this->outputError("Line $line_number has extra white space");
+                }
+                if (strlen(trim($line)) !== strlen($line) - self::INDENT_SAPCES) {
+                    $this->outputError("Line $line_number has improper indentation");
+                }
+                if ($line[strlen($line) - 1] === '{') {
+                    $this->outputError("Line $line_number ends with a curly bracket, should be on next line");
+                }
+            }
         }
 
         echo str_color('Passed', 'green') . PHP_EOL;
@@ -403,8 +479,8 @@ final class CodeCheck
         foreach ($properties as $property) {
             $prop_name = $property->name;
 
-            if ( ! is_casing($prop_name, 'PascalCase')) {
-                $this->outputError("$error_prefix property `\$$prop_name` does not use proper PascalCase");
+            if ( ! is_casing($prop_name, 'StudlyCaps')) {
+                $this->outputError("$error_prefix property `\$$prop_name` does not use proper StudlyCaps");
             }
 
             $doc_block = $property->getDocComment();
@@ -482,6 +558,7 @@ final class CodeCheck
         $this->checkClassConstants();
         $this->checkClassProperties();
         $this->checkClassMethods();
+        $this->checkClassFormatting();
 
         echo PHP_EOL . 'DONE: ' . str_color('All Tests Passed', 'green') . PHP_EOL;
     }
