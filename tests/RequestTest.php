@@ -119,43 +119,6 @@ final class RequestTest extends TestCase
 
     /**
      * @covers \PHPCore\Request
-     * @covers \PHPCore\Config
-     *
-     * @testWith
-     * ["application/x-www-form-urlencoded", null, "xml"]
-     * ["application/json", null, "json"]
-     * ["application/x-yaml", null, "yaml"]
-     * ["text/json", null, "json"]
-     * ["text/yaml", null, "yaml"]
-     * ["text/csv", null, "csv"]
-     * ["text/unknown", null, null]
-     * [null, "/", null]
-     * [null, "/resource.xml", "xml"]
-     * [null, "/resource.xml?query=test", "xml"]
-     * [null, "/resource.unknown", null]
-     * ["application/x-www-form-urlencoded", "/resource.yaml", "xml"]
-     */
-    public function testFormat(
-        ?string $content_type,
-        ?string $request_uri,
-        ?string $expected
-    ): void
-    {
-        //$this->markTestSkipped('Need to look into.');
-
-        Config::set('request.default_format', 'json');
-
-        $_SERVER['CONTENT_TYPE'] = $content_type;
-        $_SERVER['REQUEST_URI'] = $request_uri;
-
-        $this->assertEquals(
-            $expected ?? 'json',
-            Request::getFormat()
-        );
-    }
-
-    /**
-     * @covers \PHPCore\Request
      *
      * @runInSeparateProcess
      *
@@ -202,8 +165,9 @@ final class RequestTest extends TestCase
      * [{"PaginationOffset":"asc"}, {"PaginationOrder":false}, "FILTER_VALIDATE_INT"]
      * [{"Referer":"https://google.com"}, {"Referer":"https://google.com"}, "FILTER_VALIDATE_URL"]
      * [{"Referer":"https://google.com"}, {"Referer":false}, "FILTER_VALIDATE_URL", "FILTER_FLAG_QUERY_REQUIRED"]
+     * [{}, {"NonExistant":null}]
      */
-    public function testRequestCookie(
+    public function testCookie(
         array $cookies,
         array $checks,
         string $filter = "",
@@ -237,6 +201,89 @@ final class RequestTest extends TestCase
     /**
      * @covers \PHPCore\Request
      * @covers \PHPCore\Config
+     *
+     * @testWith
+     * ["application/x-www-form-urlencoded", null, "xml"]
+     * ["application/json", null, "json"]
+     * ["application/x-yaml", null, "yaml"]
+     * ["text/json", null, "json"]
+     * ["text/yaml", null, "yaml"]
+     * ["text/csv", null, "csv"]
+     * ["text/unknown", null, null]
+     * [null, "/", null]
+     * [null, "/resource.xml", "xml"]
+     * [null, "/resource.xml?query=test", "xml"]
+     * [null, "/resource.unknown", null]
+     * ["application/x-www-form-urlencoded", "/resource.yaml", "xml"]
+     */
+    public function testFormat(
+        ?string $content_type,
+        ?string $request_uri,
+        ?string $expected
+    ): void
+    {
+        //$this->markTestSkipped('Need to look into.');
+
+        Config::set('request.default_format', 'json');
+
+        $_SERVER['CONTENT_TYPE'] = $content_type;
+        $_SERVER['REQUEST_URI'] = $request_uri;
+
+        $this->assertEquals(
+            $expected ?? 'json',
+            Request::getFormat()
+        );
+    }
+
+    /**
+     * @covers \PHPCore\Request
+     * @covers ::array_find
+     *
+     * @testWith
+     * [{"HTTP_PAGINATION_OFFSET":1, "HTTP_PAGINATION_ORDER":"asc"}, {"PAGINATION_OFFSET":1, "PAGINATION_ORDER":"asc"}]
+     * [{"HTTP_PAGINATION_OFFSET":"1"}, {"PAGINATION_OFFSET":1}, "FILTER_VALIDATE_INT"]
+     * [{"HTTP_PAGINATION_OFFSET":"asc"}, {"PAGINATION_OFFSET":false}, "FILTER_VALIDATE_INT"]
+     * [{"HTTP_PAGINATION_OFFSET":1, "HTTP_X_PAGINATION_OFFSET":2}, {"PAGINATION_OFFSET":1}]
+     * [{"HTTP_PAGINATION_OFFSET":""}, {"NON_EXISTANT":null}]
+     * [{}, {"NON_EXISTANT":null}]
+     */
+    public function testHeader(
+        array $headers,
+        array $checks,
+        string $filter = "",
+        array|string $options = ""
+    ): void
+    {
+        //$this->markTestSkipped('Need to look into.');
+
+        foreach ($headers as $key => $value) {
+            $_SERVER[$key] = $value;
+        }
+
+        if (!empty($filter)) {
+            $filter = constant($filter);
+        } else {
+            $filter = null;
+        }
+
+        if (!empty($options) && !is_array($options)) {
+            $options = constant($options);
+        } else {
+            $options = 0;
+        }
+
+        foreach ($checks as $key => $expected) {
+            $this->assertEquals(
+                $expected,
+                Request::getHeader($key, $filter, $options),
+                "Key $key failed"
+            );
+        }
+    }
+
+    /**
+     * @covers \PHPCore\Request
+     * @covers \PHPCore\Config
      * @covers ::array_find
      *
      * @runInSeparateProcess
@@ -250,7 +297,7 @@ final class RequestTest extends TestCase
      * [{"NON_EXISTENT":"10.0.0.1"}, null, false]
      * [{}, null]
      */
-    public function testRequestIp(
+    public function testIp(
         array $ip_server_params,
         ?string $expected,
         bool $server_set = true
@@ -285,7 +332,8 @@ final class RequestTest extends TestCase
 
         $this->assertEquals(
             $first_ip,
-            $same_ip
+            $same_ip,
+            "Second match"
         );
     }
 
@@ -315,16 +363,6 @@ final class RequestTest extends TestCase
      * @testWith []
      */
     public function testRequestFiles(): void
-    {
-        $this->markTestSkipped('Not built');
-    }
-
-    /**
-     * @covers \PHPCore\Request
-     *
-     * @testWith []
-     */
-    public function testRequestHeader(): void
     {
         $this->markTestSkipped('Not built');
     }

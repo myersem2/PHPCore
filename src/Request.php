@@ -198,7 +198,7 @@ final class Request
      *          ``filter_var()`` function.
      *
      * @example Get data from HTTP cookie
-     * <code linenos="true" emphasize-lines="7,8">
+     * <code linenos="true" emphasize-lines="7,8-9">
      *
      * use \PHPCore\Request;
      *
@@ -210,11 +210,11 @@ final class Request
      *
      * </code>
      *
-     * @param string $key The key of the body's data to retrieve.
+     * @param string $key The key of the cookie to retrieve.
      * @param ?int $filter The ID of the filter to apply.
      * @param array|int $options Associative array of options or bitwise
      *                           disjunction of flags.
-     * @return mixed The requested data item.
+     * @return mixed The requested cookie or ``null` if it does not exist.
      */
     public static function getCookie(
         string $key,
@@ -234,15 +234,24 @@ final class Request
      * in the phpcore.ini will be used.
      *
      * @example Get format from request
-     * <code linenos="true" emphasize-lines="6,9">
+     * <code linenos="true" emphasize-lines="12,15,18">
      *
      * use \PHPCore\Request;
+     * use \PHPCore\Config;
      *
-     * $_SERVER['REQUEST_URI'] = "resource.xml?query=test";
+     * Config.set('request.default_format', 'text');
+     * Config.set('request.supported_formats', ['text', 'xml', 'json']);
+     *
+     * $_SERVER['REQUEST_URI'] = '/';
+     * $_SERVER['CONTENT_TYPE'] = null;
+     *
+     * echo Request::getFormat(); // 'csv'
+     *
+     * $_SERVER['REQUEST_URI'] = '/resource.xml?query=test';
      * echo Request::getFormat(); // 'xml'
      *
-     * $_SERVER['CONTENT_TYPE'] = "application/json";
-     * echo Request::getFormat(); // 'xml'
+     * $_SERVER['CONTENT_TYPE'] = '/application/json';
+     * echo Request::getFormat(); // 'json'
      *
      * </code>
      *
@@ -278,6 +287,71 @@ final class Request
         }
 
         return $format;
+    }
+
+    /**
+     * Get data from request header
+     *
+     * Will return data from the HTTP request headers for a given **$key**. The
+     * option **$filter** and **$options** parameters may be given to invoke
+     * ``filter_var()`` before the value is returned.
+     *
+     * The key will be searched for both without then with the prefix "X-" to be
+     * compatiable with older conventions. Therfore there is no need include the
+     * prefix "X-" in your code moving forward. If both are present the one
+     * without the "X-" will be returned.
+     *
+     * @note Do not include the "HTTP_" prefix to the **$key**.
+     *
+     * @seealso `PHP Types of filters`_ - List of available filters and options.
+     * @seealso `PHP Filter Variable`_ - Information on the operation of the
+     * ``filter_var()`` function.
+     *
+     * @example Get data from request header
+     * <code linenos="true" emphasize-lines="14,15,16,18">
+     *
+     * use \PHPCore\Request;
+     *
+     * // Request Headers
+     * //   Accept-Encoding: gzip, deflate
+     * //   Accept-Language: en-US,en;q=0.9
+     * //   ...
+     * //   x-custom-header-1: Random Text
+     * //   x-custom-header-2: 12345
+     *
+     * echo Request::header('accept-encoding'); // 'gzip, deflate'
+     * echo Request::header('custom-header-1'); // 'Random Text'
+     * echo Request::header('x-custom-header-1'); // 'Random Text'
+     *
+     * var_dump(Request::header('custom-header-2', FILTER_VALIDATE_INT)); // 12345
+     *
+     * </code>
+     *
+     * @param string $key The key of the header to retrieve.
+     * @param ?int $filter The ID of the filter to apply.
+     * @param array|int $options Associative array of options or bitwise
+     *                           disjunction of flags.
+     * @return mixed The requested header  or ``null` if it does not exist.
+     */
+    public static function getHeader(
+        string $key,
+        ?int $filter = null,
+        array|int $options = 0
+    ): mixed {
+
+        $key = strtoupper($key);
+
+        $search = ["HTTP_$key"];
+        if (!empty($key) && $key[0] !== 'X') {
+            $search[] = "HTTP_X_$key";
+        }
+        
+        $key_2 = array_find(
+            $search,
+            fn($v, $k) => isset($_SERVER[$v])
+        );
+
+        return self::filterValue($_SERVER[$key_2] ?? null, $filter, $options);
     }
 
     /**
@@ -326,7 +400,7 @@ final class Request
 
         $ip_server_param = array_find(
             $ip_server_params,
-            fn($k) => isset($_SERVER[$k])
+            fn($v, $k) => isset($_SERVER[$v])
         );
 
         $ip_address = explode(' ', $_SERVER[$ip_server_param] ?? '')[0];
@@ -639,66 +713,6 @@ final class Request
         }
 
         return $request_files[$key];
-    }
-
-    /**
-     * Get data from request header
-     *
-     * Will return data from the HTTP request headers for a given **$key**. The
-     * option **$filter** and **$options** parameters may be given to invoke
-     * ``filter_var()`` before the value is returned.
-     *
-     * The key will be searched for both without then with the prefix "x-" to be
-     * compatiable with older conventions. Therfore there is no need include the
-     * prefix "x-" in your code moving forward.
-     *
-     * @seealso `PHP Types of filters`_ - List of available filters and options.
-     * @seealso `PHP Filter Variable`_ - Information on the operation of the
-     * ``filter_var()`` function.
-     *
-     * @example Get data from request header
-     * <code linenos="true" emphasize-lines="14,15,16,18">
-     *
-     * use \PHPCore\Request;
-     *
-     * // Request Headers
-     * //   Accept-Encoding: gzip, deflate
-     * //   Accept-Language: en-US,en;q=0.9
-     * //   ...
-     * //   x-custom-header-1: Random Text
-     * //   x-custom-header-2: 12345
-     *
-     * echo Request::header('accept-encoding'); // 'gzip, deflate'
-     * echo Request::header('custom-header-1'); // 'Random Text'
-     * echo Request::header('x-custom-header-1'); // 'Random Text'
-     *
-     * var_dump(Request::header('custom-header-2', FILTER_VALIDATE_INT)); // 12345
-     *
-     * </code>
-     *
-     * @param string    $key     The key of the header's data to retrieve
-     * @param ?int      $filter  The ID of the filter to apply
-     * @param array|int $options Associative array of options or bitwise
-     *                           disjunction of flags
-     *
-     * @return mixed The requested header item
-     */
-    public function getHeader(
-        string $key,
-        ?int $filter = null,
-        array|int $options = 0
-    ): mixed {
-        $n_key = strtoupper($key);
-        $x_key = "X-$n_key";
-        $value = match (true) {
-            isset($this->Headers[$u_key]) => $this->Headers[$u_key] ?? null,
-            isset($this->Headers[$x_key]) => $this->Headers[$x_key] ?? null,
-            // BUG: Need NULL due to but see - https://github.com/php/php-src/issues/11134
-            null    => null,
-            default => null,
-        };
-
-        return $this->filterValue($value, $filter, $options);
     }
 
     /**

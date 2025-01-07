@@ -23,7 +23,6 @@ Request Class Synopsis
        public function getBody(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
        public function getFile(string $key): ?object
        public function getFiles(string $key): array
-       public function getHeader(string $key, ?int $filter = null, array|int $options = 0): mixed
        public function getParam(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
        public function getSegment(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
 
@@ -31,9 +30,10 @@ Request Class Synopsis
        public static function getAgent(?string $key = null): mixed
        public static function getCookie(string $key, ?int $filter = null, array|int $options = 0): mixed
        public static function getFormat(): ?string
+       public static function getHeader(string $key, ?int $filter = null, array|int $options = 0): mixed
        public static function getIpAddress(): ?string
        private static function filterValue(mixed $value, ?int $filter = null, array|int $options = 0): mixed
-       public static function ZgetRequest(?string $request_id = null): ?PHPCore\Request
+       public static function zGetRequest(?string $request_id = null): ?PHPCore\Request
 
    }
 
@@ -43,14 +43,14 @@ Request Class Table of Contents
 * :ref:`Request::getAgent<request-method-getagent>` - Get request agent capabilities
 * :ref:`Request::getCookie<request-method-getcookie>` - Get data from HTTP cookie
 * :ref:`Request::getFormat<request-method-getformat>` - Get format from request
+* :ref:`Request::getHeader<request-method-getheader>` - Get data from request header
 * :ref:`Request::getIpAddress<request-method-getipaddress>` - Get IP address
 * :ref:`Request::filterValue<request-method-filtervalue>` - Filter value
-* :ref:`Request::ZgetRequest<request-method-zgetrequest>` - Get request object
+* :ref:`Request::zGetRequest<request-method-zgetrequest>` - Get request object
 * :ref:`Request::__construct<request-method-__construct>` - Constructor
 * :ref:`Request::getBody<request-method-getbody>` - Get data from request body
 * :ref:`Request::getFile<request-method-getfile>` - Get file from request
 * :ref:`Request::getFiles<request-method-getfiles>` - Get files from request
-* :ref:`Request::getHeader<request-method-getheader>` - Get data from request header
 * :ref:`Request::getParam<request-method-getparam>` - Get parameter from requested URI
 * :ref:`Request::getSegment<request-method-getsegment>` - Get segment from requested URI
 
@@ -107,15 +107,15 @@ Request Class Methods
       - `PHP Types of filters`_ - List of available filters and options.
       - `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
 
-   :param string $key: The key of the body's data to retrieve.
+   :param string $key: The key of the cookie to retrieve.
    :param ?int $filter: The ID of the filter to apply.
    :param array|int $options: Associative array of options or bitwise disjunction of flags.
-   :returns: ``mixed`` The requested data item.
+   :returns: ``mixed`` The requested cookie or ``null` if it does not exist.
 
    .. code-block:: php
       :caption: Get data from HTTP cookie
       :linenos:
-      :emphasize-lines: 7,8
+      :emphasize-lines: 7,8-9
 
       <?php
       
@@ -143,22 +143,83 @@ Request Class Methods
 
    This will return the format from an HTTP request by first looking at the requested ``CONTENT_TYPE``, if unknown then it will attempt to determine it by using the ``REQUEST_URI`` (i.e. 'resource.json' => 'json'). If format cannot be determine then the ``request.default_format`` declared in the phpcore.ini will be used.
 
-   :returns: ``?string`` 
+   :returns: ``?string`` The format that was requested.
 
    .. code-block:: php
       :caption: Get format from request
       :linenos:
-      :emphasize-lines: 6,9
+      :emphasize-lines: 12,15,18
+
+      <?php
+      
+      use \PHPCore\Request;
+      use \PHPCore\Config;
+      
+      Config.set('request.default_format', 'text');
+      Config.set('request.supported_formats', ['text', 'xml', 'json']);
+      
+      $_SERVER['REQUEST_URI'] = '/';
+      $_SERVER['CONTENT_TYPE'] = null;
+      
+      echo Request::getFormat(); // 'csv'
+      
+      $_SERVER['REQUEST_URI'] = '/resource.xml?query=test';
+      echo Request::getFormat(); // 'xml'
+      
+      $_SERVER['CONTENT_TYPE'] = '/application/json';
+      echo Request::getFormat(); // 'json'
+      
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Class Table of Contents>`
+
+-----
+
+.. _request-method-getheader:
+.. php:method:: getHeader(string $key, ?int $filter = null, array|int $options = 0)
+   :noindex:
+
+   Get data from request header
+
+   Will return data from the HTTP request headers for a given **$key**. The option **$filter** and **$options** parameters may be given to invoke ``filter_var()`` before the value is returned.
+
+   The key will be searched for both without then with the prefix "X-" to be compatiable with older conventions. Therfore there is no need include the prefix "X-" in your code moving forward. If both are present the one without the "X-" will be returned.
+
+   .. seealso::
+      - `PHP Types of filters`_ - List of available filters and options.
+      - `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
+
+   .. note::
+      Do not include the "HTTP_" prefix to the **$key**.
+
+   :param string $key: The key of the header to retrieve.
+   :param ?int $filter: The ID of the filter to apply.
+   :param array|int $options: Associative array of options or bitwise disjunction of flags.
+   :returns: ``mixed`` The requested header or ``null` if it does not exist.
+
+   .. code-block:: php
+      :caption: Get data from request header
+      :linenos:
+      :emphasize-lines: 14,15,16,18
 
       <?php
       
       use \PHPCore\Request;
       
-      $_SERVER['REQUEST_URI'] = "resource.xml?query=test";
-      echo Request::getFormat(); // 'xml'
+      // Request Headers
+      //   Accept-Encoding: gzip, deflate
+      //   Accept-Language: en-US,en;q=0.9
+      //   ...
+      //   x-custom-header-1: Random Text
+      //   x-custom-header-2: 12345
       
-      $_SERVER['CONTENT_TYPE'] = "application/json";
-      echo Request::getFormat(); // 'xml'
+      echo Request::header('accept-encoding'); // 'gzip, deflate'
+      echo Request::header('custom-header-1'); // 'Random Text'
+      echo Request::header('x-custom-header-1'); // 'Random Text'
+      
+      var_dump(Request::header('custom-header-2', FILTER_VALIDATE_INT)); // 12345
       
       ?>
 
@@ -232,7 +293,7 @@ Request Class Methods
 -----
 
 .. _request-method-zgetrequest:
-.. php:method:: ZgetRequest(?string $request_id = null)
+.. php:method:: zGetRequest(?string $request_id = null)
    :noindex:
 
    Get request object
@@ -378,55 +439,6 @@ Request Class Methods
       
       echo Request::file('test')[0]->name; // 'sample_1.pdf.png'
       echo Request::file('test')[1]->name; // 'sample_2.csv'
-      
-      ?>
-
-   .. rst-class:: wy-text-right
-
-      :ref:`Back to list<Request Class Table of Contents>`
-
------
-
-.. _request-method-getheader:
-.. php:method:: getHeader(string $key, ?int $filter = null, array|int $options = 0)
-   :noindex:
-
-   Get data from request header
-
-   Will return data from the HTTP request headers for a given **$key**. The option **$filter** and **$options** parameters may be given to invoke ``filter_var()`` before the value is returned.
-
-   The key will be searched for both without then with the prefix "x-" to be compatiable with older conventions. Therfore there is no need include the prefix "x-" in your code moving forward.
-
-   .. seealso::
-      - `PHP Types of filters`_ - List of available filters and options.
-      - `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
-
-   :param string $key: The key of the header's data to retrieve
-   :param ?int $filter: The ID of the filter to apply
-   :param array|int $options: Associative array of options or bitwise disjunction of flags
-   :returns: ``mixed`` The requested header item
-
-   .. code-block:: php
-      :caption: Get data from request header
-      :linenos:
-      :emphasize-lines: 14,15,16,18
-
-      <?php
-      
-      use \PHPCore\Request;
-      
-      // Request Headers
-      //   Accept-Encoding: gzip, deflate
-      //   Accept-Language: en-US,en;q=0.9
-      //   ...
-      //   x-custom-header-1: Random Text
-      //   x-custom-header-2: 12345
-      
-      echo Request::header('accept-encoding'); // 'gzip, deflate'
-      echo Request::header('custom-header-1'); // 'Random Text'
-      echo Request::header('x-custom-header-1'); // 'Random Text'
-      
-      var_dump(Request::header('custom-header-2', FILTER_VALIDATE_INT)); // 12345
       
       ?>
 

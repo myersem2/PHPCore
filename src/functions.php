@@ -33,7 +33,7 @@ function ________PHP_EARLIER_FUNCTION_SHIMS_________(){}
  * which the given **$callback** returns ``true``. If no matching element is
  * found the function returns ``null``.
  *
- * @todo Remove after (PHP 8 >= 8.4.0) 
+ * @todo Remove after (PHP 8 >= 8.4.0)
  *
  * @param array $array The array that should be searched.
  * @param callable $callback The callback function to call to check each element
@@ -48,8 +48,8 @@ function ________PHP_EARLIER_FUNCTION_SHIMS_________(){}
 if ( ! in_array('array_find', $disable_functions) ) {
     function array_find(array $array, callable $callback): mixed
     {
-        foreach ($array as $item) {
-            if (call_user_func($callback, $item)) {
+        foreach ($array as $key=>$item) {
+            if (call_user_func_array($callback, [$item, $key])) {
                 return $item;
             }
         }
