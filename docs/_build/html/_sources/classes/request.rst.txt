@@ -14,70 +14,78 @@ Request Class Synopsis
 
    final class Request {
 
+       /* Properties */
+       public ?string $RequestId;
+       public float $RequestTimeStart;
+
+       /* Methods */
+       public function __construct(array $params = [])
+       public function getBody(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
+       public function getFile(string $key): ?object
+       public function getFiles(string $key): array
+       public function getHeader(string $key, ?int $filter = null, array|int $options = 0): mixed
+       public function getParam(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
+       public function getSegment(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
+
        /* Static Methods */
-       public static function agent(?string $key = null): mixed
-       public static function body(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
-       public static function cookie(string $key, ?int $filter = null, array|int $options = 0): mixed
-       public static function file(string $key): ?object
-       public static function files(string $key): array
-       public static function format(): string
-       public static function header(string $key, ?int $filter = null, array|int $options = 0): mixed
-       public static function host(): string|false
-       public static function id(): string
-       public static function ip(): string|false
-       public static function param(?string $key = null, ?int $filter = null, array|int $options = 0): mixed
-       public static function segment(?int $pos = null, ?int $filter = null, array|int $options = 0): mixed
+       public static function getAgent(?string $key = null): mixed
+       public static function getCookie(string $key, ?int $filter = null, array|int $options = 0): mixed
+       public static function getFormat(): ?string
+       public static function getIpAddress(): ?string
+       private static function filterValue(mixed $value, ?int $filter = null, array|int $options = 0): mixed
+       public static function ZgetRequest(?string $request_id = null): ?PHPCore\Request
 
    }
 
 Request Class Table of Contents
 ###############################
 
-* :ref:`Request::agent<request-method-agent>` - Get request agent capabilities
-* :ref:`Request::body<request-method-body>` - Get data from request body
-* :ref:`Request::cookie<request-method-cookie>` - Get data from HTTP cookie
-* :ref:`Request::file<request-method-file>` - Get file from request
-* :ref:`Request::files<request-method-files>` - Get files from request
-* :ref:`Request::format<request-method-format>` - Get the requested format
-* :ref:`Request::header<request-method-header>` - Get data from request header
-* :ref:`Request::host<request-method-host>` - Get requester host name
-* :ref:`Request::id<request-method-id>` - Get request ID
-* :ref:`Request::ip<request-method-ip>` - Get requester ip address
-* :ref:`Request::param<request-method-param>` - Get parameter from requested URI
-* :ref:`Request::segment<request-method-segment>` - Get segment from requested URI
+* :ref:`Request::getAgent<request-method-getagent>` - Get request agent capabilities
+* :ref:`Request::getCookie<request-method-getcookie>` - Get data from HTTP cookie
+* :ref:`Request::getFormat<request-method-getformat>` - Get format from request
+* :ref:`Request::getIpAddress<request-method-getipaddress>` - Get IP address
+* :ref:`Request::filterValue<request-method-filtervalue>` - Filter value
+* :ref:`Request::ZgetRequest<request-method-zgetrequest>` - Get request object
+* :ref:`Request::__construct<request-method-__construct>` - Constructor
+* :ref:`Request::getBody<request-method-getbody>` - Get data from request body
+* :ref:`Request::getFile<request-method-getfile>` - Get file from request
+* :ref:`Request::getFiles<request-method-getfiles>` - Get files from request
+* :ref:`Request::getHeader<request-method-getheader>` - Get data from request header
+* :ref:`Request::getParam<request-method-getparam>` - Get parameter from requested URI
+* :ref:`Request::getSegment<request-method-getsegment>` - Get segment from requested URI
 
 Request Class Methods
 #####################
 
-.. _request-method-agent:
-.. php:method:: agent(?string $key = null)
+.. _request-method-getagent:
+.. php:method:: getAgent(?string $key = null)
+   :noindex:
 
    Get request agent capabilities
 
-   Attempts to determine the capabilities of the user's browser by looking up the browser's information in the browscap.ini file. Then returns the capability by the given **$key**.
-
-   If **$key** is not passed the entire capabilities object will be returned.
+   Attempts to determine the capabilities of the user's browser by looking up the browser's information in the browscap.ini file. If the options **$key** is not provides the entire capabilities object will be returned.
 
    .. note::
-      Returns **NULL** if get_browser() fails or requested capability is unknown.
+      Returns ``null`` if get_browser() fails or requested capability is unknown.
 
-   :param ?string $key: The key of the capability data item to retrieve
-   :returns: ``mixed`` The request capability or the entire capability object
+   :param ?string $key: The key of the capability data item to retrieve.
+   :returns: ``mixed`` The request capability or the entire capability object.
 
    .. code-block:: php
       :caption: Get request agent capabilities
       :linenos:
-      :emphasize-lines: 8,9
+      :emphasize-lines: 9,10
 
       <?php
       
       use \PHPCore\Request;
       
-      // $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
+      $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'.
+      ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
       
       // Get by key
-      echo Request::agent('browser'); // 'Chrome'
-      var_dump(Request::agent('istablet')); // false
+      echo Request::agent('platform'); // 'Win10'
+      var_dump(Request::agent('ismobiledevice')); // false
       
       ?>
 
@@ -87,8 +95,179 @@ Request Class Methods
 
 -----
 
-.. _request-method-body:
-.. php:method:: body(?string $key = null, ?int $filter = null, array|int $options = 0)
+.. _request-method-getcookie:
+.. php:method:: getCookie(string $key, ?int $filter = null, array|int $options = 0)
+   :noindex:
+
+   Get data from HTTP cookie
+
+   Will return data from cookie by a given **$key** for data passed via HTTP Cookies. The option **$filter** and **$options** parameters may be given to invoke ``filter_var()`` before the value is returned.
+
+   .. seealso::
+      - `PHP Types of filters`_ - List of available filters and options.
+      - `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
+
+   :param string $key: The key of the body's data to retrieve.
+   :param ?int $filter: The ID of the filter to apply.
+   :param array|int $options: Associative array of options or bitwise disjunction of flags.
+   :returns: ``mixed`` The requested data item.
+
+   .. code-block:: php
+      :caption: Get data from HTTP cookie
+      :linenos:
+      :emphasize-lines: 7,8
+
+      <?php
+      
+      use \PHPCore\Request;
+      
+      $_COOKIE = [ 'PaginationOffset' => 1, 'PaginationOrder' => 'asc' ]
+      
+      echo Request::getCookie('PaginationOrder'); // 'asc'
+      var_dump(Request::getCookie('PaginationOffset', FILTER_VALIDATE_INT)); // 1
+      var_dump(Request::getCookie('PaginationOrder', FILTER_VALIDATE_INT)); // 1
+      
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Class Table of Contents>`
+
+-----
+
+.. _request-method-getformat:
+.. php:method:: getFormat()
+   :noindex:
+
+   Get format from request
+
+   This will return the format from an HTTP request by first looking at the requested ``CONTENT_TYPE``, if unknown then it will attempt to determine it by using the ``REQUEST_URI`` (i.e. 'resource.json' => 'json'). If format cannot be determine then the ``request.default_format`` declared in the phpcore.ini will be used.
+
+   :returns: ``?string`` 
+
+   .. code-block:: php
+      :caption: Get format from request
+      :linenos:
+      :emphasize-lines: 6,9
+
+      <?php
+      
+      use \PHPCore\Request;
+      
+      $_SERVER['REQUEST_URI'] = "resource.xml?query=test";
+      echo Request::getFormat(); // 'xml'
+      
+      $_SERVER['CONTENT_TYPE'] = "application/json";
+      echo Request::getFormat(); // 'xml'
+      
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Class Table of Contents>`
+
+-----
+
+.. _request-method-getipaddress:
+.. php:method:: getIpAddress()
+   :noindex:
+
+   Get IP address
+
+   Returns the requester's ip address by the designated ``$_SERVER`` param that contains the requester's IP Address. This is normally ``REMOTE_ADDR`` or ``HTTP_X_FORWARDED_FOR`` and can be configured in the phpcore.ini file via the ``request.ip_server_params`` option.
+
+   .. seealso::
+      - `PHP Types of filters`_ - List of available filters and options.
+      - `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
+
+   .. note::
+      Will be **false** if ``$_SERVER`` param is not set or the value does not pass the ``FILTER_VALIDATE_IP`` check.
+
+   :returns: ``?string`` IP address makeing request.
+
+   .. code-block:: php
+      :caption: Get data from HTTP cookie
+      :linenos:
+      :emphasize-lines: 7,8
+
+      <?php
+      
+      use \PHPCore\Request;
+      
+      $_COOKIE = [ 'PaginationOffset' => 1, 'PaginationOrder' => 'asc' ]
+      
+      echo Request::getCookie('PaginationOrder'); // 'asc'
+      var_dump(Request::getCookie('PaginationOffset', FILTER_VALIDATE_INT)); // 1
+      var_dump(Request::getCookie('PaginationOrder', FILTER_VALIDATE_INT)); // 1
+      
+      ?>
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Class Table of Contents>`
+
+-----
+
+.. _request-method-filtervalue:
+.. php:method:: filterValue(mixed $value, ?int $filter = null, array|int $options = 0)
+   :noindex:
+
+   Filter value
+
+   This method will return a filtere value if a filter is specified. If no filter is specified the orginal value will be returned.
+
+   .. seealso::
+      - `PHP Types of filters`_ - List of available filters and options.
+      - `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
+
+   :param mixed $value: Value to be filtered .
+   :param ?int $filter: The ID of the filter to apply.
+   :param array|int $options: Associative array of options or bitwise disjunction of flags.
+   :returns: ``mixed`` The filtered value.
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Class Table of Contents>`
+
+-----
+
+.. _request-method-zgetrequest:
+.. php:method:: ZgetRequest(?string $request_id = null)
+   :noindex:
+
+   Get request object
+
+   This method is used to retrive a previously constructed request instance by a given `$request_id`.
+
+   :param ?string $request_id: Request ID
+   :returns: ``?PHPCore\Request`` Request instance
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Class Table of Contents>`
+
+-----
+
+.. _request-method-__construct:
+.. php:method:: __construct(array $params = [])
+   :noindex:
+
+   Constructor
+
+   Used to construct the instance and it by reference into the self::$Instances for later use.
+
+   :param array $params: Parameters for request
+   :returns: ``void`` 
+
+   .. rst-class:: wy-text-right
+
+      :ref:`Back to list<Request Class Table of Contents>`
+
+-----
+
+.. _request-method-getbody:
+.. php:method:: getBody(?string $key = null, ?int $filter = null, array|int $options = 0)
+   :noindex:
 
    Get data from request body
 
@@ -128,53 +307,16 @@ Request Class Methods
 
 -----
 
-.. _request-method-cookie:
-.. php:method:: cookie(string $key, ?int $filter = null, array|int $options = 0)
-
-   Get data from HTTP cookie
-
-   Will return data from cookie by a given **$key** for data passed via HTTP Cookies. The option **$filter** and **$options** parameters may be given to invoke ``filter_var()`` before the value is returned.
-
-   .. seealso::
-      - `PHP Types of filters`_ - List of available filters and options.
-      - `PHP Filter Variable`_ - Information on the operation of the ``filter_var()`` function.
-
-   :param string $key: The key of the body's data to retrieve
-   :param ?int $filter: The ID of the filter to apply
-   :param array|int $options: Associative array of options or bitwise disjunction of flags
-   :returns: ``mixed`` The requested data item
-
-   .. code-block:: php
-      :caption: Get data from HTTP cookie
-      :linenos:
-      :emphasize-lines: 7,8
-
-      <?php
-      
-      use \PHPCore\Request;
-      
-      // $_COOKIE = [ 'OFFSET' => 1, 'ORDER' => 'asc' ]
-      
-      echo Request::cookie('ORDER'); // 'asc'
-      var_dump(Request::cookie('OFFSET', FILTER_VALIDATE_INT)); // 1
-      
-      ?>
-
-   .. rst-class:: wy-text-right
-
-      :ref:`Back to list<Request Class Table of Contents>`
-
------
-
-.. _request-method-file:
-.. php:method:: file(string $key)
+.. _request-method-getfile:
+.. php:method:: getFile(string $key)
+   :noindex:
 
    Get file from request
 
    Will return the file by a given **$key** for the files that was uploaded via the HTTP POST method using the ``$_FILES`` superglobal variable.
 
    :param string $key: The key of the file to retrieve
-   :returns: ``object|null`` RequestFile object
+   :returns: ``?object`` RequestFile object
 
    .. code-block:: php
       :caption: Get file from request
@@ -205,8 +347,9 @@ Request Class Methods
 
 -----
 
-.. _request-method-files:
-.. php:method:: files(string $key)
+.. _request-method-getfiles:
+.. php:method:: getFiles(string $key)
+   :noindex:
 
    Get files from request
 
@@ -244,41 +387,9 @@ Request Class Methods
 
 -----
 
-.. _request-method-format:
-.. php:method:: format()
-
-   Get the requested format
-
-   This method will return the request format by first looking at the requested CONTENT_TYPE, if unknown then it will attempt to decipher using the REQUEST_URI extention. If format cannot be determine then the default_format set in the INI will be used.
-
-   :returns: ``string`` Format extention
-
-   .. code-block:: php
-      :caption: Get the requested format
-      :linenos:
-      :emphasize-lines: 7,10
-
-      <?php
-      
-      use \PHPCore\Request;
-      
-      // $_SERVER['REQUEST_URI'] = '/test.php'
-      // $_SERVER['CONTENT_TYPE'] = 'application/json'
-      echo Request::format(); // 'json'
-      
-      // $_SERVER['REQUEST_URI'] = '/test.csv'
-      echo Request::format(); // 'csv'
-      
-      ?>
-
-   .. rst-class:: wy-text-right
-
-      :ref:`Back to list<Request Class Table of Contents>`
-
------
-
-.. _request-method-header:
-.. php:method:: header(string $key, ?int $filter = null, array|int $options = 0)
+.. _request-method-getheader:
+.. php:method:: getHeader(string $key, ?int $filter = null, array|int $options = 0)
+   :noindex:
 
    Get data from request header
 
@@ -307,9 +418,7 @@ Request Class Methods
       // Request Headers
       //   Accept-Encoding: gzip, deflate
       //   Accept-Language: en-US,en;q=0.9
-      //   Connection: keep-alive
-      //   Content-Length: 0
-      //   User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36
+      //   ...
       //   x-custom-header-1: Random Text
       //   x-custom-header-2: 12345
       
@@ -327,113 +436,9 @@ Request Class Methods
 
 -----
 
-.. _request-method-host:
-.. php:method:: host()
-
-   Get requester host name
-
-   This method will return the requester's host name using the requester's ip address, see ``Request::ip()`` for more information.
-
-   .. note::
-      Returns false if requester ip address is unknown.
-
-   :returns: ``string|false`` Host name
-
-   .. code-block:: php
-      :caption: Get requester host name
-      :linenos:
-      :emphasize-lines: 6,9
-
-      <?php
-      
-      use \PHPCore\Request;
-      
-      // $_SERVER['REMOTE_ADDR'] = '8.8.8.8'
-      echo Request::host(); // 'dns.google'
-      
-      // $_SERVER['REMOTE_ADDR'] = '123456'
-      var_dump(Request::host()); // false
-      
-      ?>
-
-   .. rst-class:: wy-text-right
-
-      :ref:`Back to list<Request Class Table of Contents>`
-
------
-
-.. _request-method-id:
-.. php:method:: id()
-
-   Get request ID
-
-   Gets the unique identifier based on the **REQUEST_TIME_FLOAT**, ``Request::ip()`` and the **REQUEST_URI**.
-
-   :returns: ``string`` Request ID
-
-   .. code-block:: php
-      :caption: Get request ID
-      :linenos:
-      :emphasize-lines: 9
-
-      <?php
-      
-      use \PHPCore\Request;
-      
-      // $_SERVER['REQUEST_TIME_FLOAT'] = 1681363597.2922
-      // $_SERVER['REMOTE_ADDR'] = '10.0.0.101'
-      // $_SERVER['REQUEST_URI'] = '/test.php'
-      
-      echo Request::id(); // '9e86384b69d5abe885fe33baff74bf37'
-      
-      ?>
-
-   .. rst-class:: wy-text-right
-
-      :ref:`Back to list<Request Class Table of Contents>`
-
------
-
-.. _request-method-ip:
-.. php:method:: ip()
-
-   Get requester ip address
-
-   This method will return the requester's ip address via the designated ``$_SERVER`` param that contains the requester's IP Address. This is normally REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the phpcore.ini file.
-
-   .. note::
-      Returns false if ``$_SERVER`` param is not set.
-
-   :returns: ``string|false`` IP Address of requester
-
-   .. code-block:: php
-      :caption: Get requester ip address
-      :linenos:
-      :emphasize-lines: 9,12
-
-      <?php
-      
-      use \PHPCore\Request;
-      
-      // $_SERVER['REMOTE_ADDR'] = '10.0.0.1'
-      // $_SERVER['HTTP_X_FORWARDED_FOR'] = '192.168.0.1'
-      
-      // phpcore.ini: request.ip_var = "REMOTE_ADDR"
-      echo Request::ip(); // '10.0.0.1'
-      
-      // phpcore.ini: request.ip_var = "HTTP_X_FORWARDED_FOR"
-      echo Request::ip(); // '192.168.0.1'
-      
-      ?>
-
-   .. rst-class:: wy-text-right
-
-      :ref:`Back to list<Request Class Table of Contents>`
-
------
-
-.. _request-method-param:
-.. php:method:: param(?string $key = null, ?int $filter = null, array|int $options = 0)
+.. _request-method-getparam:
+.. php:method:: getParam(?string $key = null, ?int $filter = null, array|int $options = 0)
+   :noindex:
 
    Get parameter from requested URI
 
@@ -474,8 +479,9 @@ Request Class Methods
 
 -----
 
-.. _request-method-segment:
-.. php:method:: segment(?int $pos = null, ?int $filter = null, array|int $options = 0)
+.. _request-method-getsegment:
+.. php:method:: getSegment(?int $pos = null, ?int $filter = null, array|int $options = 0)
+   :noindex:
 
    Get segment from requested URI
 

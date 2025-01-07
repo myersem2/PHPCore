@@ -166,7 +166,7 @@ final class Database
             throw new Exception("Database instance with the name $name has already been constructed");
         }
         try {
-            $this->Config = core_ini_get_all('Database');
+            $this->Config = phpcore_ini_get_all('Database');
             $pdo = [
                 'dsn' => $dsn,
                 'usr' => $usr,
@@ -174,12 +174,12 @@ final class Database
             ];
             if (empty($pdo['dsn']) or empty($pdo['usr']) or empty($pdo['pwd'])) {
                 $connections = [
-                    'main' => core_ini_get_all('Database', 'main')
+                    'main' => phpcore_ini_get_all('Database', 'main')
                 ];
-                foreach (core_ini_get_all('Database') as $directive=>$value) {
+                foreach (phpcore_ini_get_all('Database') as $directive=>$value) {
                     if (preg_match('/^(alt[1-9])\.name/', $directive, $matches)) {
                         if (empty($connections[$value])) {
-                            $connections[$value] = core_ini_get_all('Database', $matches[1]);
+                            $connections[$value] = phpcore_ini_get_all('Database', $matches[1]);
                         }
                     }
                 }

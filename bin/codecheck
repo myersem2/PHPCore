@@ -1,0 +1,197 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+/**
+ * PHPCore - Build Docs
+ *
+ * @package   PHPCore
+ * @author    Everett Myers <Everett@MyersNetwork.com>
+ * @copyright 2022-2025 Everett Myers
+ * @license   MIT License
+ * @link      https://PHPCore.org
+ * @version   2025-01-02
+ */
+
+namespace PHPCore;
+
+$phpcore_runtime_config = [
+    'session.auto_start' => '',
+];
+
+include getenv('PHPCORE_BOOTSTRAP');
+
+$version = '1.0.0';
+$ds = DIRECTORY_SEPARATOR;
+
+// -----------------------------------------------------------------------------
+
+$g = "\e[0;32;40m";
+$s = "\e[0;33;40m";
+$c = "\e[0;36;40m";
+$e = "\e[0m";
+
+$ver = CodeCheck::VERSION;
+$cyr = '2022-' . date('Y');
+$header = <<<CLI_STRING
+PHPCore Code Check {$c}$ver{$e} 
+Copyright (c) $cyr Everett Myers
+
+CLI_STRING;
+
+$help = <<<CLI_STRING
+$header
+{$s}Usage:{$e}
+  codecheck [options]
+
+{$s}Targeted:{$e}
+  {$g}-p{$e} {$c}<path>{$e}      Path to check all files
+  {$g}-f{$e} {$c}<file>{$e}      File path to check
+  {$g}-c{$e} {$c}<class>{$e}     Class to check against code standards
+  {$g}-e{$e} {$c}<file>{$e}      Exclude file (used with path)
+
+{$s}Specific Checks:{$e}
+  {$g}--syntax{$e}       Syntax check only
+  {$g}--format{$e}       Formatting only
+
+{$s}Miscellaneous:{$e}
+  {$g}-h|--help{$e}      Display this help and exit
+  {$g}-v|--version{$e}   Display version and exit
+
+
+CLI_STRING;
+
+// -----------------------------------------------------------------------------
+
+$options = getopt(CodeCheck::SHORT_OPTIONS, CodeCheck::LONG_OPTIONS);
+
+if (array_key_exists('h', $options) || array_key_exists('help', $options)) {
+    echo $help;
+    exit(0);
+}
+
+if (array_key_exists('v', $options) || array_key_exists('version', $options)) {
+    echo $header;
+    exit(0);
+}
+
+$by_path = array_key_exists('p', $options);
+$by_file = array_key_exists('f', $options);
+$by_clss = array_key_exists('c', $options);
+
+if (
+    ! isset($options['f']) &&
+    isset($options['c'])
+) {
+    $reflector = new \ReflectionClass($options['c']);
+    $options['f'] = $reflector->getFileName();
+    $by_file = true;
+}
+
+if ( ( ! $by_file && ! $by_path) || ($by_file && $by_path) ) {
+    echo str_color(
+        'ERROR: PHPCore Code Check requires either a file or path to check',
+        'red'
+    );
+    echo $help;
+    exit(1);
+}
+
+if (array_key_exists('f', $options) && is_array($options['f'])) {
+    echo str_color(
+        'ERROR: PHPCore Code Check can only have one file to check',
+        'red'
+    );
+    echo $help;
+    exit(1);
+}
+
+if (array_key_exists('p', $options) && is_array($options['p'])) {
+    echo str_color(
+        'ERROR: PHPCore Code Check can only have one path to check',
+        'red'
+    );
+    echo $help;
+    exit(1);
+}
+
+if (array_key_exists('c', $options)) {
+    if (is_array($options['c'])) {
+        echo str_color(
+            'ERROR: PHPCore Code Check can only have one class to check',
+            'red'
+        );
+        echo $help;
+        exit(1);
+    }
+    if ($by_path) {
+        echo str_color(
+            'ERROR: PHPCore Code Check cannot have class and path declared',
+            'red'
+        );
+        echo $help;
+        exit(1);
+    }
+}
+
+// -----------------------------------------------------------------------------
+
+if ($by_file) {
+
+    $checker = new CodeCheck([
+        'file_path'  => $options['f'] ?? null,
+        'class_name' => $options['c'] ?? null,
+    ]);
+
+    if (array_key_exists('syntax', $options)) {
+        $checker->checkSyntax();
+    } elseif (array_key_exists('format', $options)) {
+        $checker->checkClassFormatting();
+    } else {
+        $checker->runAll();
+    }
+
+} else {
+
+    if ( ! is_dir($options['p'])) {
+        echo str_color('ERROR: PHPCore Code Check path is not valid', 'red');
+        exit(1);
+    }
+
+    $files = scandir($options['p']);
+    $excluded = $options['e'] ?? [];
+    if (is_string($excluded)) {
+        $excluded = [$excluded];
+    }
+    if ( ! empty($files)) {
+        foreach ($files as $file) {
+            if (str_starts_with($file, '.') || ! str_ends_with($file, '.php')) {
+                continue;
+            }
+            if (in_array($file, $excluded)) {
+                continue;
+            }
+            // TODO: Build
+            //var_dump($file);
+
+            $title = "Checking file: $file";
+            echo PHP_EOL . str_color($title, 'magenta') . PHP_EOL;
+            echo str_color(str_repeat('=', strlen($title)), 'magenta') . PHP_EOL;
+
+            $checker = new CodeCheck([
+                'file_path' => "{$options['p']}{$ds}{$file}",
+            ]);
+
+            if (array_key_exists('syntax', $options)) {
+                $checker->checkSyntax();
+            } elseif (array_key_exists('format', $options)) {
+                $checker->checkClassFormatting();
+            } else {
+                $checker->runAll();
+            }
+            
+        }
+    }
+}
+
+
+
+// EOF /////////////////////////////////////////////////////////////////////////

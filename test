@@ -7,10 +7,10 @@
  * @copyright Copyright (c) 2023
  */
 
-// -------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
-$short_options = 'f:a::';
-$long_options = ['file:','all'];
+$short_options = 'f:c:a::';
+$long_options = ['file:','class:','all'];
 $options = getopt($short_options, $long_options);
 
 $file = null;
@@ -18,13 +18,18 @@ if (isset($options['f']) || isset($options['file'])) {
     $file = isset($options['f']) ? $options['f'] : $options['file'];
     $parts = explode('/', $file);
     $class_name = substr(end($parts), 0, -4);
+    if ( ! file_exists($file)) {
+        trigger_error("Could not open $file", E_USER_ERROR);
+    }
+    include_once $file;
+    $class_reflection = new ReflectionClass("PHPCore\\$class_name");
 }
-if ( ! file_exists($file)) {
-    trigger_error("Could not open $file", E_USER_ERROR);
-}
-include $file;
 
-$class_reflection = new ReflectionClass("PHPCore\\$class_name");
+if (isset($options['c']) || isset($options['class'])) {
+    $class_name = isset($options['c']) ? $options['c'] : $options['class'];
+    include_once "src/$class_name.php";
+    $class_reflection = new ReflectionClass("PHPCore\\$class_name");
+}
 
 $test_file = null;
 foreach ($class_reflection->getAttributes() as $attribute) {
@@ -33,6 +38,14 @@ foreach ($class_reflection->getAttributes() as $attribute) {
     }
 }
 
-die('Not Built');
+if (empty($test_file)) {
+    die('Nothing to test');
+}
 
-// EOF /////////////////////////////////////////////////////////////////////////////////////////////
+chdir(__DIR__);
+
+$coverage = '/var/www/phpcore/coverage';
+
+passthru("phpunit --colors=always --coverage-html=$coverage $test_file");
+
+// EOF /////////////////////////////////////////////////////////////////////////

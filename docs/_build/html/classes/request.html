@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Response Class" href="response.html" />
-    <link rel="prev" title="Model Class" href="model.html" /> 
+    <link rel="prev" title="Database Class" href="database.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,13 +49,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../install-config/requirements.html">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../install-config/directives.html">Configuration Directives</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../install-config/directives.html#session-directives">Session Directives</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#save-handler-id-prefix">save_handler_id_prefix</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#auto-start">auto_start</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#cookie-autodestroy">cookie_autodestroy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#gc-maxlength">gc_maxlength</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#encrypt">encrypt</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#key-phase">key_phase</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#acl-group">acl_group</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-save-handler-id-prefix">session.save_handler_id_prefix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-auto-start">session.auto_start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-cookie-autodestroy">session.cookie_autodestroy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-gc-maxlength">session.gc_maxlength</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-encrypt">session.encrypt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-key-phase">session.key_phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-acl-group">session.acl_group</a></li>
 </ul>
 </li>
 </ul>
@@ -85,10 +85,13 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Classes</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">Config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="config.html#config-class-synopsis">Config Class Synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#config-class-table-of-contents">Config Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#config-class-methods">Config Class Methods</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="database.html">Database</a></li>
-<li class="toctree-l2"><a class="reference internal" href="email.html">Email</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Request</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#request-class-synopsis">Request Class Synopsis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#request-class-table-of-contents">Request Class Table of Contents</a></li>
@@ -102,16 +105,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="session.html">Session</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="session.html#session-class-synopsis">Session Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#session-class-synopsis">Session Class Synopsis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="session.html#session-class-table-of-contents">Session Class Table of Contents</a></li>
-<li class="toctree-l3"><a class="reference internal" href="session.html#session-class-methods">Session Class methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#session-class-methods">Session Class Methods</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="view.html">View</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/index.html">Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../functions/general.html">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/config.html">Config</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/core.html">Core</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/request.html">Request</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/session.html">Session</a></li>
@@ -172,19 +175,26 @@
 <h2>Request Class Synopsis<a class="headerlink" href="#request-class-synopsis" title="Permalink to this headline"></a></h2>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">final</span> <span class="k">class</span> <span class="nc">Request</span> <span class="p">{</span>
 
+    <span class="cm">/* Properties */</span>
+    <span class="k">public</span> <span class="o">?</span><span class="nx">string</span> <span class="nv">$RequestId</span><span class="p">;</span>
+    <span class="k">public</span> <span class="nx">float</span> <span class="nv">$RequestTimeStart</span><span class="p">;</span>
+
+    <span class="cm">/* Methods */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="k">array</span> <span class="nv">$params</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getBody</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getFile</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">object</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getFiles</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getHeader</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getParam</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getSegment</span><span class="p">(</span><span class="o">?</span><span class="nx">int</span> <span class="nv">$pos</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+
     <span class="cm">/* Static Methods */</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">agent</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">body</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">cookie</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">file</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">object</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">files</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">format</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">header</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">host</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">id</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">ip</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="o">|</span><span class="k">false</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">param</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">segment</span><span class="p">(</span><span class="o">?</span><span class="nx">int</span> <span class="nv">$pos</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getAgent</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getCookie</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getFormat</span><span class="p">()</span><span class="o">:</span> <span class="o">?</span><span class="nx">string</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getIpAddress</span><span class="p">()</span><span class="o">:</span> <span class="o">?</span><span class="nx">string</span>
+    <span class="k">private</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">filterValue</span><span class="p">(</span><span class="nx">mixed</span> <span class="nv">$value</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">ZgetRequest</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$request_id</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">PHPCore\Request</span>
 
 <span class="p">}</span>
 </pre></div>
@@ -193,53 +203,128 @@
 <section id="request-class-table-of-contents">
 <h2>Request Class Table of Contents<a class="headerlink" href="#request-class-table-of-contents" title="Permalink to this headline"></a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="#request-method-agent"><span class="std std-ref">Request::agent</span></a> - Get request agent capabilities</p></li>
-<li><p><a class="reference internal" href="#request-method-body"><span class="std std-ref">Request::body</span></a> - Get data from request body</p></li>
-<li><p><a class="reference internal" href="#request-method-cookie"><span class="std std-ref">Request::cookie</span></a> - Get data from HTTP cookie</p></li>
-<li><p><a class="reference internal" href="#request-method-file"><span class="std std-ref">Request::file</span></a> - Get file from request</p></li>
-<li><p><a class="reference internal" href="#request-method-files"><span class="std std-ref">Request::files</span></a> - Get files from request</p></li>
-<li><p><a class="reference internal" href="#request-method-format"><span class="std std-ref">Request::format</span></a> - Get the requested format</p></li>
-<li><p><a class="reference internal" href="#request-method-header"><span class="std std-ref">Request::header</span></a> - Get data from request header</p></li>
-<li><p><a class="reference internal" href="#request-method-host"><span class="std std-ref">Request::host</span></a> - Get requester host name</p></li>
-<li><p><a class="reference internal" href="#request-method-id"><span class="std std-ref">Request::id</span></a> - Get request ID</p></li>
-<li><p><a class="reference internal" href="#request-method-ip"><span class="std std-ref">Request::ip</span></a> - Get requester ip address</p></li>
-<li><p><a class="reference internal" href="#request-method-param"><span class="std std-ref">Request::param</span></a> - Get parameter from requested URI</p></li>
-<li><p><a class="reference internal" href="#request-method-segment"><span class="std std-ref">Request::segment</span></a> - Get segment from requested URI</p></li>
+<li><p><a class="reference internal" href="#request-method-getagent"><span class="std std-ref">Request::getAgent</span></a> - Get request agent capabilities</p></li>
+<li><p><a class="reference internal" href="#request-method-getcookie"><span class="std std-ref">Request::getCookie</span></a> - Get data from HTTP cookie</p></li>
+<li><p><a class="reference internal" href="#request-method-getformat"><span class="std std-ref">Request::getFormat</span></a> - Get format from request</p></li>
+<li><p><a class="reference internal" href="#request-method-getipaddress"><span class="std std-ref">Request::getIpAddress</span></a> - Get IP address</p></li>
+<li><p><a class="reference internal" href="#request-method-filtervalue"><span class="std std-ref">Request::filterValue</span></a> - Filter value</p></li>
+<li><p><a class="reference internal" href="#request-method-zgetrequest"><span class="std std-ref">Request::ZgetRequest</span></a> - Get request object</p></li>
+<li><p><a class="reference internal" href="#request-method-construct"><span class="std std-ref">Request::__construct</span></a> - Constructor</p></li>
+<li><p><a class="reference internal" href="#request-method-getbody"><span class="std std-ref">Request::getBody</span></a> - Get data from request body</p></li>
+<li><p><a class="reference internal" href="#request-method-getfile"><span class="std std-ref">Request::getFile</span></a> - Get file from request</p></li>
+<li><p><a class="reference internal" href="#request-method-getfiles"><span class="std std-ref">Request::getFiles</span></a> - Get files from request</p></li>
+<li><p><a class="reference internal" href="#request-method-getheader"><span class="std std-ref">Request::getHeader</span></a> - Get data from request header</p></li>
+<li><p><a class="reference internal" href="#request-method-getparam"><span class="std std-ref">Request::getParam</span></a> - Get parameter from requested URI</p></li>
+<li><p><a class="reference internal" href="#request-method-getsegment"><span class="std std-ref">Request::getSegment</span></a> - Get segment from requested URI</p></li>
 </ul>
 </section>
 <section id="request-class-methods">
 <h2>Request Class Methods<a class="headerlink" href="#request-class-methods" title="Permalink to this headline"></a></h2>
-<span class="target" id="request-method-agent"></span><dl class="php method">
-<dt class="sig sig-object php" id="agent">
-<span class="sig-name descname"><span class="pre">agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span><a class="headerlink" href="#agent" title="Permalink to this definition"></a></dt>
+<span class="target" id="request-method-getagent"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Get request agent capabilities</p>
-<p>Attempts to determine the capabilities of the user’s browser by looking up the browser’s information in the browscap.ini file. Then returns the capability by the given <strong>$key</strong>.</p>
-<p>If <strong>$key</strong> is not passed the entire capabilities object will be returned.</p>
+<p>Attempts to determine the capabilities of the user’s browser by looking up the browser’s information in the browscap.ini file. If the options <strong>$key</strong> is not provides the entire capabilities object will be returned.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Returns <strong>NULL</strong> if get_browser() fails or requested capability is unknown.</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">null</span></code> if get_browser() fails or requested capability is unknown.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?string</span></code></span>) – The key of the capability data item to retrieve</p></li>
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?string</span></code></span>) – The key of the capability data item to retrieve.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The request capability or the entire capability object</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The request capability or the entire capability object.</p>
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-number">Example 10 </span><span class="caption-text">Get request agent capabilities</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 15 </span><span class="caption-text">Get request agent capabilities</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
 <span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="c1">// $_SERVER[&#39;HTTP_USER_AGENT&#39;] = &#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36&#39;</span>
+<span class="linenos"> 5</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;HTTP_USER_AGENT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64)&#39;</span><span class="o">.</span>
+<span class="linenos"> 6</span><span class="s1">&#39; AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36&#39;</span><span class="p">;</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="c1">// Get by key</span>
+<span class="hll"><span class="linenos"> 9</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">agent</span><span class="p">(</span><span class="s1">&#39;platform&#39;</span><span class="p">);</span> <span class="c1">// &#39;Win10&#39;</span>
+</span><span class="hll"><span class="linenos">10</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">agent</span><span class="p">(</span><span class="s1">&#39;ismobiledevice&#39;</span><span class="p">));</span> <span class="c1">// false</span>
+</span><span class="linenos">11</span>
+<span class="linenos">12</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-getcookie"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getCookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Get data from HTTP cookie</p>
+<p>Will return data from cookie by a given <strong>$key</strong> for data passed via HTTP Cookies. The option <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the body’s data to retrieve.</p></li>
+<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?int</span></code></span>) – The ID of the filter to apply.</p></li>
+<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested data item.</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-number">Example 16 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="nv">$_COOKIE</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;PaginationOffset&#39;</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;PaginationOrder&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;asc&#39;</span> <span class="p">]</span>
 <span class="linenos"> 6</span>
-<span class="linenos"> 7</span><span class="c1">// Get by key</span>
-<span class="hll"><span class="linenos"> 8</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">agent</span><span class="p">(</span><span class="s1">&#39;browser&#39;</span><span class="p">);</span> <span class="c1">// &#39;Chrome&#39;</span>
-</span><span class="hll"><span class="linenos"> 9</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">agent</span><span class="p">(</span><span class="s1">&#39;istablet&#39;</span><span class="p">));</span> <span class="c1">// false</span>
+<span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">getCookie</span><span class="p">(</span><span class="s1">&#39;PaginationOrder&#39;</span><span class="p">);</span> <span class="c1">// &#39;asc&#39;</span>
+</span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getCookie</span><span class="p">(</span><span class="s1">&#39;PaginationOffset&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
+</span><span class="linenos"> 9</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getCookie</span><span class="p">(</span><span class="s1">&#39;PaginationOrder&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-getformat"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getFormat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Get format from request</p>
+<p>This will return the format from an HTTP request by first looking at the requested <code class="docutils literal notranslate"><span class="pre">CONTENT_TYPE</span></code>, if unknown then it will attempt to determine it by using the <code class="docutils literal notranslate"><span class="pre">REQUEST_URI</span></code> (i.e. ‘resource.json’ =&gt; ‘json’). If format cannot be determine then the <code class="docutils literal notranslate"><span class="pre">request.default_format</span></code> declared in the phpcore.ini will be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">?string</span></code></p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-number">Example 17 </span><span class="caption-text">Get format from request</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;REQUEST_URI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;resource.xml?query=test&quot;</span><span class="p">;</span>
+<span class="hll"><span class="linenos"> 6</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">getFormat</span><span class="p">();</span> <span class="c1">// &#39;xml&#39;</span>
+</span><span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;CONTENT_TYPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;application/json&quot;</span><span class="p">;</span>
+<span class="hll"><span class="linenos"> 9</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">getFormat</span><span class="p">();</span> <span class="c1">// &#39;xml&#39;</span>
 </span><span class="linenos">10</span>
 <span class="linenos">11</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
@@ -249,9 +334,116 @@
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="request-method-body"></span><dl class="php method">
-<dt class="sig sig-object php" id="body">
-<span class="sig-name descname"><span class="pre">body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#body" title="Permalink to this definition"></a></dt>
+<span class="target" id="request-method-getipaddress"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getIpAddress</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Get IP address</p>
+<p>Returns the requester’s ip address by the designated <code class="docutils literal notranslate"><span class="pre">$_SERVER</span></code> param that contains the requester’s IP Address. This is normally <code class="docutils literal notranslate"><span class="pre">REMOTE_ADDR</span></code> or <code class="docutils literal notranslate"><span class="pre">HTTP_X_FORWARDED_FOR</span></code> and can be configured in the phpcore.ini file via the <code class="docutils literal notranslate"><span class="pre">request.ip_server_params</span></code> option.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Will be <strong>false</strong> if <code class="docutils literal notranslate"><span class="pre">$_SERVER</span></code> param is not set or the value does not pass the <code class="docutils literal notranslate"><span class="pre">FILTER_VALIDATE_IP</span></code> check.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">?string</span></code> IP address makeing request.</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-number">Example 18 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="nv">$_COOKIE</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;PaginationOffset&#39;</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;PaginationOrder&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;asc&#39;</span> <span class="p">]</span>
+<span class="linenos"> 6</span>
+<span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">getCookie</span><span class="p">(</span><span class="s1">&#39;PaginationOrder&#39;</span><span class="p">);</span> <span class="c1">// &#39;asc&#39;</span>
+</span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getCookie</span><span class="p">(</span><span class="s1">&#39;PaginationOffset&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
+</span><span class="linenos"> 9</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getCookie</span><span class="p">(</span><span class="s1">&#39;PaginationOrder&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-filtervalue"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">filterValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">mixed</span> <span class="pre">$value</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Filter value</p>
+<p>This method will return a filtere value if a filter is specified. If no filter is specified the orginal value will be returned.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$value</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">mixed</span></code></span>) – Value to be filtered .</p></li>
+<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?int</span></code></span>) – The ID of the filter to apply.</p></li>
+<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The filtered value.</p>
+</dd>
+</dl>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-zgetrequest"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">ZgetRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$request_id</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Get request object</p>
+<p>This method is used to retrive a previously constructed request instance by a given <cite>$request_id</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$request_id</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?string</span></code></span>) – Request ID</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">?PHPCore\Request</span></code> Request instance</p>
+</dd>
+</dl>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-construct"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">__construct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">array</span> <span class="pre">$params</span> <span class="pre">=</span> <span class="pre">[]</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Constructor</p>
+<p>Used to construct the instance and it by reference into the self::$Instances for later use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$params</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array</span></code></span>) – Parameters for request</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-getbody"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getBody</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Get data from request body</p>
 <p>Will parsed the request body based on the format, then return data from the parsed body by a given <strong>$key</strong> for data passed via the HTTP POST method. The option <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
 <p>If <strong>$key</strong> is not passed the request body be returned and the <strong>$filter</strong> and <strong>$options</strong> will be ignored.</p>
@@ -274,8 +466,8 @@
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested data item</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-number">Example 11 </span><span class="caption-text">Get data from request body</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-number">Example 19 </span><span class="caption-text">Get data from request body</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
@@ -294,52 +486,9 @@
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="request-method-cookie"></span><dl class="php method">
-<dt class="sig sig-object php" id="cookie">
-<span class="sig-name descname"><span class="pre">cookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cookie" title="Permalink to this definition"></a></dt>
-<dd><p>Get data from HTTP cookie</p>
-<p>Will return data from cookie by a given <strong>$key</strong> for data passed via HTTP Cookies. The option <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.</p></li>
-<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the body’s data to retrieve</p></li>
-<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?int</span></code></span>) – The ID of the filter to apply</p></li>
-<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested data item</p>
-</dd>
-</dl>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-number">Example 12 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="c1">// $_COOKIE = [ &#39;OFFSET&#39; =&gt; 1, &#39;ORDER&#39; =&gt; &#39;asc&#39; ]</span>
-<span class="linenos"> 6</span>
-<span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">cookie</span><span class="p">(</span><span class="s1">&#39;ORDER&#39;</span><span class="p">);</span> <span class="c1">// &#39;asc&#39;</span>
-</span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">cookie</span><span class="p">(</span><span class="s1">&#39;OFFSET&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
-</span><span class="linenos"> 9</span>
-<span class="linenos">10</span><span class="cp">?&gt;</span><span class="x"></span>
-</pre></div>
-</div>
-</div>
-<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="request-method-file"></span><dl class="php method">
-<dt class="sig sig-object php" id="file">
-<span class="sig-name descname"><span class="pre">file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#file" title="Permalink to this definition"></a></dt>
+<span class="target" id="request-method-getfile"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Get file from request</p>
 <p>Will return the file by a given <strong>$key</strong> for the files that was uploaded via the HTTP POST method using the <code class="docutils literal notranslate"><span class="pre">$_FILES</span></code> superglobal variable.</p>
 <dl class="field-list simple">
@@ -349,11 +498,11 @@
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">object|null</span></code> RequestFile object</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">?object</span></code> RequestFile object</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-number">Example 13 </span><span class="caption-text">Get file from request</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-number">Example 20 </span><span class="caption-text">Get file from request</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
@@ -378,9 +527,9 @@
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="request-method-files"></span><dl class="php method">
-<dt class="sig sig-object php" id="files">
-<span class="sig-name descname"><span class="pre">files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#files" title="Permalink to this definition"></a></dt>
+<span class="target" id="request-method-getfiles"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getFiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Get files from request</p>
 <p>Will return an array of files for a given <strong>$key</strong> that were uploaded via the HTTP POST method using the <code class="docutils literal notranslate"><span class="pre">$_FILES</span></code> superglobal variable.</p>
 <dl class="field-list simple">
@@ -393,8 +542,8 @@
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">array</span></code> Array of RequestFile objects</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-number">Example 14 </span><span class="caption-text">Get files from request</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-number">Example 21 </span><span class="caption-text">Get files from request</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
@@ -419,40 +568,9 @@
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="request-method-format"></span><dl class="php method">
-<dt class="sig sig-object php" id="format">
-<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#format" title="Permalink to this definition"></a></dt>
-<dd><p>Get the requested format</p>
-<p>This method will return the request format by first looking at the requested CONTENT_TYPE, if unknown then it will attempt to decipher using the REQUEST_URI extention. If format cannot be determine then the default_format set in the INI will be used.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code> Format extention</p>
-</dd>
-</dl>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-number">Example 15 </span><span class="caption-text">Get the requested format</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="c1">// $_SERVER[&#39;REQUEST_URI&#39;] = &#39;/test.php&#39;</span>
-<span class="linenos"> 6</span><span class="c1">// $_SERVER[&#39;CONTENT_TYPE&#39;] = &#39;application/json&#39;</span>
-<span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">format</span><span class="p">();</span> <span class="c1">// &#39;json&#39;</span>
-</span><span class="linenos"> 8</span>
-<span class="linenos"> 9</span><span class="c1">// $_SERVER[&#39;REQUEST_URI&#39;] = &#39;/test.csv&#39;</span>
-<span class="hll"><span class="linenos">10</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">format</span><span class="p">();</span> <span class="c1">// &#39;csv&#39;</span>
-</span><span class="linenos">11</span>
-<span class="linenos">12</span><span class="cp">?&gt;</span><span class="x"></span>
-</pre></div>
-</div>
-</div>
-<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="request-method-header"></span><dl class="php method">
-<dt class="sig sig-object php" id="header">
-<span class="sig-name descname"><span class="pre">header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#header" title="Permalink to this definition"></a></dt>
+<span class="target" id="request-method-getheader"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getHeader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Get data from request header</p>
 <p>Will return data from the HTTP request headers for a given <strong>$key</strong>. The option <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
 <p>The key will be searched for both without then with the prefix “x-” to be compatiable with older conventions. Therfore there is no need include the prefix “x-” in your code moving forward.</p>
@@ -475,8 +593,8 @@
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested header item</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-number">Example 16 </span><span class="caption-text">Get data from request header</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-number">Example 22 </span><span class="caption-text">Get data from request header</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
@@ -484,130 +602,27 @@
 <span class="linenos"> 5</span><span class="c1">// Request Headers</span>
 <span class="linenos"> 6</span><span class="c1">//   Accept-Encoding: gzip, deflate</span>
 <span class="linenos"> 7</span><span class="c1">//   Accept-Language: en-US,en;q=0.9</span>
-<span class="linenos"> 8</span><span class="c1">//   Connection: keep-alive</span>
-<span class="linenos"> 9</span><span class="c1">//   Content-Length: 0</span>
-<span class="linenos">10</span><span class="c1">//   User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36</span>
-<span class="linenos">11</span><span class="c1">//   x-custom-header-1: Random Text</span>
-<span class="linenos">12</span><span class="c1">//   x-custom-header-2: 12345</span>
-<span class="linenos">13</span>
-<span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;accept-encoding&#39;</span><span class="p">);</span> <span class="c1">// &#39;gzip, deflate&#39;</span>
-</span><span class="hll"><span class="linenos">15</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
-</span><span class="hll"><span class="linenos">16</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;x-custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
+<span class="linenos"> 8</span><span class="c1">//   ...</span>
+<span class="linenos"> 9</span><span class="c1">//   x-custom-header-1: Random Text</span>
+<span class="linenos">10</span><span class="c1">//   x-custom-header-2: 12345</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;accept-encoding&#39;</span><span class="p">);</span> <span class="c1">// &#39;gzip, deflate&#39;</span>
+<span class="linenos">13</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
+<span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;x-custom-header-1&#39;</span><span class="p">);</span> <span class="c1">// &#39;Random Text&#39;</span>
+</span><span class="hll"><span class="linenos">15</span>
+</span><span class="hll"><span class="linenos">16</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;custom-header-2&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 12345</span>
 </span><span class="linenos">17</span>
-<span class="hll"><span class="linenos">18</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">header</span><span class="p">(</span><span class="s1">&#39;custom-header-2&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 12345</span>
-</span><span class="linenos">19</span>
-<span class="linenos">20</span><span class="cp">?&gt;</span><span class="x"></span>
-</pre></div>
+<span class="hll"><span class="linenos">18</span><span class="cp">?&gt;</span><span class="x"></span>
+</span></pre></div>
 </div>
 </div>
 <p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="request-method-host"></span><dl class="php method">
-<dt class="sig sig-object php" id="host">
-<span class="sig-name descname"><span class="pre">host</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#host" title="Permalink to this definition"></a></dt>
-<dd><p>Get requester host name</p>
-<p>This method will return the requester’s host name using the requester’s ip address, see <code class="docutils literal notranslate"><span class="pre">Request::ip()</span></code> for more information.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Returns false if requester ip address is unknown.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string|false</span></code> Host name</p>
-</dd>
-</dl>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-number">Example 17 </span><span class="caption-text">Get requester host name</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;8.8.8.8&#39;</span>
-<span class="hll"><span class="linenos"> 6</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">host</span><span class="p">();</span> <span class="c1">// &#39;dns.google&#39;</span>
-</span><span class="linenos"> 7</span>
-<span class="linenos"> 8</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;123456&#39;</span>
-<span class="hll"><span class="linenos"> 9</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">host</span><span class="p">());</span> <span class="c1">// false</span>
-</span><span class="linenos">10</span>
-<span class="linenos">11</span><span class="cp">?&gt;</span><span class="x"></span>
-</pre></div>
-</div>
-</div>
-<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="request-method-id"></span><dl class="php method">
-<dt class="sig sig-object php" id="id">
-<span class="sig-name descname"><span class="pre">id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id" title="Permalink to this definition"></a></dt>
-<dd><p>Get request ID</p>
-<p>Gets the unique identifier based on the <strong>REQUEST_TIME_FLOAT</strong>, <code class="docutils literal notranslate"><span class="pre">Request::ip()</span></code> and the <strong>REQUEST_URI</strong>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code> Request ID</p>
-</dd>
-</dl>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-number">Example 18 </span><span class="caption-text">Get request ID</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="c1">// $_SERVER[&#39;REQUEST_TIME_FLOAT&#39;] = 1681363597.2922</span>
-<span class="linenos"> 6</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;10.0.0.101&#39;</span>
-<span class="linenos"> 7</span><span class="c1">// $_SERVER[&#39;REQUEST_URI&#39;] = &#39;/test.php&#39;</span>
-<span class="linenos"> 8</span>
-<span class="hll"><span class="linenos"> 9</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">id</span><span class="p">();</span> <span class="c1">// &#39;9e86384b69d5abe885fe33baff74bf37&#39;</span>
-</span><span class="linenos">10</span>
-<span class="linenos">11</span><span class="cp">?&gt;</span><span class="x"></span>
-</pre></div>
-</div>
-</div>
-<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="request-method-ip"></span><dl class="php method">
-<dt class="sig sig-object php" id="ip">
-<span class="sig-name descname"><span class="pre">ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ip" title="Permalink to this definition"></a></dt>
-<dd><p>Get requester ip address</p>
-<p>This method will return the requester’s ip address via the designated <code class="docutils literal notranslate"><span class="pre">$_SERVER</span></code> param that contains the requester’s IP Address. This is normally REMOTE_ADDR or HTTP_X_FORWARDED_FOR and can be configured in the phpcore.ini file.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Returns false if <code class="docutils literal notranslate"><span class="pre">$_SERVER</span></code> param is not set.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string|false</span></code> IP Address of requester</p>
-</dd>
-</dl>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-number">Example 19 </span><span class="caption-text">Get requester ip address</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="c1">// $_SERVER[&#39;REMOTE_ADDR&#39;] = &#39;10.0.0.1&#39;</span>
-<span class="linenos"> 6</span><span class="c1">// $_SERVER[&#39;HTTP_X_FORWARDED_FOR&#39;] = &#39;192.168.0.1&#39;</span>
-<span class="linenos"> 7</span>
-<span class="linenos"> 8</span><span class="c1">// phpcore.ini: request.ip_var = &quot;REMOTE_ADDR&quot;</span>
-<span class="hll"><span class="linenos"> 9</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">ip</span><span class="p">();</span> <span class="c1">// &#39;10.0.0.1&#39;</span>
-</span><span class="linenos">10</span>
-<span class="linenos">11</span><span class="c1">// phpcore.ini: request.ip_var = &quot;HTTP_X_FORWARDED_FOR&quot;</span>
-<span class="hll"><span class="linenos">12</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">ip</span><span class="p">();</span> <span class="c1">// &#39;192.168.0.1&#39;</span>
-</span><span class="linenos">13</span>
-<span class="linenos">14</span><span class="cp">?&gt;</span><span class="x"></span>
-</pre></div>
-</div>
-</div>
-<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="request-method-param"></span><dl class="php method">
-<dt class="sig sig-object php" id="param">
-<span class="sig-name descname"><span class="pre">param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#param" title="Permalink to this definition"></a></dt>
+<span class="target" id="request-method-getparam"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getParam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Get parameter from requested URI</p>
 <p>This method will return the variable passed to the current script via the URL parameters (aka. query string) by a given <strong>$key</strong> using <code class="docutils literal notranslate"><span class="pre">$_GET</span></code> superglobal varable. If the key is not passed then an array of all the variables will be returned.</p>
 <p>If <strong>$key</strong> is not passed the entire query be returned and the <strong>$filter</strong> and <strong>$options</strong> will be ignored.</p>
@@ -630,8 +645,8 @@
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested query item</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-number">Example 20 </span><span class="caption-text">Get parameter from requested URI</span><a class="headerlink" href="#id11" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-number">Example 23 </span><span class="caption-text">Get parameter from requested URI</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
@@ -651,9 +666,9 @@
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="request-method-segment"></span><dl class="php method">
-<dt class="sig sig-object php" id="segment">
-<span class="sig-name descname"><span class="pre">segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?int</span> <span class="pre">$pos</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#segment" title="Permalink to this definition"></a></dt>
+<span class="target" id="request-method-getsegment"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getSegment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?int</span> <span class="pre">$pos</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Get segment from requested URI</p>
 <p>This method will return a segment of the requested URI with a given <strong>$pos</strong> using the <strong>REQUEST_URI</strong>.</p>
 <p>If <strong>$pos</strong> is not passed the entire segment array will be returned and the <strong>$filter</strong> and <strong>$options</strong> will be ignored.</p>
@@ -676,8 +691,8 @@
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested segment item</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id12">
-<div class="code-block-caption"><span class="caption-number">Example 21 </span><span class="caption-text">Get segment from requested URI</span><a class="headerlink" href="#id12" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-number">Example 24 </span><span class="caption-text">Get segment from requested URI</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
@@ -706,14 +721,14 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="model.html" class="btn btn-neutral float-left" title="Model Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="database.html" class="btn btn-neutral float-left" title="Database Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="response.html" class="btn btn-neutral float-right" title="Response Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Everett Myers.</p>
+    <p>&#169; Copyright 2025, Everett Myers.</p>
   </div>
 
    

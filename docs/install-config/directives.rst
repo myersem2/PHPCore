@@ -7,27 +7,27 @@ Session Directives
 
 The session directives that are outlined on the `PHP Session Runtime Configuration`_ documentation can also be set in the phpcore configuration. Only the methods that differ will be included below.
 
-========================== ========= ===================================================
-             Key           Data-type Description
-========================== ========= ===================================================
-`save_handler_id_prefix`_   string   Save handler prefix
-`auto_start`_               boolean  Initialize session on request startup.
-`cookie_autodestroy`_       boolean  Will cookie be delete when the session is destroyed.
-`gc_maxlength`_             integer  Max session time.
-`encrypt`_                  boolean  Encrypt session data before giving to handler.
-`key_phase`_                 string  String to use for encrypting session data.
-`acl_group`_                 string  CSV of default acl groups.
-========================== ========= ===================================================
+================================== ========= ===================================================
+                 Key               Data-type Description
+================================== ========= ===================================================
+`session.save_handler_id_prefix`_   string   Save handler prefix
+`session.auto_start`_               boolean  Initialize session on request startup.
+`session.cookie_autodestroy`_       boolean  Will cookie be delete when the session is destroyed.
+`session.gc_maxlength`_             integer  Max session time.
+`session.encrypt`_                  boolean  Encrypt session data before giving to handler.
+`session.key_phase`_                 string  String to use for encrypting session data.
+`session.acl_group`_                 string  CSV of default acl groups.
+================================== ========= ===================================================
 
 .. _Configuration Directives.auto_start:
 
-save_handler_id_prefix
-----------------------
+session.save_handler_id_prefix
+------------------------------
 
    Save handler prefix if using cache pool.
 
-auto_start
-----------
+session.auto_start
+------------------
 
    Initialize session on request startup.
 
@@ -46,8 +46,8 @@ auto_start
 
    .. _PHP Session Runtime Configuration: https://www.php.net/manual/en/session.configuration.php
 
-cookie_autodestroy
-------------------
+session.cookie_autodestroy
+--------------------------
 
    ``cookie_autodestroy = Yes|No`` specifies whether or not the cookie will delete when the session is destroyed.
 
@@ -59,8 +59,8 @@ cookie_autodestroy
       [Session]
       cookie_autodestroy = Yes
 
-gc_maxlength
-------------
+session.gc_maxlength
+--------------------
 
    After this number of seconds the session will be considered too long in length and its data will be cleared out. This is determined by the session start time and the current time when the session is read. Set to None if there is no max length a session can. This is also known as max session time.
 
@@ -75,8 +75,8 @@ gc_maxlength
       ; Integer: (28800 sec = 8 hrs) Sessions can live for a max of 8 hours then are auto-destroyed
       ;gc_maxlength = 28800
 
-encrypt
--------
+session.encrypt
+---------------
 
    Automatically encrypts and decrypts data when it is written or read from the the session save_handler.
 
@@ -88,8 +88,8 @@ encrypt
       [Session]
       encrypt = Yes
 
-key_phase
----------
+session.key_phase
+-----------------
 
    Defines the key phase to be used to salt the hash for the save_handler encryption process.
 
@@ -101,8 +101,8 @@ key_phase
       [Session]
       key_phase = "e14389---sample-do-not-copy-me----e14389"
 
-acl_group
----------
+session.acl_group
+-----------------
 
    Defines what default ACL groups should be assigned on new session creation. It receives a comma-delimited list of ACL groups.
 

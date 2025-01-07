@@ -2,15 +2,19 @@
 /**
  * PHPCore - Code Check
  *
- * @author    Everett Myers <Me@EverettMyers.com>
- * @copyright Copyright (c) 2022, PHPCore
+ * @package   PHPCore
+ * @author    Everett Myers <Everett@MyersNetwork.com>
+ * @copyright 2024-2025 Everett Myers
+ * @license   MIT License
+ * @link      https://PHPCore.org
+ * @version   2024-12-31
  */
 
 namespace PHPCore;
 
 use \ReflectionClass;
 
-// -------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 /**
  * Code Check Class
@@ -38,9 +42,23 @@ final class CodeCheck
      * @const array
      */
     const MAGIC_METHODS = [
-        'construct', 'destruct', 'call', 'callStatic', 'get', 'set', 'isset', 'unset',
-        'sleep', 'wakeup', 'serialize', 'unserialize', 'toString', 'invoke', 'set_state',
-        'clone', 'debugInfo', 'initialize', 'terminate',
+        '__construct',
+        '__destruct',
+        '__call',
+        '__callStatic',
+        '__get',
+        '__set',
+        '__isset',
+        '__unset',
+        '__sleep',
+        '__wakeup',
+        '__serialize',
+        '__unserialize',
+        '__toString',
+        '__invoke',
+        '__set_state',
+        '__clone',
+        '__debugInfo',
     ];
 
     /**
@@ -111,6 +129,67 @@ final class CodeCheck
     // ---------------------------------------------------------------------
 
     /**
+     * Display Header
+     *
+     * This method is used to display the CLI help.
+     *
+     * @return void
+     *
+    public static function displayHeader(): void
+    {
+        $version = "\e[0;36;40m" . CodeCheck::VERSION . "\e[0m"; // cyan
+        $copyright = '2022-' . date('Y');
+
+        echo <<<CLI_STRING
+PHPCore Code Check $version
+Copyright (c) $copyright Everett Myers
+
+CLI_STRING;
+    }
+*/
+
+    /**
+     * Display Help
+     *
+     * This method is used to display the CLI help.
+     *
+     * @return void
+     *
+    public static function displayHelp(): void
+    {
+        $g = "\e[0;32;40m";
+        $s = "\e[0;33;40m";
+        $c = "\e[0;36;40m";
+        $e = "\e[0m";
+
+        self::displayHeader();
+
+        echo <<<CLI_STRING
+{$s}Usage:{$e}
+  codecheck [options]
+
+{$s}Targeted:{$e}
+  {$g}-p{$e} {$c}<path>{$e}      Path to check all files
+  {$g}-f{$e} {$c}<file>{$e}      File path to check
+  {$g}-c{$e} {$c}<class>{$e}     Class to check against code standards
+  {$g}-e{$e} {$c}<file>{$e}      Exclude file (used with path)
+
+{$s}Specific Checks:{$e}
+  {$g}--syntax{$e}       Syntax check only
+  {$g}--format{$e}       Formatting only
+
+{$s}Miscellaneous:{$e}
+  {$g}-h|--help{$e}      Display this help and exit
+  {$g}-v|--version{$e}   Display version and exit
+
+
+CLI_STRING;
+    }
+*/
+
+    // ---------------------------------------------------------------------
+
+    /**
      * Constructor
      *
      * @param array $parameters Parameters
@@ -118,18 +197,27 @@ final class CodeCheck
      */
     public function __construct(array $parameters)
     {
-        $this->FilePath = $parameters['file_path'] ?? null;
+        if ( ! isset($parameters['file_path'])) {
+            $this->outputError("Missing `file_path` from parameters.");
+        }
+        $this->FilePath = realpath($parameters['file_path']);
 
         if ( ! is_readable($this->FilePath)) {
             $this->outputError("File {$this->FilePath} is not readable");
         }
 
         $this->FileContents = file_get_contents($this->FilePath);
-        include $this->FilePath;
+        include_once $this->FilePath;
 
         if ( ! isset($parameters['class_name'])) {
-            $declared_classes = get_declared_classes();
-            $this->ClassName = end($declared_classes);
+            
+            $this->outputError("Missing `class_name` from parameters.");
+            // TODO: Build, look at $this->FileContents as get full name.
+            //       Cannot use end(get_declared_classes()) because
+            //       not relaiable due to bootstrap
+            //$declared_classes = get_declared_classes();
+            //$this->ClassName = end($declared_classes);
+            
         } else {
             $this->ClassName = $parameters['class_name'];
         }
@@ -240,13 +328,14 @@ final class CodeCheck
         $reflection =& $this->ClassReflection;
         $short_name = $reflection->getShortName();
         $error_prefix = "Class `{$this->ClassName}`";
+        $ds = DIRECTORY_SEPARATOR;
 
         if( ! is_casing($short_name, 'StudlyCaps')) {
             $this->outputError("$error_prefix does not use proper StudlyCaps");
         }
 
         if (empty($this->ClassDocBlock->title) or empty($this->ClassDocBlock->description)) {
-            $this->outputError('$error_prefix DocBlock is missing title and/or description');
+            $this->outputError("$error_prefix DocBlock is missing title and/or description");
         }
 
         // Check documentation "Documentation" & "Test" attributes
@@ -266,7 +355,7 @@ final class CodeCheck
           if (count($arguments) > 1) {
               $this->outputError("$error_prefix `$attr_name` attribute can only have one argument");
           }
-          $argument_file = dirname($this->FilePath) . DIRECTORY_SEPARATOR . $arguments[0];
+          $argument_file = dirname($this->FilePath) . "{$ds}..{$ds}{$arguments[0]}";
           if ( ! file_exists($argument_file)) {
               $this->outputError("$error_prefix `$attr_name` attribute path is not valid");
           }
@@ -301,6 +390,11 @@ final class CodeCheck
             // check white space as end
             if (str_ends_with($line, ' ')) {
                 $this->outputError("Line $line_number has extra white space at the end of the line");
+            }
+
+            // check \r\n
+            if (str_ends_with($line, "\r")) {
+                $this->outputError("Line $line_number has \\r\\n at the end of the line, should be \\n");
             }
 
             // check indentation
@@ -354,13 +448,32 @@ final class CodeCheck
         echo PHP_EOL . str_color('Checking class methods:', 'cyan') . PHP_EOL;
 
         $this->loadClassReflection();
-        $reflection =& $this->ClassReflection;
-        $short_name = $reflection->getShortName();
+        $refl =& $this->ClassReflection;
+        $short_name = $refl->getShortName();
         $error_prefix = "Class `{$this->ClassName}`";
 
         // Check Methods
         $order = [];
-        $methods = $reflection->getMethods();
+        $methods = array_filter(
+            $refl->getMethods(),
+            function($meth) use($refl) {
+                // filter out properites from parent
+                if ($meth->getDeclaringClass()->getName() !== $refl->getName()) {
+                    return false;
+                }
+                // filter out properites from Trait
+                foreach ($refl->getTraits() as &$traitRefl) {
+                    foreach ($traitRefl->getMethods() as $reflProp) {
+                        if ($reflProp->name === $meth->name) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+                unset($traitReflection);
+            }
+        );
+
         foreach ($methods as $method) {
             $method_name = $method->name;
 
@@ -368,7 +481,7 @@ final class CodeCheck
             if ( ! is_casing($method_name_clean, 'camelCase')) {
                 $this->outputError("$error_prefix method `$method_name` does not use proper camelCase");
             }
-            if (str_starts_with($method_name, '_') && ! in_array($method_name_clean, self::MAGIC_METHODS)) {
+            if (str_starts_with($method_name, '_') && ! in_array($method_name, self::MAGIC_METHODS)) {
                 $this->outputError("$error_prefix method `$method_name` cannot be prefixed with an underscore");
             }
 
@@ -425,7 +538,7 @@ final class CodeCheck
                     $this->outputError("$error_prefix_param declaration & passed by reference missmatch");
                 }
                 if ($doc_param->type != $param->getType()) {
-                    $this->outputError("$error_prefix_param declaration does not match type");
+                    $this->outputError("$error_prefix_param declaration does not match type {$param->getType()}");
                 }
                 if (empty($doc_param->description)) {
                     $this->outputError("$error_prefix_param declaration does not have a description");
@@ -452,6 +565,9 @@ final class CodeCheck
         $test_order = $order;
         sort($test_order);
         if ($test_order !== $order) {
+            print_r($order);
+            echo "\nSHOULD BE:\n";
+            print_r($test_order);
             $this->outputError("$error_prefix methods do not follow proper code standards order");
         }
 
@@ -470,12 +586,31 @@ final class CodeCheck
         echo PHP_EOL . str_color('Checking class properties:', 'cyan') . PHP_EOL;
 
         $this->loadClassReflection();
-        $reflection =& $this->ClassReflection;
-        $short_name = $reflection->getShortName();
+        $refl =& $this->ClassReflection;
+        $short_name = $refl->getShortName();
         $error_prefix = "Class `{$this->ClassName}`";
 
         $order = [];
-        $properties = $reflection->getProperties();
+        $properties = array_filter(
+            $refl->getProperties(),
+            function($prop) use($refl) {
+                // filter out properites from parent
+                if ($prop->getDeclaringClass()->getName() !== $refl->getName()) {
+                    return false;
+                }
+                // filter out properites from Trait
+                foreach ($refl->getTraits() as &$traitRefl) {
+                    foreach ($traitRefl->getProperties() as $reflProp) {
+                        if ($reflProp->name === $prop->name) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+                unset($traitReflection);
+            }
+        );
+
         foreach ($properties as $property) {
             $prop_name = $property->name;
 
@@ -518,6 +653,9 @@ final class CodeCheck
         $test_order = $order;
         sort($test_order);
         if ($test_order !== $order) {
+            print_r($order);
+            echo "\nSHOULD BE:\n";
+            print_r($test_order);
             $this->outputError("$error_prefix properties do not follow proper code standards order");
         }
 
@@ -536,9 +674,10 @@ final class CodeCheck
     {
         echo PHP_EOL . str_color('Checking file for errors:', 'cyan') . PHP_EOL;
 
-        system("php -l {$this->FilePath}", $result_code);
+        exec("php -l {$this->FilePath}", $output, $result_code);
         if ( ! empty($result_code)) {
-          $this->outputError('Found syntax error in file, code checking halted');
+            echo $output;
+            $this->outputError('Found syntax error in file, code checking halted');
         }
 
         echo str_color('Passed', 'green') . PHP_EOL;
@@ -609,4 +748,4 @@ final class CodeCheck
     }
 }
 
-// EOF /////////////////////////////////////////////////////////////////////////////////////////////
+// EOF /////////////////////////////////////////////////////////////////////////

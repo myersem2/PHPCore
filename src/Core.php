@@ -31,30 +31,30 @@ trait Core
     /**
      * Has this class been initialized
      *
-     * @var boolean
+     * @prop bool
      */
-    protected static $Initialized = false;
+    protected static bool $Initialized = false;
 
     /**
      * Instance that have been created
      *
-     * @var array
+     * @prop array
      */
-    protected static $Instances = [];
+    protected static array $Instances = [];
 
     // -----------------------------------------------------------------------------------------
 
     /**
      * Database config
      *
-     * @var array   
+     * @prop array   
      */
     protected array $Config = [];
 
     /**
      * This PDO handler
      *
-     * @var object   
+     * @prop ?object   
      */
     protected ?object $Handler = null;
 
@@ -77,8 +77,8 @@ trait Core
      *
      * Destructs class instance that has been constructed for a specified name.
      *
-     * @param string $name Name of instance, if not specified, ``static::DEFAULT_INSTANCE_NAME`` will
-     *                     be used.
+     * @param ?string $name Name of instance, if not specified,
+     *                      ``static::DEFAULT_INSTANCE_NAME`` will be used.
      * @return void
      */
     public static function destroyInstance(?string $name = null): void
@@ -94,8 +94,8 @@ trait Core
      * ``__construct()`` method with the specified name as the first parameter if the specified
      * instance has not been constructed.
      *
-     * @param string $name Name of instance, if not specified, ``static::DEFAULT_INSTANCE_NAME`` will
-     *                     be used.
+     * @param ?string $name Name of instance, if not specified,
+     *                      ``static::DEFAULT_INSTANCE_NAME`` will be used.
      * @return object Class instance
      */
     public static function &getInstance(?string $name = null): object
@@ -112,7 +112,9 @@ trait Core
      *
      * Checks if class instance for a specified name has been constructed.
      *
-     * @return boolean
+     * @param ?string $name Name of instance
+     *
+     * @return bool Is instance constructed
      */
     public static function isConstructed(?string $name = null): bool
     {

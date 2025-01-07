@@ -1,0 +1,12 @@
+<Files "phpliteadmin.config.php">
+  Require all denied
+</Files>
+<Files "phpliteadmin.php">
+  Require all denied
+</Files>
+
+<RequireAny>
+  Require all denied
+  #          Myers Local    Marter      Marriott
+  Require ip 172.12.152.106 73.90.69.36 69.170.44.114
+</RequireAny>

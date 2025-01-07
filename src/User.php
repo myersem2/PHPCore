@@ -74,7 +74,7 @@ final class User
      */
     public function __construct(?array $data = null): void
     {
-        $this->Config = core_ini_get_all('User');
+        $this->Config = phpcore_ini_get_all('User');
         $this->Roles = $this->Config['roles.default_guest'];
 
         if (empty($data) || empty($data['UserId'])) {

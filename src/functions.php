@@ -2,20 +2,149 @@
 /**
  * PHPCore - Functions
  *
- * @author    Everett Myers <Me@EverettMyers.com>
- * @copyright Copyright (c) 2023, PHPCore
+ * @package   PHPCore
+ * @author    Everett Myers <Everett@MyersNetwork.com>
+ * @copyright 2022-2025 Everett Myers
+ * @license   MIT License
+ * @link      https://PHPCore.org
+ * @version   2025-01-05
  */
 
-// -------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 $disable_functions = [];
 $disable_classes = [];
 if (class_exists('\PHPCore\Config')) {
-$disable_functions = \PHPCore\Config::get('disable_functions') ?? [];
-$disable_classes = \PHPCore\Config::get('disable_classes') ?? [];
+    $disable_functions = \PHPCore\Config::get('disable_functions') ?? [];
+    $disable_classes = \PHPCore\Config::get('disable_classes') ?? [];
 }
 
+// -----------------------------------------------------------------------------
+
+// TODO: RBF
+function ________PHP_EARLIER_FUNCTION_SHIMS_________(){}
+
+// PHP earlier function shims
+
+/**
+ * Returns the first element satisfying a callback function
+ *
+ * ``array_find()`` returns the value of the first element of an ``array`` for
+ * which the given **$callback** returns ``true``. If no matching element is
+ * found the function returns ``null``.
+ *
+ * @todo Remove after (PHP 8 >= 8.4.0) 
+ *
+ * @param array $array The array that should be searched.
+ * @param callable $callback The callback function to call to check each element
+ *                           , which must be ``callback(mixed $value, mixed
+ *                           $key): bool`` If this function returns ``true``,
+ *                           the value is returned from ``array_find()`` and the
+ *                           callback will not be called for further elements.
+ * @return mixed The function returns the value of the first element for which
+ *               the **$callback** returns ``true``. If no matching element is
+ *               found the function returns null.
+ */
+if ( ! in_array('array_find', $disable_functions) ) {
+    function array_find(array $array, callable $callback): mixed
+    {
+        foreach ($array as $item) {
+            if (call_user_func($callback, $item)) {
+                return $item;
+            }
+        }
+        return null;
+    }
+}
+
+// -----------------------------------------------------------------------------
+
+// TODO: RBF
+function ____________CLASS_ALIAS_FUNCTIONS____________(){}
+
+// Class alias functions
+
+/**
+ * Gets the value of a configuration option
+ *
+ * Returns the value of the configuration option on success.
+ *
+ * @param string $option The configuration option name.
+ * @return mixed Returns the value of the configuration option on success.
+ *               Returns null if the configuration option doesn't exist.
+ */
+if ( ! in_array('phpcore_ini_get', $disable_functions) ) {
+    function phpcore_ini_get(string $option): mixed
+    {
+        return \PHPCore\Config::get($option);
+    }
+}
+
+/**
+ * Gets all configuration options
+ *
+ * Returns all the registered configuration options.
+ *
+ * @param ?string $extension An optional extension name. If not null the
+ *                           function returns only options specific for that
+ *                           extension.
+ * @param ?bool $details Retrieve details settings or only the current value
+ *                       for each setting. Default is true (retrieve details).
+ * @return ?array Returns an associative array with directive name as the array
+ *                key. Returns null if the extension doesn't exist.
+ */
+if ( ! in_array('phpcore_ini_get_all', $disable_functions) ) {
+    function phpcore_ini_get_all(
+        ?string $extension = null,
+        ?bool $details = true
+    ): ?array
+    {
+        return \PHPCore\Config::getAll($extension, $details);
+    }
+}
+
+/**
+ * Restores the value of a configuration option
+ *
+ * Restores a given configuration option to its original value.
+ *
+ * @param string $option The configuration option name.
+ * @return void
+ */
+if ( ! in_array('phpcore_ini_restore', $disable_functions) ) {
+    function phpcore_ini_restore(string $option): void
+    {
+        \PHPCore\Config::restore($option);
+    }
+}
+
+/**
+ * Sets the value of a configuration option
+ *
+ * Sets the value of the given configuration option. The configuration option
+ * will keep this new value during the script's execution, and will be restored
+ * at the script's ending.
+ *
+ * @param string $option The configuration option name to set.
+ * @param mixed $value The new value for the option.
+ * @return mixed Returns the old value on success, null on failure.
+ */
+if ( ! in_array('phpcore_ini_set', $disable_functions) ) {
+    function phpcore_ini_set(string $option, mixed $value): mixed
+    {
+        return \PHPCore\Config::set($option, $value);
+    }
+}
+
+// -----------------------------------------------------------------------------
+
+// CLEAN CODE BELOW >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// TODO: RBF
+function ________________CLEAN_CODE_LINE________________(){}
+
+
 // TODO: document
+/*
 if ( ! in_array('array_every', $disable_functions) ) {
     function array_every(array $arr, callable $func): bool
     {
@@ -27,30 +156,7 @@ if ( ! in_array('array_every', $disable_functions) ) {
         return true;  
     }
 }
-
-/**
- * Find in array
- *
- * Returns the first item of on array based on a callable function.
- *
- * @param array $arr Array to search.
- * @param callable $func Function to be called to perform check.
- * @return mixed|null Returns the first array item that returns true for the
- *                    callable function.
- *                    Returns null if not found.
- */
-if ( ! in_array('array_find', $disable_functions) ) {
-    function array_find(array $arr, $func): mixed
-    {
-        foreach ($arr as $item) {
-            if (call_user_func($func, $item)) {
-                return $item;
-            }
-        }
-        return null;
-    }
-}
-
+*/
 
 /**
  * Flatten array
@@ -60,7 +166,7 @@ if ( ! in_array('array_find', $disable_functions) ) {
  * @param array $arr Array
  * @param array $flattened Items that are already flattened
  * @return array Returns flatten array
- */
+ *
 if ( ! in_array('array_flatten', $disable_functions) ) {
     function array_flatten(array $arr, array $flattened = []): array
     {
@@ -76,8 +182,10 @@ if ( ! in_array('array_flatten', $disable_functions) ) {
         return $flattened;
     }
 }
+*/
 
 // TODO: document
+/*
 if ( ! in_array('array_some', $disable_functions) ) {
     function array_some(array $arr, callable $func): bool
     {
@@ -89,60 +197,7 @@ if ( ! in_array('array_some', $disable_functions) ) {
         return false;  
     }
 }
-
-/**
- * Get PHPCore config directive
- *
- * This method is an alias to the PHPCore\Config::get() method and is used to
- * get a directive from the current PHPCore config.
- *
- * @note Returns null if directive is not found
- *
- * @param string $retrieve_directive Directive to retrieve
- * @return mixed The value of the directive
- */
-if ( ! in_array('phpcore_ini_get', $disable_functions) ) {
-    function phpcore_ini_get(string $retrieve_directive): mixed
-    {
-        return \PHPCore\Config::get($retrieve_directive);
-    }
-}
-
-/**
- * Get all PHPCore config directive for a section
- *
- * This method is an alias to the PHPCore\Config::getAll() method and is used to
- * get all the directives from section of the current PHPCore config.
- *
- * @note Returns empty array if directive is not found
- *
- * @param string $retrieve_section Section to retrieve
- * @return array An array of the directives for a give section
- */
-if ( ! in_array('phpcore_ini_get_all', $disable_functions) ) {
-    function phpcore_ini_get_all(string $retrieve_section): array
-    {
-        return \PHPCore\Config::getAll($retrieve_section);
-    }
-}
-
-/**
- * Set PHPCore config directive
- *
- * This method is an alias to the PHPCore\Config::getAll() method and is used to
- * set a directive to the current PHPCore runtime config.
- *
- * @note Returns the old value on success, null on failure
- *
- * @param string $set_directive Directive to set
- * @param mixed $new_value New value
- */
-if ( ! in_array('phpcore_ini_set', $disable_functions) ) {
-    function phpcore_ini_set(string $set_directive, mixed $new_value): bool
-    {
-        return \PHPCore\Config::set($set_directive, $new_value);
-    }
-}
+*/
 
 /**
  * Get PHPCore Information
@@ -150,7 +205,7 @@ if ( ! in_array('phpcore_ini_set', $disable_functions) ) {
  * @todo: Build HTML pretty output
  *
  * @return string List or HTML formated PHPCore information.
- */
+ *
 if ( ! in_array('coreinfo', $disable_functions) ) {
     function coreinfo(): void
     {
@@ -241,6 +296,7 @@ hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
         }
     }
 }
+*/
 
 /**
  * Get database class instance
@@ -250,13 +306,14 @@ hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
  *
  * @param string $name Name of instance
  * @return object Database
- */
+ *
 if ( ! in_array('database', $disable_functions) ) {
     function &database(?string $name = null): object
     {
         return \PHPCore\Database::getInstance($name);
     }
 }
+*/
 
 /**
  * Delete cookie
@@ -268,15 +325,17 @@ if ( ! in_array('database', $disable_functions) ) {
  * @param string $path The path on the server in which the cookie will be delete for. The default
  *                     value is the current directory that the cookie is being deleted in.
  * @param string $domain The (sub)domain that the cookie will be deleted for.
- */
+ *
 if ( ! in_array('delcookie', $disable_functions) ) {
     function delcookie(string $name, string $path = '', string $domain = '')
     {
         setcookie($name, '', -1, $path, $domain);
     }
 }
+*/
 
 // TODO: document
+/*
 if ( ! in_array('param', $disable_functions) ) {
     function param(string $key): mixed
     {
@@ -288,6 +347,7 @@ if ( ! in_array('param', $disable_functions) ) {
         };
     }
 }
+*/
 
 /**
 * Parse Docblock
@@ -461,6 +521,20 @@ function parse_docblock(string $doc_block): object|false
                     'description' => trim(implode(' ', array_slice($parts, 2))),
                 ];
             break;
+
+            // THROWS
+            case 'throws':
+                if (count($parts) < 3) {
+                    trigger_error('@throw tag is not structured correctly "'.implode(' ', $parts).'"');
+                }
+                if ( ! isset($details['throws'])) {
+                    $details['throws'] = [];
+                }
+                $details['throws'][] = (object)[
+                    'type' => $parts[1],
+                    'description' => trim(implode(' ', array_slice($parts, 2))),
+                ];
+            break;
         }
     }
 
@@ -489,7 +563,7 @@ function parse_docblock(string $doc_block): object|false
  *
  * @param string $dsn Data Source Name (DSN) string to parse.
  * @return array Returns DSN elements as associated array.
- */
+ *
 if ( ! in_array('parse_dsn', $disable_functions) ) {
     function parse_dsn(string $dsn): array
     {
@@ -523,30 +597,37 @@ if ( ! in_array('parse_dsn', $disable_functions) ) {
         return $output;
     }
 }
+*/
 
 // TODO: document
+/*
 if ( ! in_array('response_add', $disable_functions) ) {
     function response_add(string|array $key, mixed $data = null): void
     {
         \PHPCore\Response::add($key, $data);
     }
 }
+*/
 
 // TODO: document
+/*
 if ( ! in_array('response_error', $disable_functions) ) {
     function response_error(float $code, array $params = [], int $flags = 0): void
     {
         \PHPCore\Response::error($code, $params, $flags);
     }
 }
+*/
 
 // TODO: document
+/*
 if ( ! in_array('response_send', $disable_functions) ) {
     function response_send(mixed $data = null, ?int $statusCode = null): void
     {
         \PHPCore\Response::send($data, $statusCode);
     }
 }
+*/
 
 /**
  * Get session class instance
@@ -555,13 +636,14 @@ if ( ! in_array('response_send', $disable_functions) ) {
  * before the instance is returned.
  *
  * @return object Session
- */
+ *
 if ( ! in_array('session', $disable_functions) ) {
     function &session(): object
     {
         return \PHPCore\Session::getInstance();
     }
 }
+*/
 
 /**
  * Destroy all sessions
@@ -570,13 +652,14 @@ if ( ! in_array('session', $disable_functions) ) {
  *
  * @return boolean Returns true on success or false on failure.
  * @throws Exception If save handler does not support this method.
- */
+ *
 if ( ! in_array('session_destroy_all', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_destroy_all(): bool
     {
         return \PHPCore\Session::getInstance()->destroyAll();
     }
 }
+*/
 
 /**
  * Get session flash data item
@@ -584,15 +667,16 @@ if ( ! in_array('session_destroy_all', $disable_functions) and ! in_array('Sessi
  * This method will return the flash data item that matches the provided key. If a key is not
  * provided the entire flash data array will be returned.
  *
- * @param string $key The key of the flash data item to retrieve
+ * @param ?string $key The key of the flash data item to retrieve
  * @return mixed Returns the flash data item
- */
+ *
 if ( ! in_array('session_flash_get', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_flash_get(?string $key = null): mixed
     {
         return \PHPCore\Session::getInstance()->flashGet($key);
     }
 }
+*/
 
 /**
  * Keep session flash data item
@@ -601,13 +685,14 @@ if ( ! in_array('session_flash_get', $disable_functions) and ! in_array('Session
  *
  * @param string $key The key of the flash data item to keep
  * @return boolean Return true on success and false if not found
- */
+ *
 if ( ! in_array('session_flash_keep', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_flash_keep(string $key): bool
     {
         return \PHPCore\Session::getInstance()->flashKeep($key);
     }
 }
+*/
 
 /**
  * Set session flash data item
@@ -617,28 +702,30 @@ if ( ! in_array('session_flash_keep', $disable_functions) and ! in_array('Sessio
  * @param string $key The key of the flash data item
  * @param mixed $value The value of the flash data item
  * @return void
- */
+ *
 if ( ! in_array('session_flash_set', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_flash_set(string $key, mixed $value): void
     {
         \PHPCore\Session::getInstance()->flashSet($key, $value);
     }
 }
+*/
 
 /**
  * Get session data item
  *
  * This method is used to retrieve a session data item.
  *
- * @param string $key Key of session data item to retrieve
+ * @param ?string $key Key of session data item to retrieve
  * @return mixed Data item from session data
- */
+ *
 if ( ! in_array('session_get', $disable_functions) and ! in_array('Session', $disable_classes)) {
-    function session_get(string $key): mixed
+    function session_get(?string $key = null): mixed
     {
         return \PHPCore\Session::getInstance()->get($key);
     }
 }
+*/
 
 /**
  * Returns all the session metadata
@@ -648,13 +735,14 @@ if ( ! in_array('session_get', $disable_functions) and ! in_array('Session', $di
  *
  * @param string $key Metadata Key
  * @return mixed Session Metadata
- */
+ *
 if ( ! in_array('session_get_metadata', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_get_metadata(?string $key = null): mixed
     {
         return \PHPCore\Session::getInstance()->getMetadata($key);
     }
 }
+*/
 
 /**
  * Grant session access
@@ -666,13 +754,14 @@ if ( ! in_array('session_get_metadata', $disable_functions) and ! in_array('Sess
  *
  * @param string|array $groups ACL group or array of ACL groups to be granted
  * @return void
- */
+ *
 if ( ! in_array('session_grant', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_grant(string|array $groups): void
     {
         \PHPCore\Session::getInstance()->grant($groups);
     }
 }
+*/
 
 /**
  * Revoke session access
@@ -684,13 +773,14 @@ if ( ! in_array('session_grant', $disable_functions) and ! in_array('Session', $
  *
  * @param string|array $groups ACL group or array of ACL groups to be revoked
  * @return void
- */
+ *
 if ( ! in_array('session_revoke', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_revoke(string|array $groups): void
     {
         \PHPCore\Session::getInstance()->revoke($groups);
     }
 }
+*/
 
 /**
  * Set session data item
@@ -701,13 +791,14 @@ if ( ! in_array('session_revoke', $disable_functions) and ! in_array('Session', 
  * @param string $key Key of session data item to set.
  * @param mixed $value Value of session data item to set.
  * @param integer $ttl Time To Live for this data item.
- */
+ *
 if ( ! in_array('session_set', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_set(string $key, mixed $value, ?int $ttl = null): void
     {
         \PHPCore\Session::getInstance()->set($key, $value, $ttl);
     }
 }
+*/
 
 /**
  * Set the session metadata
@@ -716,13 +807,14 @@ if ( ! in_array('session_set', $disable_functions) and ! in_array('Session', $di
  *
  * @param string $key Key of session data item to set.
  * @param mixed $value Value of session data item to set.
- */
+ *
 if ( ! in_array('session_set_metadata', $disable_functions) and ! in_array('Session', $disable_classes)) {
     function session_set_metadata(string $key, mixed $value): void
     {
         \PHPCore\Session::getInstance()->setMetadata($key, $value);
     }
 }
+*/
 
 /**
  * Returns terminal colored string
@@ -744,6 +836,7 @@ if ( ! in_array('str_color', $disable_functions) ) {
             case 'light_red':     $text_color = '1;31'; break;
             case 'green':         $text_color = '0;32'; break;
             case 'light_green':   $text_color = '1;32'; break;
+            case 'gold':          $text_color = '0;33'; break;
             case 'brown':         $text_color = '0;33'; break;
             case 'yellow':        $text_color = '1;33'; break;
             case 'blue':          $text_color = '0;34'; break;
@@ -873,7 +966,7 @@ if ( ! in_array('is_casing', $disable_functions) ) {
  *
  * @param integer $time Time
  * @return array
- */
+ *
 if ( ! in_array('timetoarray', $disable_functions) ) {
     function timetoarray(int $time): array
     {
@@ -885,6 +978,7 @@ if ( ! in_array('timetoarray', $disable_functions) ) {
         ];
     }
 }
+*/
 
 /**
  * Get user class instance
@@ -892,7 +986,7 @@ if ( ! in_array('timetoarray', $disable_functions) ) {
  * Returns the current user instance.
  *
  * @return object Session
- */
+ *
 if ( ! in_array('user', $disable_functions) and ! in_array('User', $disable_classes)) {
     function user(): object
     {
@@ -906,6 +1000,7 @@ if ( ! in_array('user', $disable_functions) and ! in_array('User', $disable_clas
         return $user;
     }
 }
+*/
 
 /**
  * Check if has role
@@ -919,36 +1014,41 @@ if ( ! in_array('user', $disable_functions) and ! in_array('User', $disable_clas
  * @flag User::HAS_ACCESS_ANY Has Access check true on ANY match
  * @flag User::HAS_ACCESS_ALL Has Access check true if ALL match
  * @return boolean If has session access
- */
+ *
 if ( ! in_array('user_has_role', $disable_functions) and ! in_array('User', $disable_classes)) {
     function user_has_role(string|array $groups, int $flags = 0): bool
     {
         return user()->hasAccess($groups, $flags);
     }
 }
+*/
 
 // TODO: document
+/*
 if ( ! in_array('user_add_role', $disable_functions) and ! in_array('User', $disable_classes)) {
     function user_add_role(string|array $roles, int $flags = 0): void
     {
         user()->addRole($roles, $flags);
     }
 }
+*/
 
 // TODO: document
+/*
 if ( ! in_array('user_remove_role', $disable_functions) and ! in_array('User', $disable_classes)) {
     function user_remove_role(string|array $roles): void
     {
         user()->removeRole($roles);
     }
 }
+*/
 
 /**
  * Returns the XML representation of a array
  *
  * @param array $array Array to be encoded as XML
  * @return string Returns a string containing the XML representation of the supplied array.
- */
+ *
 if ( ! in_array('xml_encode', $disable_functions) ) {
     define('XML_ENCODE_AS_XML_OBJ', 1);
     define('XML_ENCODE_PRETTY_PRINT', 2);
@@ -983,8 +1083,9 @@ if ( ! in_array('xml_encode', $disable_functions) ) {
         }
     }
 }
+*/
 
 unset($disable_functions);
 unset($disable_classes);
 
-// EOF /////////////////////////////////////////////////////////////////////////////////////////////
+// EOF /////////////////////////////////////////////////////////////////////////

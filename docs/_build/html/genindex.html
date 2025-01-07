@@ -46,13 +46,13 @@
 <li class="toctree-l2"><a class="reference internal" href="install-config/requirements.html">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install-config/directives.html">Configuration Directives</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="install-config/directives.html#session-directives">Session Directives</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#save-handler-id-prefix">save_handler_id_prefix</a></li>
-<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#auto-start">auto_start</a></li>
-<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#cookie-autodestroy">cookie_autodestroy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#gc-maxlength">gc_maxlength</a></li>
-<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#encrypt">encrypt</a></li>
-<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#key-phase">key_phase</a></li>
-<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#acl-group">acl_group</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#session-save-handler-id-prefix">session.save_handler_id_prefix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#session-auto-start">session.auto_start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#session-cookie-autodestroy">session.cookie_autodestroy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#session-gc-maxlength">session.gc_maxlength</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#session-encrypt">session.encrypt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#session-key-phase">session.key_phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install-config/directives.html#session-acl-group">session.acl_group</a></li>
 </ul>
 </li>
 </ul>
@@ -82,10 +82,13 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="classes/index.html">Classes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="classes/controller.html">Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classes/config.html">Config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="classes/config.html#config-class-synopsis">Config Class Synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classes/config.html#config-class-table-of-contents">Config Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classes/config.html#config-class-methods">Config Class Methods</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="classes/database.html">Database</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes/email.html">Email</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes/model.html">Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classes/request.html">Request</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="classes/request.html#request-class-synopsis">Request Class Synopsis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="classes/request.html#request-class-table-of-contents">Request Class Table of Contents</a></li>
@@ -99,16 +102,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="classes/session.html">Session</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="classes/session.html#session-class-synopsis">Session Class synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classes/session.html#session-class-synopsis">Session Class Synopsis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="classes/session.html#session-class-table-of-contents">Session Class Table of Contents</a></li>
-<li class="toctree-l3"><a class="reference internal" href="classes/session.html#session-class-methods">Session Class methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classes/session.html#session-class-methods">Session Class Methods</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="classes/view.html">View</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="functions/index.html">Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="functions/general.html">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/config.html">Config</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functions/core.html">Core</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functions/request.html">Request</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functions/session.html">Session</a></li>
@@ -161,8 +164,7 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#Symbols"><strong>Symbols</strong></a>
- | <a href="#_"><strong>_</strong></a>
+ <a href="#_"><strong>_</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
@@ -174,14 +176,6 @@
  | <a href="#X"><strong>X</strong></a>
  
 </div>
-<h2 id="Symbols">Symbols</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="classes/request.html#agent"><strong>() ( method)</strong></a>, <a href="classes/request.html#body"><strong>[1]</strong></a>, <a href="classes/request.html#cookie"><strong>[2]</strong></a>, <a href="classes/request.html#file"><strong>[3]</strong></a>, <a href="classes/request.html#files"><strong>[4]</strong></a>, <a href="classes/request.html#format"><strong>[5]</strong></a>, <a href="classes/request.html#header"><strong>[6]</strong></a>, <a href="classes/request.html#host"><strong>[7]</strong></a>, <a href="classes/request.html#id"><strong>[8]</strong></a>, <a href="classes/request.html#ip"><strong>[9]</strong></a>, <a href="classes/request.html#param"><strong>[10]</strong></a>, <a href="classes/request.html#segment"><strong>[11]</strong></a>, <a href="classes/response.html#add"><strong>[12]</strong></a>, <a href="classes/response.html#addHeader"><strong>[13]</strong></a>, <a href="classes/session.html#__construct"><strong>[14]</strong></a>, <a href="classes/session.html#close"><strong>[15]</strong></a>, <a href="classes/session.html#create_sid"><strong>[16]</strong></a>, <a href="classes/session.html#destroy"><strong>[17]</strong></a>, <a href="classes/session.html#destroyAll"><strong>[18]</strong></a>, <a href="classes/session.html#flashGet"><strong>[19]</strong></a>, <a href="classes/session.html#flashKeep"><strong>[20]</strong></a>, <a href="classes/session.html#flashSet"><strong>[21]</strong></a>, <a href="classes/session.html#gc"><strong>[22]</strong></a>, <a href="classes/session.html#get"><strong>[23]</strong></a>, <a href="classes/session.html#getAllSessions"><strong>[24]</strong></a>, <a href="classes/session.html#getMetadata"><strong>[25]</strong></a>, <a href="classes/session.html#grant"><strong>[26]</strong></a>, <a href="classes/session.html#hasAccess"><strong>[27]</strong></a>, <a href="classes/session.html#open"><strong>[28]</strong></a>, <a href="classes/session.html#read"><strong>[29]</strong></a>, <a href="classes/session.html#revoke"><strong>[30]</strong></a>, <a href="classes/session.html#set"><strong>[31]</strong></a>, <a href="classes/session.html#user"><strong>[32]</strong></a>, <a href="classes/session.html#write"><strong>[33]</strong></a>
-</li>
-  </ul></td>
-</tr></table>
-
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -256,6 +250,16 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="functions/general.html#parse_dsn"><strong>parse_dsn() (global function)</strong></a>
+</li>
+      <li><a href="functions/config.html#phpcore_ini_get"><strong>phpcore_ini_get() (global function)</strong></a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="functions/config.html#phpcore_ini_get_all"><strong>phpcore_ini_get_all() (global function)</strong></a>
+</li>
+      <li><a href="functions/config.html#phpcore_ini_restore"><strong>phpcore_ini_restore() (global function)</strong></a>
+</li>
+      <li><a href="functions/config.html#phpcore_ini_set"><strong>phpcore_ini_set() (global function)</strong></a>
 </li>
   </ul></td>
 </tr></table>
@@ -357,7 +361,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Everett Myers.</p>
+    <p>&#169; Copyright 2025, Everett Myers.</p>
   </div>
 
    

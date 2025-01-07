@@ -12,6 +12,7 @@ phpcore.ini
 
 dev/*
 log/*
+coverage/*
 
 .phive
 .phpunit.cache

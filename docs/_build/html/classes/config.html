@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Config Class &mdash; PHPCore dev-initial-build
+ Manual</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Database Class" href="database.html" />
+    <link rel="prev" title="PHPCore Built-In Classes" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PHPCore
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#a-simple-tutorial">A simple tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../install-config/index.html">Installing and Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/requirements.html">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/directives.html">Configuration Directives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../install-config/directives.html#session-directives">Session Directives</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-save-handler-id-prefix">session.save_handler_id_prefix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-auto-start">session.auto_start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-cookie-autodestroy">session.cookie_autodestroy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-gc-maxlength">session.gc_maxlength</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-encrypt">session.encrypt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-key-phase">session.key_phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../install-config/directives.html#session-acl-group">session.acl_group</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/index.html#manual-installation">Manual Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install-config/index.html#php-configuration">PHP Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../features/index.html">Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../features/session.html">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#metadata">Metadata</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#acl-groups">acl_groups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#started">started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#session-id">session_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#timeleft">timeleft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#updated">updated</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#user">user</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#user-and-acl-groups">User and ACL Groups</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../features/session.html#grant-revoke">grant &amp; revoke</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../features/session.html#setting-data-with-ttl">Setting Data with TTL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Classes</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#config-class-synopsis">Config Class Synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#config-class-table-of-contents">Config Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#config-class-methods">Config Class Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="request.html">Request</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="request.html#request-class-synopsis">Request Class Synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="request.html#request-class-table-of-contents">Request Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="request.html#request-class-methods">Request Class Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="response.html">Response</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="response.html#response-class-synopsis">Response Class Synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="response.html#response-class-table-of-contents">Response Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="response.html#response-class-methods">Response Class Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="session.html">Session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="session.html#session-class-synopsis">Session Class Synopsis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#session-class-table-of-contents">Session Class Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#session-class-methods">Session Class Methods</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/index.html">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../functions/general.html">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/config.html">Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/core.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/request.html">Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/session.html">Session</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/string.html">String</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../annotations.html">Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core-trait.html">Core Trait</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core-trait.html#trait-synopsis">Trait synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core-trait.html#core-trait-methods">Core Trait methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../rst-sample.html">RST Sample</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#code-block">Code Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#glossary">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rst-sample.html#seealso">Seealso</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PHPCore</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">PHPCore Built-In Classes</a> &raquo;</li>
+      <li>Config Class</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/myersem2/PHPCore/blob/dev-initial-build/docs/classes/config.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="config-class">
+<h1>Config Class<a class="headerlink" href="#config-class" title="Permalink to this headline"></a></h1>
+<p>The Config class is used to store the PHPCore configuration for both the local and master configurations. It will load the master configurations from the ini files. It can be used later to view/modify the local config at runtime.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="../functions/config.html">PHPCore Config Functions</a> - PHPCore internal config functions that interface directly with this class.</p>
+</div>
+<section id="config-class-synopsis">
+<h2>Config Class Synopsis<a class="headerlink" href="#config-class-synopsis" title="Permalink to this headline"></a></h2>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">final</span> <span class="k">class</span> <span class="nc">Config</span> <span class="p">{</span>
+
+    <span class="cm">/* Static Methods */</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">get</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$option</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getAll</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$extension</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">bool</span> <span class="nv">$details</span> <span class="o">=</span> <span class="k">true</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="k">array</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">initialize</span><span class="p">(</span><span class="k">array</span> <span class="nv">$config</span> <span class="o">=</span> <span class="p">[])</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">restore</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$option</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">set</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$option</span><span class="p">,</span> <span class="nx">mixed</span> <span class="nv">$value</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="config-class-table-of-contents">
+<h2>Config Class Table of Contents<a class="headerlink" href="#config-class-table-of-contents" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#config-method-get"><span class="std std-ref">Config::get</span></a> - Get the value of a configuration option</p></li>
+<li><p><a class="reference internal" href="#config-method-getall"><span class="std std-ref">Config::getAll</span></a> - Get all configuration options for an extension</p></li>
+<li><p><a class="reference internal" href="#config-method-initialize"><span class="std std-ref">Config::initialize</span></a> - Initialize</p></li>
+<li><p><a class="reference internal" href="#config-method-restore"><span class="std std-ref">Config::restore</span></a> - Restore value of a configuration option</p></li>
+<li><p><a class="reference internal" href="#config-method-set"><span class="std std-ref">Config::set</span></a> - Set the value of a configuration option</p></li>
+</ul>
+</section>
+<section id="config-class-methods">
+<h2>Config Class Methods<a class="headerlink" href="#config-class-methods" title="Permalink to this headline"></a></h2>
+<span class="target" id="config-method-get"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$option</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Get the value of a configuration option</p>
+<p>Returns the value of the configuration option.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">null</span></code> if configuration option does not exist.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$option</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The configuration option name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> Returns the value of the configuration option on success.</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-number">Example 10 </span><span class="caption-text">Get the value of a configuration option</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="k">use</span> <span class="nx">\PHPCore\Config</span><span class="p">;</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span><span class="c1">// Get by option</span>
+<span class="hll"><span class="linenos">6</span><span class="k">echo</span> <span class="nx">Config</span><span class="o">::</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;session.save_handler&#39;</span><span class="p">);</span> <span class="c1">// &#39;files&#39;</span>
+</span><span class="hll"><span class="linenos">7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Config</span><span class="o">::</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;env_ini_allowed&#39;</span><span class="p">));</span> <span class="c1">// true</span>
+</span><span class="linenos">8</span>
+<span class="linenos">9</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#config-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="config-method-getall"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getAll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$extension</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?bool</span> <span class="pre">$details</span> <span class="pre">=</span> <span class="pre">true</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Get all configuration options for an extension</p>
+<p>Returns all the registered configuration options.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">null</span></code> if configuration extension does not exist.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$extension</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?string</span></code></span>) – An optional extension name. If not null the function returns only options specific for that extension. Default null (retrieve all options).</p></li>
+<li><p><strong>$details</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?bool</span></code></span>) – Retrieve details settings or only the current value for each setting. Default is true (retrieve details).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">?array</span></code> Returns an associative array with directive name as the array key.</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-number">Example 11 </span><span class="caption-text">Get all configuration options for an extension</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Config</span><span class="p">;</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1">// Get all by option</span>
+<span class="hll"><span class="linenos"> 6</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Config</span><span class="o">::</span><span class="na">getAll</span><span class="p">(</span><span class="s1">&#39;session&#39;</span><span class="p">,</span> <span class="k">false</span><span class="p">));</span>
+</span><span class="linenos"> 7</span><span class="c1">// array(19) {</span>
+<span class="linenos"> 8</span><span class="c1">//   [&quot;session.enabled&quot;]=&gt;</span>
+<span class="linenos"> 9</span><span class="c1">//   bool(true)</span>
+<span class="linenos">10</span><span class="c1">//   [&quot;session.save_handler&quot;]=&gt;</span>
+<span class="linenos">11</span><span class="c1">//   string(5) &quot;files&quot;</span>
+<span class="linenos">12</span><span class="c1">//   ...</span>
+<span class="linenos">13</span><span class="c1">//)</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="c1">// Get all by option</span>
+<span class="hll"><span class="linenos">16</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Config</span><span class="o">::</span><span class="na">getAll</span><span class="p">(</span><span class="s1">&#39;session&#39;</span><span class="p">));</span>
+</span><span class="linenos">17</span><span class="c1">// array(19) {</span>
+<span class="linenos">18</span><span class="c1">//   [&quot;session.enabled&quot;]=&gt;</span>
+<span class="linenos">19</span><span class="c1">//   array(2) {</span>
+<span class="linenos">20</span><span class="c1">//     [&quot;local&quot;]=&gt;</span>
+<span class="linenos">21</span><span class="c1">//     bool(true)</span>
+<span class="linenos">22</span><span class="c1">//     [&quot;master&quot;]=&gt;</span>
+<span class="linenos">23</span><span class="c1">//     NULL</span>
+<span class="linenos">24</span><span class="c1">//   }</span>
+<span class="linenos">25</span><span class="c1">//   [&quot;session.save_handler&quot;]=&gt;</span>
+<span class="linenos">26</span><span class="c1">//   array(2) {</span>
+<span class="linenos">27</span><span class="c1">//     [&quot;local&quot;]=&gt;</span>
+<span class="linenos">28</span><span class="c1">//     string(5) &quot;files&quot;</span>
+<span class="linenos">29</span><span class="c1">//     [&quot;master&quot;]=&gt;</span>
+<span class="linenos">30</span><span class="c1">//     NULL</span>
+<span class="linenos">31</span><span class="c1">//   }</span>
+<span class="linenos">32</span><span class="c1">//   ...</span>
+<span class="linenos">33</span><span class="c1">//)</span>
+<span class="linenos">34</span>
+<span class="linenos">35</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#config-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="config-method-initialize"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">array</span> <span class="pre">$config</span> <span class="pre">=</span> <span class="pre">[]</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Initialize</p>
+<p>This method is used to initialize the PHPCore config and is called in the bootstrap file. It can be used to pass the runtine configuration via setting the <code class="docutils literal notranslate"><span class="pre">$phpcore_runtime_config</span></code> array <strong>BEFORE</strong> the bootloader is loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$config</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array</span></code></span>) – Runtime configuration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">ConfigException</span></code> Config already initialized.</p>
+</dd>
+<dt class="field-even">Throws</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">ConfigException</span></code> Config could not be loaded.</p>
+</dd>
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">ConfigException</span></code> Option type not set.</p>
+</dd>
+<dt class="field-even">Throws</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">ConfigException</span></code> Option declared as string, but is array.</p>
+</dd>
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">ConfigException</span></code> Option type unknown.</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-number">Example 12 </span><span class="caption-text">Using PHPCore runtime config</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="c1">// [phpcore.ini]</span>
+<span class="linenos">4</span><span class="c1">// session.auto_start = No</span>
+<span class="linenos">5</span>
+<span class="hll"><span class="linenos">6</span><span class="nv">$phpcore_runtime_config</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;session.auto_start&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Yes&#39;</span> <span class="p">];</span>
+</span><span class="linenos">7</span><span class="k">include</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">&#39;PHPCORE_BOOTSTRAP&#39;</span><span class="p">);</span>
+<span class="linenos">8</span>
+<span class="linenos">9</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#config-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="config-method-restore"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">restore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$option</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Restore value of a configuration option</p>
+<p>Restores a given configuration option to the master value that was declared in the phpcore.ini files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$option</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The configuration option name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-number">Example 13 </span><span class="caption-text">Restore value of a configuration option</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="c1">// [phpcore.ini]</span>
+<span class="linenos"> 4</span><span class="c1">// session.auto_start = No</span>
+<span class="linenos"> 5</span><span class="c1">// response.powered_by = &quot;PHPCore&quot;</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="nv">$phpcore_runtime_config</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;session.auto_start&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Yes&#39;</span> <span class="p">];</span>
+<span class="linenos"> 8</span><span class="k">include</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">&#39;PHPCORE_BOOTSTRAP&#39;</span><span class="p">);</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="nx">Config</span><span class="o">::</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;response.powered_by&#39;</span><span class="p">,</span> <span class="s1">&#39;MyApp&#39;</span><span class="p">)</span>
+<span class="linenos">11</span><span class="k">echo</span> <span class="nx">Config</span><span class="o">::</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;response.powered_by&#39;</span><span class="p">);</span> <span class="c1">// &#39;MyApp&#39;</span>
+<span class="linenos">12</span>
+<span class="hll"><span class="linenos">13</span><span class="nx">Config</span><span class="o">::</span><span class="na">restore</span><span class="p">(</span><span class="s1">&#39;session.auto_start&#39;</span><span class="p">);</span>
+</span><span class="hll"><span class="linenos">14</span><span class="nx">Config</span><span class="o">::</span><span class="na">restore</span><span class="p">(</span><span class="s1">&#39;response.powered_by&#39;</span><span class="p">);</span>
+</span><span class="linenos">15</span>
+<span class="linenos">16</span><span class="k">echo</span> <span class="nx">Config</span><span class="o">::</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;session.auto_start&#39;</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="linenos">17</span><span class="k">echo</span> <span class="nx">Config</span><span class="o">::</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;response.powered_by&#39;</span><span class="p">);</span> <span class="c1">// &#39;PHPCore&#39;</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#config-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="config-method-set"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$option</span></em>, <em class="sig-param"><span class="pre">mixed</span> <span class="pre">$value</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Set the value of a configuration option</p>
+<p>Sets the value of a given configuration option and will return the original previous value on success and <code class="docutils literal notranslate"><span class="pre">null</span></code> on failure.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Will return <code class="docutils literal notranslate"><span class="pre">null</span></code> if the option cannot be cahnged durring runtime.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$option</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The configuration option name to set.</p></li>
+<li><p><strong>$value</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">mixed</span></code></span>) – The new value for the option.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> Returns the old value on success, null on failure.</p>
+</dd>
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">ConfigException</span></code> Option type not set.</p>
+</dd>
+<dt class="field-even">Throws</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">ConfigException</span></code> Option declared as string, but is array.</p>
+</dd>
+<dt class="field-odd">Throws</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">ConfigException</span></code> Option type unknown.</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-number">Example 14 </span><span class="caption-text">Set the value of a configuration option</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="c1">// [phpcore.ini]</span>
+<span class="linenos"> 4</span><span class="c1">// version_lock = &quot;1.0&quot;</span>
+<span class="linenos"> 5</span><span class="c1">// response.powered_by = &quot;PHPCore&quot;</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="k">include</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">&#39;PHPCORE_BOOTSTRAP&#39;</span><span class="p">);</span>
+<span class="linenos"> 8</span>
+<span class="hll"><span class="linenos"> 9</span><span class="k">echo</span> <span class="nx">Config</span><span class="o">::</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;response.powered_by&#39;</span><span class="p">,</span> <span class="s1">&#39;MyApp&#39;</span><span class="p">);</span> <span class="c1">// &#39;PHPCore&#39;</span>
+</span><span class="linenos">10</span><span class="k">echo</span> <span class="nx">Config</span><span class="o">::</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;response.powered_by&#39;</span><span class="p">);</span> <span class="c1">// &#39;MyApp&#39;</span>
+<span class="linenos">11</span>
+<span class="hll"><span class="linenos">12</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Config</span><span class="o">::</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;version_lock&#39;</span><span class="p">,</span> <span class="s1">&#39;1.1&#39;</span><span class="p">));</span> <span class="c1">// null</span>
+</span><span class="linenos">13</span><span class="k">echo</span> <span class="nx">Config</span><span class="o">::</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;version_lock&#39;</span><span class="p">);</span> <span class="c1">// &#39;1.0&#39;</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#config-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="PHPCore Built-In Classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="database.html" class="btn btn-neutral float-right" title="Database Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Everett Myers.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

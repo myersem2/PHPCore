@@ -1,5 +1,0 @@
-===========
-Model Class
-===========
-
-Placeholder...

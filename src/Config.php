@@ -1,345 +1,692 @@
 <?php declare(strict_types=1);
 /**
- * PHPCore - Request
+ * PHPCore - Config
  *
- * @author Everett Myers <Me@EverettMyers.com>
- * @copyright Copyright (c) 2023, PHPCore
- * @link https://manual.phpcore.org/classes/config.html
+ * @package   PHPCore
+ * @author    Everett Myers <Everett@MyersNetwork.com>
+ * @copyright 2022-2025 Everett Myers
+ * @license   MIT License
+ * @link      https://PHPCore.org
+ * @version   2025-01-05
  */
 
 namespace PHPCore;
 
-// -------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 /**
  * Config Class
  *
- * @todo document
+ * The Config class is used to store the PHPCore configuration for both the
+ * local and master configurations. It will load the master configurations
+ * from the ini files. It can be used later to view/modify the local config at
+ * runtime.
+ *
+ * @seealso `PHPCore Config Functions`_ - PHPCore internal config functions that
+ *          interface directly with this class.
+ *
+ * @refence `PHPCore Config Functions`: ../functions/config.html
  */
-#[Test('../tests/ConfigTest.php')]
-#[Documentation('../docs/classes/config.rst')]
+#[Test('tests/ConfigTest.php')]
+#[Documentation('docs/classes/config.rst')]
 final class Config
 {
     /**
-     * Base INI
-     *
-     * This is the contents of the required base phpcore.ini directives normally located in
-     * `/etc/phpcore/{PHP_SAPI}/phpcore.ini`
-     *
-     * @note This file **MUST** exist
+     * PHPCore ini config options.
      *
      * @ignore
-     * @var array
+     * @const array
      */
-    private static array $BaseIni;
-
-    /**
-     * Environmental INI
-     *
-     * This is the contents of the *optional* environment phpcore.ini directives which location is
-     * declared using the `PHPCORERC` environment variable.
-     *
-     * @ignore
-     * @var array
-     */
-    private static array $EnvIni;
-
-    /**
-     * Directory INI
-     *
-     * This is the contents of the *optional* environment phpcore.ini directives normally located in
-     * `/etc/phpcore/{PHP_SAPI}/phpcore.ini`
-     *
-     * @ignore
-     * @var array
-     */
-    private static array $DirIni;
-
-    /**
-     * Runtime INI
-     *
-     * This is the contents of the *optional* runtime phpcore.ini directives that were passed to the
-     * boostrap.
-     *
-     * @ignore
-     * @var array
-     */
-    private static array $RuntimeIni;
-
-    /**
-     * Current INI
-     *
-     * This is the contents of the current phpcore.ini directives that have been set.
-     *
-     * @ignore
-     * @var array
-     */
-    private static array $CurrentIni;
-
-    /**
-     * Used Configs
-     *
-     * This contains the configs that were used to build the current configuration.
-     *
-     * @ignore
-     * @var array
-     */
-    private static array $UsedConfigs;
-
-    /**
-     * Default INI
-     *
-     * This is the contents of ALL the default phpcore.ini directives to be set if not set in other
-     * phpcore.ini files.
-     *
-     * @ignore
-     * @var array
-     */
-    private static array $DefaultIni = [
-        'PHPCore' => [
-            // Set and locked in this config
-            'core_path' => '',
-
-            // Standard directives
-            'version_lock' => '1',
-            'disable_functions' => [],
-            'disable_classes' => [],
-            'include_file' => '',
-            'env_ini_allowed' => false,
-            'cwd_ini_allowed' => false,
-            'runtime_config_allowed' => false,
-        ]
-    ];
-
-    /**
-     * Locked Directives
-     *
-     * This contains the directives that are locked within the different configs.
-     *
-     * @ignore
-     * @var array
-     */
-    private static array $LockedDirectives = [
-        'base' => [
-            'core_path',
+    public const CONFIG_OPTIONS = [
+        'core_path' => [
+            'type'      => 'string',
+            'default'   => '',
+            'access'    => 'BEC',
         ],
-        'env' => [
-            'core_path', 'env_ini_allowed',
+        'version_lock' => [
+            'type'      => 'string',
+            'default'   => '1',
+            'access'    => 'BEC',
         ],
-        'cwd' => [
-            'core_path', 'env_ini_allowed', 'cwd_ini_allowed',
+        'disable_functions' => [
+            'type'      => 'array',
+            'default'   => [],
+            'access'    => 'BEC',
         ],
-        'runtime' => [
-            'core_path', 'version_lock', 'disable_functions', 'disable_classes', 'include_file',
-            'env_ini_allowed', 'cwd_ini_allowed', 'runtime_config_allowed',
+        'disable_classes' => [
+            'type'      => 'array',
+            'default'   => [],
+            'access'    => 'BEC',
         ],
-    ];
-
-    /**
-     * Directive Types
-     *
-     * This contains the directives that are locked within the different configs.
-     *
-     * @ignore
-     * @var array
-     */
-    private static array $DirectiveTypes = [
-        'booleans' => [
-            'env_ini_allowed', 'cwd_ini_allowed', 'runtime_config_allowed',
+        'include_file' => [
+            'type'      => 'string',
+            'default'   => '',
+            'access'    => 'BEC',
         ],
-        'csv' => [
-            'disable_functions', 'disable_classes',
+        'env_ini_allowed' => [
+            'type'      => 'bool',
+            'default'   => '',
+            'access'    => 'B',
+        ],
+        'cwd_ini_allowed' => [
+            'type'      => 'bool',
+            'default'   => '',
+            'access'    => 'BE',
+        ],
+        'runtime_config_allowed' => [
+            'type'      => 'bool',
+            'default'   => '',
+            'access'    => 'BEC',
         ],
     ];
 
     // ---------------------------------------------------------------------
+
+    /**
+     * Local config
+     *
+     * The local config in use.
+     *
+     * @ignore
+     * @prop array
+     */
+    private static array $Local;
+
+    /**
+     * Master config set by the PHPCore ini files.
+     *
+     * @ignore
+     * @prop array
+     */
+    private static array $Master;
+
+    /**
+     * Current PHPCore ini options.
+     *
+     * @ignore
+     * @prop array
+     */
+    private static array $Options;
+
+    /**
+     * Parsed Configs
+     *
+     * This contains the ini files that were used to build the current config.
+     *
+     * @ignore
+     * @prop array
+     */
+    private static array $ParsedConfigs;
+
+    // ---------------------------------------------------------------------
+
+    /**
+     * Clear
+     *
+     * This method is used to clear or reset the entire config. This should not
+     * normally be required and requires the ``CORE_CONFIG_CLEAR_ENABLED``
+     * defined to set to ``true`` other wise an Exception will be thrown.
+     *
+     * @warning This should **NOT** be used in a production environment.
+     *
+     * @ignore
+     * @codeCoverageIgnore
+     * @return void
+     * @throws Exception If config cannot be cleared.
+     */
+    public static function clear(): void
+    {
+        if (
+            ! defined('CORE_CONFIG_CLEAR_ENABLED') ||
+            empty(CORE_CONFIG_CLEAR_ENABLED)
+        ) {
+            throw new ConfigException(
+                'PHPCore config cannot be cleared.'
+            );
+        }
+        self::$Local = [];
+        self::$Master = [];
+        self::$ParsedConfigs = [];
+    }
+
+    /**
+     * Get the value of a configuration option
+     *
+     * Returns the value of the configuration option.
+     *
+     * @note Returns ``null`` if configuration option does not exist.
+     *
+     * @example Get the value of a configuration option
+     * <code linenos="true" emphasize-lines="6,7">
+     *
+     * use \PHPCore\Config;
+     *
+     * // Get by option
+     * echo Config::get('session.save_handler'); // 'files'
+     * var_dump(Config::get('env_ini_allowed')); // true
+     *
+     * </code>
+     *
+     * @param string $option The configuration option name.
+     * @return mixed Returns the value of the configuration option on success.
+     */
+    public static function get(string $option): mixed
+    {
+        return self::$Local[$option] ?? null;
+    }
+
+    /**
+     * Get all configuration options for an extension
+     *
+     * Returns all the registered configuration options.
+     *
+     * @note Returns ``null`` if configuration extension does not exist.
+     *
+     * @example Get all configuration options for an extension
+     * <code linenos="true" emphasize-lines="6,16">
+     *
+     * use \PHPCore\Config;
+     *
+     * // Get all by option
+     * var_dump(Config::getAll('session', false));
+     * // array(19) {
+     * //   ["session.enabled"]=>
+     * //   bool(true)
+     * //   ["session.save_handler"]=>
+     * //   string(5) "files"
+     * //   ...
+     * //)
+     *
+     * // Get all by option
+     * var_dump(Config::getAll('session'));
+     * // array(19) {
+     * //   ["session.enabled"]=>
+     * //   array(2) {
+     * //     ["local"]=>
+     * //     bool(true)
+     * //     ["master"]=>
+     * //     NULL
+     * //   }
+     * //   ["session.save_handler"]=>
+     * //   array(2) {
+     * //     ["local"]=>
+     * //     string(5) "files"
+     * //     ["master"]=>
+     * //     NULL
+     * //   }
+     * //   ...
+     * //)
+     *
+     * </code>
+     *
+     * @param ?string $extension An optional extension name. If not null the
+     *                           function returns only options specific for that
+     *                           extension. Default null (retrieve all options).
+     * @param ?bool $details Retrieve details settings or only the current value
+     *                       for each setting. Default is true (retrieve
+     *                       details).
+     * @return ?array Returns an associative array with directive name as the
+     *                array key.
+     */
+    public static function getAll(
+        ?string $extension = null,
+        ?bool $details = true
+    ): ?array
+    {
+        $filtered = array_filter(
+            self::$Local,
+            fn($k) => str_starts_with($k, "$extension.") || $extension === null,
+            ARRAY_FILTER_USE_KEY
+        );
+
+        if (empty($filtered)) {
+            return null;
+        }
+
+        if ( ! $details) {
+            return $filtered;
+        }
+
+        $detailed = [];
+        foreach ($filtered as $option=>$local) {
+            $detailed[$option] = [
+                'local'  => $local,
+                'master' => self::$Master[$option] ?? null,
+            ];
+        }
+
+        return $detailed;
+    }
 
     /**
      * Initialize
      *
-     * This method is used to initialize the PHPCore config and is called in the bootstrap file. It
-     * will trigger a warning if executed after it has already been initialized.
+     * This method is used to initialize the PHPCore config and is called in the
+     * bootstrap file. It can be used to pass the runtine configuration via
+     * setting the ``$phpcore_runtime_config`` array **BEFORE** the bootloader
+     * is loaded.
      *
-     * @ignore
+     * @example Using PHPCore runtime config
+     * <code linenos="true" emphasize-lines="6">
      *
-     * @param array $runtime_config Runtime configuration
+     * // [phpcore.ini]
+     * // session.auto_start = No
+     *
+     * $phpcore_runtime_config = [ 'session.auto_start' => 'Yes' ];
+     * include getenv('PHPCORE_BOOTSTRAP');
+     *
+     * </code>
+     *
+     * @param array $config Runtime configuration.
+     * @return void
+     * @throws ConfigException Config already initialized.
+     * @throws ConfigException Config could not be loaded.
+     * @throws ConfigException Option type not set.
+     * @throws ConfigException Option declared as string, but is array.
+     * @throws ConfigException Option type unknown.
      */
-    public static function initialize(array $runtime_config = []): void
+    public static function initialize(array $config = []): void
     {
-        // TODO : add tracking for where the class was initialized
-        //$bt = debug_backtrace();
-        //$caller = array_shift($bt);
-  
-        if (isset(self::$BaseIni)) {
-            trigger_error('PHPCore configuration can only be initialized once.', E_USER_WARNING);
-            return;
+        if ( ! empty(self::$Local)) {
+            throw new ConfigException(
+                'PHPCore config already initialized.'
+            );
         }
 
-        self::$DefaultIni = self::$DefaultIni;
-        self::$CurrentIni = self::$DefaultIni;
+        self::$Local['core_path'] = __DIR__;
 
-        self::$CurrentIni['PHPCore']['core_path'] = getcwd();
-
-        $php_sapi = str_replace('handler', '', PHP_SAPI);
-        $base_ini_path = "/etc/phpcore/$php_sapi/phpcore.ini";
-        $base_ini = @parse_ini_file($base_ini_path, true);
-        if ($base_ini === false) {
-            throw new Exception('The base PHPCore configuration file could not be loaded.');
-        }
-        self::mergeConfig($base_ini, 'base');
-        self::$BaseIni = $base_ini;
-        self::$UsedConfigs[] = $base_ini_path;
-
-        if (self::$CurrentIni['PHPCore']['env_ini_allowed']) {
-            $env_ini_path = getenv('PHPCORERC');
-            $env_ini = @parse_ini_file($env_ini_path, true);
-            if ($env_ini !== false) {
-                self::mergeConfig($env_ini, 'env');
-                self::$EnvIni = $env_ini;
-                self::$UsedConfigs[] = $env_ini_path;
-            } elseif(file_exists($env_ini_path)) {
-                throw new Exception('The environmental PHPCore configuration file could not be loaded.');
-            }
+        self::$Options = self::CONFIG_OPTIONS;
+        foreach (array_keys(self::$Options) as $option) {
+            self::setDefault($option);
         }
 
-        if (self::$CurrentIni['PHPCore']['cwd_ini_allowed']) {
-            $cwd_ini_path = getcwd() . DIRECTORY_SEPARATOR . 'phpcore.ini';
-            $cwd_ini = @parse_ini_file($cwd_ini_path, true);
-            if ($cwd_ini !== false) {
-                self::mergeConfig($cwd_ini, 'cwd');
-                self::$DirIni = $cwd_ini;
-                self::$UsedConfigs[] = $cwd_ini_path;
-            } elseif(file_exists($cwd_ini_path)) {
-                throw new Exception('The directory PHPCore configuration file could not be loaded.');
-            }
-        }
+        self::initializeBaseConfig();
+        self::initializeEnvironmentConfig();
+        self::initializeDirectoryConfig();
 
-        if (self::$CurrentIni['PHPCore']['runtime_config_allowed']) {
-            if ( ! empty($runtime_config)) {
-                self::mergeConfig($runtime_config, 'runtime');
-                self::$RuntimeIni = $runtime_config;
-            }
-        }
-    }
+        self::$Master = self::$Local;
 
-    // ---------------------------------------------------------------------
-
-    /**
-     * Get PHPCore config directive
-     *
-     * This method is used to get a directive from the current PHPCore config.
-     *
-     * @note Returns null if directive is not found
-     *
-     * @param string $retrieve_directive Directive to retrieve
-     * @return mixed The value of the directive
-     */
-    public static function get(string $retrieve_directive): mixed
-    {
-        foreach (self::$CurrentIni as $directives) {
-            foreach ($directives as $directive => $value) {
-                if ($retrieve_directive == $directive) {
-                    return $value;
-                }
-            }
-        }
-
-        return null;
+        self::initializeRuntimeConfig($config);
     }
 
     /**
-     * Get all PHPCore config directive for a section
+     * Restore value of a configuration option
      *
-     * This method is used to get all the directives from section of the current
-     * PHPCore config.
+     * Restores a given configuration option to the master value that was
+     * declared in the phpcore.ini files.
      *
-     * @note Returns empty array if directive is not found
+     * @example Restore value of a configuration option
+     * <code linenos="true" emphasize-lines="13-14">
      *
-     * @param string $retrieve_section Section to retrieve
-     * @return array An array of the directives for a give section
+     * // [phpcore.ini]
+     * // session.auto_start = No
+     * // response.powered_by = "PHPCore"
+     *
+     * $phpcore_runtime_config = [ 'session.auto_start' => 'Yes' ];
+     * include getenv('PHPCORE_BOOTSTRAP');
+     *
+     * Config::set('response.powered_by', 'MyApp')
+     * echo Config::get('response.powered_by'); // 'MyApp'
+     *
+     * Config::restore('session.auto_start');
+     * Config::restore('response.powered_by');
+     *
+     * echo Config::get('session.auto_start'); // false
+     * echo Config::get('response.powered_by'); // 'PHPCore'
+     *
+     * </code>
+     *
+     * @param string $option The configuration option name.
+     * @return void
      */
-    public static function getAll(string $retrieve_section): array
+    public static function restore(string $option): void
     {
-        foreach (self::$CurrentIni as $section => $directives) {
-            if ($retrieve_section == $section) {
-                return $directives;
-            }
+        if (isset(self::$Master[$option])) {
+            self::$Local[$option] = self::$Master[$option];
         }
-
-        return [];
     }
 
     /**
-     * Set PHPCore config directive
+     * Set the value of a configuration option
      *
-     * This method is used to set a directive to the current PHPCore runtime
-     * config.
+     * Sets the value of a given configuration option and will return the
+     * original previous value on success and ``null`` on failure.
      *
-     * @note Returns the old value on success, null on failure
+     * @note Will return ``null`` if the option cannot be cahnged durring
+     * runtime.
      *
-     * @param string $set_directive Directive to set
-     * @param mixed $new_value New value
+     * @example Set the value of a configuration option
+     * <code linenos="true" emphasize-lines="9,12">
+     *
+     * // [phpcore.ini]
+     * // version_lock = "1.0"
+     * // response.powered_by = "PHPCore"
+     *
+     * include getenv('PHPCORE_BOOTSTRAP');
+     *
+     * echo Config::set('response.powered_by', 'MyApp'); // 'PHPCore'
+     * echo Config::get('response.powered_by'); // 'MyApp'
+     *
+     * var_dump(Config::set('version_lock', '1.1')); // null
+     * echo Config::get('version_lock'); // '1.0'
+     *
+     * </code>
+     *
+     * @param string $option The configuration option name to set.
+     * @param mixed $value The new value for the option.
+     * @return mixed Returns the old value on success, null on failure.
+     * @throw ConfigException Unknown config option
+     * @throws ConfigException Option type not set.
+     * @throws ConfigException Option declared as string, but is array.
+     * @throws ConfigException Option type unknown.
      */
-    public static function set(string $set_directive, mixed $new_value): mixed
+    public static function set(string $option, mixed $value): mixed
     {
+        if ( ! isset(self::$Local[$option])) {
+            return null;
+        }
+
         if (is_null($value)) {
             return null;
         }
 
-        if (in_array($set_directive, self::$LockedDirectives['runtime'])) {
+        if ( ! self::canBeSet($option, 'runtime')) {
             return null;
         }
 
-        foreach (self::$CurrentIni as $section => $directives) {
-            foreach ($directives as $directive => $value) {
-                if ($set_directive == $directive) {
-                    $old_value = self::$CurrentIni[$section][$directive];
-                    $runtime_config = [
-                        $section => [ $directive => $new_value ]
-                    ];
-                    self::mergeConfig($runtime_config, 'runtime');
-                    self::$RuntimeIni[$section][$directive] = self::$CurrentIni[$section][$directive];
-                    return $old_value;
-                }
-            }
-        }
-
-        return null;
+        $old_value = self::$Local[$option];
+        self::$Local[$option] = self::typeMask($option, $value);
+        return $old_value;
     }
 
     // ---------------------------------------------------------------------
 
     /**
-     * Merge Config
+     * Can options be set
      *
-     * This method is used to merge configs into the self::$Current
+     * This method is used to check if an option can be set in the current
+     * config environment call. ('[B]ase', '[C]wd', '[E]nv', '[R]untime')
      *
      * @ignore
-     *
-     * @param array $config Config to merge into Current INI
-     * @param string $source Source where the new config is coming from
+     * @param string $option The configuration option name.
+     * @param string $type Tyoe of config environment.
+     * @return bool Option can be set
+     * @throw ConfigException Unknown config option
      */
-    private static function mergeConfig(array $config, string $source): void
+    private static function canBeSet(string $option, string $type): bool
     {
-        static $booleans = [
-            'env_ini_allowed', 'cwd_ini_allowed', 'runtime_config_allowed'
-        ];
-        static $csv = [
-            'disable_functions', 'disable_classes'
-        ];
-        foreach ($config as $section => $directives) {
-            foreach ($directives as $directive => $value) {
-                if (in_array($directive, self::$LockedDirectives[$source])) {
-                    continue;
-                }
-                self::$CurrentIni[$section][$directive] = match(true) {
-                    in_array($directive, self::$DirectiveTypes['booleans']) => ! empty($value),
-                    in_array($directive, self::$DirectiveTypes['csv']) => empty($value) ? [] : explode(',', $value),
-                    default => $value,
-                };
+        if (empty(self::$Options[$option])) {
+            throw new ConfigException(
+                "Option `$option` not set in phpcore.ini."
+            );
+        }
+
+        $access = self::$Options[$option]['access'] ?? 'BECR';
+
+        return (strpos($access, ucfirst($type)[0]) !== false);
+    }
+
+    /**
+     * Initialize base environment
+     *
+     * This method is used to initialize the PHPCore base config.
+     *
+     * @ignore
+     * @return void
+     * @throws ConfigException Config could not be loaded.
+     * @throws ConfigException Option type not set.
+     * @throws ConfigException Option declared as string, but is array.
+     * @throws ConfigException Option type unknown.
+     */
+    private static function initializeBaseConfig(): void
+    {
+        $php_sapi = str_replace('handler', '', PHP_SAPI);
+        self::processIni("/etc/phpcore/$php_sapi/phpcore.ini", 'base');
+    }
+
+    /**
+     * Initialize current working directory (cwd) config
+     *
+     * This method is used to initialize the PHPCore working directory config.
+     *
+     * @ignore
+     * @return void
+     * @throws ConfigException Config could not be loaded.
+     * @throws ConfigException Option type not set.
+     * @throws ConfigException Option declared as string, but is array.
+     * @throws ConfigException Option type unknown.
+     */
+    private static function initializeDirectoryConfig(): void
+    {
+        if (self::$Local['cwd_ini_allowed']) {
+            $cwd_ini_path = getcwd() . DIRECTORY_SEPARATOR . 'phpcore.ini';
+            if (file_exists($cwd_ini_path)) {
+                self::processIni($cwd_ini_path, 'cwd');
             }
+        }
+    }
+
+    /**
+     * Initialize environment (env) config
+     *
+     * This method is used to initialize the PHPCore environment config.
+     *
+     * @ignore
+     * @return void
+     * @throws ConfigException Config could not be loaded.
+     * @throws ConfigException Option type not set.
+     * @throws ConfigException Option declared as string, but is array.
+     * @throws ConfigException Option type unknown.
+     */
+    private static function initializeEnvironmentConfig(): void
+    {
+        if (self::$Local['env_ini_allowed']) {
+            $env_ini_path = getenv('PHPCORERC');
+            if ($env_ini_path !== false) {
+                self::processIni($env_ini_path, 'env');
+            }
+        }
+    }
+
+    /**
+     * Initialize runtime config
+     *
+     * This method is used to initialize the PHPCore runtime config.
+     *
+     * @ignore
+     * @param array $config Runtime configuration
+     * @return void
+     * @throws ConfigException Option type not set.
+     * @throws ConfigException Option declared as string, but is array.
+     * @throws ConfigException Option type unknown.
+     */
+    private static function initializeRuntimeConfig(array $config = []): void
+    {
+        if (self::$Local['runtime_config_allowed']) {
+            if ( ! empty($config)) {
+                self::processOptions(array_keys($config));
+
+                $new_config = [];
+                foreach ($config as $option => $value) {
+                    if ( ! self::canBeSet($option, 'runtime')) {
+                        continue;
+                    }
+                    if ( ! is_array($value)) {
+                        $value = strval($value);
+                    }
+                    $new_config[$option] = self::typeMask($option, $value);
+                }
+
+                self::$Local = array_merge(self::$Local, $new_config);
+            }
+        }
+    }
+
+    /**
+     * Process configuration ini file
+     *
+     * This method is used to process a given ``$path`` and add it to the
+     * PHPCore config.
+     *
+     * @ignore
+     * @param string $path Config INI Path
+     * @param string $source Source where the new config is coming from
+     * @return void
+     * @throws ConfigException Config could not be loaded.
+     * @throws ConfigException Option type not set.
+     * @throws ConfigException Option declared as string, but is array.
+     * @throws ConfigException Option type unknown.
+     */
+    private static function processIni(string $path, string $source): void
+    {
+        $ini_array = @parse_ini_file($path);
+        if ($ini_array === false) {
+            throw new ConfigException(
+                "PHPCore $source config could not be loaded."
+            );
+        }
+        self::$ParsedConfigs[] = $path;
+
+        self::processOptions(array_keys($ini_array));
+
+        $new_config = [];
+        foreach ($ini_array as $option => $value) {
+            if ( ! self::canBeSet($option, $source)) {
+                continue;
+            }
+            $new_config[$option] = self::typeMask($option, $value);
+        }
+
+        self::$Local = array_merge(self::$Local, $new_config);
+    }
+
+    /**
+     * Process options
+     *
+     * This method is used to process a options to load the extentions
+     * ``CONFIG_OPTIONS``. This will also set the option's default value.
+     *
+     * @ignore
+     * @param array $options COnfig options
+     * @return void
+     */
+    private static function processOptions(array $options): void
+    {
+        foreach ($options as $option) {
+            if (strpos($option, '.') !== false) {
+                list($directive, $sub_option) = explode('.', $option);
+                $module = ucfirst($directive);
+                $module_options = constant("PHPCore\\$module::CONFIG_OPTIONS");
+                self::$Options = array_merge(
+                    self::$Options,
+                    $module_options
+                );
+                foreach (array_keys($module_options) as $module_option) {
+                    self::setDefault($module_option);
+                }
+            }
+        }
+    }
+
+    /**
+     * Set default option's value
+     *
+     * This method is used to set the option's default value.
+     *
+     * @ignore
+     * @param string $option The configuration option name.
+     * @return void
+     * @throws ConfigException Option type not set.
+     * @throws ConfigException Option declared as string, but is array.
+     * @throws ConfigException Option type unknown.
+     */
+    private static function setDefault(string $option): void
+    {
+        if ( ! isset(self::$Local[$option])) {
+            $value = self::typeMask(
+                $option,
+                self::$Options[$option]['default']
+            );
+            self::$Local[$option] = $value;
+        }
+    }
+
+    /**
+     * Type mask an options's value
+     *
+     * This method is used to set the proper datatype for a given ``$option``
+     * and its ``$value``.
+     *
+     * @ignore
+     * @param string $option The configuration option name.
+     * @param mixed $value The string value of the option.
+     * @return mixed The formatted data type
+     * @throws ConfigException Option type not set.
+     * @throws ConfigException Option declared as string, but is array.
+     * @throws ConfigException Option type unknown.
+     */
+    private static function typeMask(string $option, mixed $value): mixed
+    {
+        if (
+            empty(self::$Options[$option]['type']) ||
+            ! is_string(self::$Options[$option]['type'])
+        ) {
+            throw new ConfigException(
+                "Option `$option` type not set in phpcore.ini."
+            );
+        }
+
+        $type = self::$Options[$option]['type'];
+
+        switch ($type) {
+            case 'bool':
+                return boolval($value);
+
+            case 'int':
+                return intval($value);
+
+            case 'string':
+                if (is_array($value)) {
+                    throw new ConfigException(
+                        "Option `$option` declared as string, array given."
+                    );
+                }
+                return strval($value);
+
+            case 'array':
+                return $value;
+
+            default:
+                throw new ConfigException(
+                    "Config option `$option` unknown type $type."
+                );
         }
     }
 }
 
-// EOF /////////////////////////////////////////////////////////////////////////////////////////////
+// -----------------------------------------------------------------------------
+
+/**
+ * Config Exception Class
+ *
+ * The Exception class is used to throw exceptions in the Config class.
+ *
+ * @codeCoverageIgnore
+ */
+final class ConfigException extends \Exception
+{
+    /**
+     * To string
+     *
+     * This method is get the description of the exception.
+     *
+     * @ignore
+     * @return string Exception description
+     */
+    public function __toString(): string
+    {
+        return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+    }
+}
+
+// EOF /////////////////////////////////////////////////////////////////////////

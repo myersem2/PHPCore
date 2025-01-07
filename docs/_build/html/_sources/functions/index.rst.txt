@@ -9,6 +9,7 @@ Placeholder...
    :caption: Functions
 
    General <general>
+   Config <config>
    Core <core>
    Request <request>
    Session <session>

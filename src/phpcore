@@ -200,7 +200,7 @@ if (isset($options['d'])) {
 // =============================================================================
 if (empty($options['format']) === false) {
     $format = $GLOBALS['_CORE']['FORMAT'] = trim($options['format']);
-    if (in_array($format, explode(',', core_ini_get('supported_formats'))) === false) {
+    if (in_array($format, explode(',', phpcore_ini_get('supported_formats'))) === false) {
         trigger_error(
             "Format '{$format}' is not supported",
             E_USER_ERROR
@@ -216,7 +216,7 @@ if (empty($options['ini-item']) === false) {
     $parts = explode('.', $options['ini-item']);
     $section = array_shift($parts);
     $directive = implode('.', $parts);
-    echo core_ini_get($directive, $section);
+    echo phpcore_ini_get($directive, $section);
     exit;
 }
 

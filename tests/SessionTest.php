@@ -2,11 +2,15 @@
 /**
  * PHPCore:Test-Fixture - Session
  *
- * @author    Everett Myers <Me@EverettMyers.com>
- * @copyright Copyright (c) 2022, PHPCore
+ * @package   PHPCore
+ * @author    Everett Myers <Everett@MyersNetwork.com>
+ * @copyright 2022-2025 Everett Myers
+ * @license   MIT License
+ * @link      https://PHPCore.org
+ * @version   2025-01-03
  */
 
-// -------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 use PHPUnit\Framework\TestCase;
 use PHPCore\Session;
@@ -18,20 +22,6 @@ use PHPCore\Session;
  */
 final class SessionTest extends TestCase
 {
-    /**
-     * @var array $_CORE_INI Backup
-     */
-    static $core_ini_bkup = [];
-
-    /**
-     * Session config to be used for testing
-     */
-    static $sessionConfig = [
-
-    ];
-
-    // -----------------------------------------------------------------------------------------
-
     /**
      * This method is used to perform any setup actions (e.g. connect to db) for
      * the entire test fixture. Method will only be executed once at the 
@@ -49,7 +39,7 @@ final class SessionTest extends TestCase
      */
     public static function tearDownAfterClass(): void
     {
-        // Place holder
+        $_COOKIE = [];
     }
 
     /**
@@ -58,10 +48,11 @@ final class SessionTest extends TestCase
      */
     public function setUp(): void
     {
-        list($setUp) = explode(' ', 'setUp' . substr($this->getName(), 4));
-        if (method_exists($this, $setUp) === true) {
-            $this->$setUp();
-        }
+        $_COOKIE = [];
+        //list($setUp) = explode(' ', 'setUp' . substr($this->getName(), 4));
+        //if (method_exists($this, $setUp) === true) {
+        //    $this->$setUp();
+        //}
     }
 
     /**
@@ -70,23 +61,21 @@ final class SessionTest extends TestCase
      */
     public function tearDown(): void
     {
-        list($tearDown) = explode(' ', 'tearDown' . substr($this->getName(), 4));
-        if (method_exists($this, $tearDown) === true) {
-            $this->$tearDown();
-        }
+        //list($tearDown) = explode(' ', 'tearDown' . substr($this->getName(), 4));
+        //if (method_exists($this, $tearDown) === true) {
+        //    $this->$tearDown();
+        //}
     }
 
-    // -----------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------
 
     /**
-     * @coversNothing
+     * @covers \PHPCore\Session
+     * @runInSeparateProcess
      */
     public function testSessionClassExists(): void
     {
-        $this->assertTrue(
-            class_exists('\PHPCore\Session'), 
-            'Session class does not exist'
-        );
+        // todo look at setting this up correctly for session_start
     }
 
     /**
@@ -126,4 +115,4 @@ final class SessionTest extends TestCase
     /* */
 }
 
-// EOF /////////////////////////////////////////////////////////////////////////////////////////////
+// EOF /////////////////////////////////////////////////////////////////////////

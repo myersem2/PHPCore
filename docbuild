@@ -3,8 +3,12 @@
 /**
  * PHPCore - Build Docs
  *
- * @author    Everett Myers <Me@EverettMyers.com>
- * @copyright Copyright (c) 2023, PHPCore
+ * @package   PHPCore
+ * @author    Everett Myers <Everett@MyersNetwork.com>
+ * @copyright 2022-2025 Everett Myers
+ * @license   MIT License
+ * @link      https://PHPCore.org
+ * @version   2025-01-03
  */
 
 namespace PHPCore;
@@ -12,20 +16,32 @@ namespace PHPCore;
 use \ReflectionClass;
 use \ReflectionMethod;
 
-// -------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
+// @codeCoverageIgnoreStart
+
+$phpcore_runtime_config = [
+    'session.auto_start' => '',
+];
+
+include getenv('PHPCORE_BOOTSTRAP');
+
+$version = '1.0.0';
 $ds = DIRECTORY_SEPARATOR;
-$bootstrap = __DIR__ . "{$ds}src{$ds}bootstrap.php";
-include $bootstrap;
+
+// -----------------------------------------------------------------------------
+
+chdir(__DIR__);
 
 $classes = [
     'files' => [
+        'Config',
         //'Database',
         'Request',
         'Response',
-        //'Session',
+        'Session',
     ],
-    'src_path' => realpath(__DIR__ . "{$ds}src"),
+    'src_path' => realpath(__DIR__),
 ];
 
 /**
@@ -85,7 +101,8 @@ function display_by_type(mixed $value): string
             if (empty($value)) {
                 return '[]';
             } else {
-                trigger_error('Cannot have populated array as with display_by_type(), TODO: build this out', E_USER_ERROR);
+                return json_encode($value);
+                return var_export($value, true);
             }
         break;
     }
@@ -157,12 +174,21 @@ foreach ($classes['files'] as $class) {
         $implements = " implements $implements";
     }
 
+    // Constants
     $constants = '';
     foreach ($reflection->getReflectionConstants() as $constant) {
-       
+        if ( ! $constant->getDocComment()) {
+            trigger_error("docblock is missing for const $class_short_name::{$constant->name}", E_USER_ERROR);
+        }
+        $constant_docblock = parse_docblock($constant->getDocComment());
+        if (empty($constant_docblock) || ! empty($constant_docblock->ignore)) {
+            continue;
+        }
+
         if (empty($constants)) {
             $constants = "\n{$rst_indent}    /* Constants */\n";
         }
+        
         $value = display_by_type($reflection->getConstant($constant->name));
         $constant_visibility  = match(true) {
             $constant->isPublic() => 'public ',
@@ -172,7 +198,7 @@ foreach ($classes['files'] as $class) {
         $constants .= "{$rst_indent}    {$constant_visibility}const {$constant->name} = $value\n";
     }
 
-    // Methods
+    // Properties
     $properties = (object)[
         'instance' => '',
         'static' => '',
@@ -181,6 +207,14 @@ foreach ($classes['files'] as $class) {
 
         // Skip inherited traits
         if (in_array($property->name, $trait_inherited->properties)) {
+            continue;
+        }
+
+        if ( ! $property->getDocComment()) {
+            trigger_error("docblock is missing for prop $class_short_name::{$property->name}", E_USER_ERROR);
+        }
+        $property_docblock = parse_docblock($property->getDocComment());
+        if (empty($property_docblock) || ! empty($property_docblock->ignore)) {
             continue;
         }
 
@@ -290,6 +324,13 @@ foreach ($classes['files'] as $class) {
             $param_return_details[] = "{$rst_indent}:returns: ``{$method_docblock->return->type}`` {$method_docblock->return->description}";
         }
 
+        if (!empty($method_docblock->throws)) {
+            foreach ($method_docblock->throws as $throw) {
+                $param_return_details[] = "{$rst_indent}:throws: ``{$throw->type}`` {$throw->description}";
+            }
+        }
+
+
         if (isset($method_docblock->example)) {
             $attributes = '';
             foreach ($method_docblock->example->attributes as $attribute=>$value) {
@@ -319,7 +360,8 @@ foreach ($classes['files'] as $class) {
         $table_of_contents .= "* :ref:`$class_short_name::{$method->name}<$anchor>` - {$method_docblock->title}\n";
 
         $methods_details  = ".. _$anchor:\n";
-        $methods_details .= ".. php:method:: {$method->name}($params)\n\n";
+        $methods_details .= ".. php:method:: {$method->name}($params)\n";
+        $methods_details .= "   :noindex:\n\n";
         $methods_details .= "{$rst_indent}{$method_docblock->title}\n\n";
         $description_indent = str_replace("\n\n", "\n\n{$rst_indent}", $method_docblock->description);
         $methods_details .= "{$rst_indent}$description_indent\n\n";
