@@ -353,7 +353,7 @@ final class Config
      * original previous value on success and ``null`` on failure.
      *
      * @note Will return ``null`` if the option cannot be cahnged durring
-     * runtime.
+     *       runtime.
      *
      * @example Set the value of a configuration option
      * <code linenos="true" emphasize-lines="9,12">

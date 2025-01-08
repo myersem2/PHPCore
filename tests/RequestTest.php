@@ -165,6 +165,7 @@ final class RequestTest extends TestCase
      * [{"PaginationOffset":"asc"}, {"PaginationOrder":false}, "FILTER_VALIDATE_INT"]
      * [{"Referer":"https://google.com"}, {"Referer":"https://google.com"}, "FILTER_VALIDATE_URL"]
      * [{"Referer":"https://google.com"}, {"Referer":false}, "FILTER_VALIDATE_URL", "FILTER_FLAG_QUERY_REQUIRED"]
+     * [{"PaginationOffset":"asc"}, {"NonExistant":null}]
      * [{}, {"NonExistant":null}]
      */
     public function testCookie(
@@ -193,7 +194,8 @@ final class RequestTest extends TestCase
         foreach ($checks as $key => $expected) {
             $this->assertEquals(
                 $expected,
-                Request::getCookie($key, $filter, $options)
+                Request::getCookie($key, $filter, $options),
+                "Key $key failed"
             );
         }
     }
@@ -283,6 +285,107 @@ final class RequestTest extends TestCase
 
     /**
      * @covers \PHPCore\Request
+     *
+     * @testWith
+     * [{"text":"abc","num":"12345"}, {"text":"abc", "num":"12345"}]
+     * [{"text":"abc","num":"12345"}, {"num":12345}, "FILTER_VALIDATE_INT"]
+     * [{"text":"abc","num":"12345"}, {"text":false}, "FILTER_VALIDATE_INT"]
+     * [{"text":"abc"}, {"non_existant":null}]
+     * [{}, {"non_existant":null}]
+     * [{"text":"abc","num":"12345"}, {"text":"abc","num":"12345"}, "ALL"]
+     */
+    public function testParameter(
+        array $params,
+        array $checks,
+        string $filter = "",
+        array|string $options = ""
+    ): void
+    {
+        //$this->markTestSkipped('Need to look into.');
+
+        foreach ($params as $key => $value) {
+            $_GET[$key] = $value;
+        }
+
+        if (!empty($filter) && $filter !== "ALL") {
+            $filter = constant($filter);
+        } else {
+            $filter = null;
+        }
+
+        if (!empty($options) && !is_array($options)) {
+            $options = constant($options);
+        } else {
+            $options = 0;
+        }
+
+        foreach ($checks as $key => $expected) {
+            $this->assertEquals(
+                $expected,
+                Request::getParameter($key, $filter, $options),
+                "Key $key failed"
+            );
+        }
+
+        if ($filter !== "ALL") {
+            $this->assertEquals(
+                $params,
+                Request::getParameter(),
+                "Full array"
+            );
+        }
+    }
+
+
+    /**
+     * @covers \PHPCore\Request
+     * @covers \PHPCore\Config
+     *
+     * @testWith
+     * ["/test/another/index.php?test=123", 0, "another", 1]
+     * ["/test/another/index.php?test=123", 1, "another", 0]
+     * ["/test/another/index.php?test=123", 0, "index", 2]
+     * ["/test/another/index.php?test=123", 0, null, 3]
+     * ["/test/another/index.php?test=123", 0, ["test","another","index"], -1]
+     * ["/test/another/index.php?test=123", 0, ["test","another","index"]]
+     * ["/", 0, null, 0]
+     * ["/test/123.php?test=123", 0, false, 0, "FILTER_VALIDATE_INT"]
+     * ["/test/123.php?test=123", 0, 123, 1, "FILTER_VALIDATE_INT"]
+     */
+    public function testSegment(
+        string $uri,
+        int $offset,
+        mixed $expected,
+        ?int $pos = null,
+        string $filter = "",
+        array|string $options = ""
+    ): void
+    {
+        //$this->markTestSkipped('Need to look into.');
+
+        $_SERVER['REQUEST_URI'] = $uri;
+        Config::set('request.segment_offset', $offset);
+
+        if (!empty($filter)) {
+            $filter = constant($filter);
+        } else {
+            $filter = null;
+        }
+
+        if (!empty($options) && !is_array($options)) {
+            $options = constant($options);
+        } else {
+            $options = 0;
+        }
+
+        $this->assertEquals(
+            $expected,
+            Request::getSegment($pos, $filter, $options),
+        );
+    }
+
+    /**
+     * @covers \PHPCore\Request
      * @covers \PHPCore\Config
      * @covers ::array_find
      *
@@ -355,6 +458,47 @@ final class RequestTest extends TestCase
     public function testRequestFile(): void
     {
         $this->markTestSkipped('Not built');
+
+/*
+
+UPLOAD_ERR_CANT_WRITE (int)
+Failed to write file to disk. The value of the constant is 7.
+
+UPLOAD_ERR_EXTENSION (int)
+A PHP extension stopped the file upload. PHP does not provide a way to ascertain which extension caused the file upload to stop; examining the list of loaded extensions with phpinfo() may help. The value of the constant is 8.
+
+UPLOAD_ERR_FORM_SIZE (int)
+The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form. The value of the constant is 2.
+
+UPLOAD_ERR_INI_SIZE (int)
+The uploaded file exceeds the upload_max_filesize directive in php.ini. The value of the constant is 1.
+
+UPLOAD_ERR_NO_FILE (int)
+No file was uploaded. The value of the constant is 4.
+
+UPLOAD_ERR_NO_TMP_DIR (int)
+Missing a temporary folder. The value of the constant is 6.
+
+UPLOAD_ERR_OK (int)
+There is no error, the file uploaded with success. The value of the constant is 0.
+
+UPLOAD_ERR_PARTIAL (int)
+The uploaded file was only partially uploaded. The value of the constant is 3.
+
+*/
+
+        $_FILES = [
+            'some_name' => [
+                'error'    => UPLOAD_ERR_OK, // status from above
+                'name'     => 'test.test', // the name of the file
+                'size'     => 1, // any number greater that 0
+                'tmp_name' => __FILE__, // needs to be a real file path
+                'type'     => 'text/csv' // type of file
+            ]
+        ];
+
+        // tearDown()
+        $_FILES = [];
     }
 
     /**
@@ -398,26 +542,6 @@ final class RequestTest extends TestCase
         // Assert
         $this->assertMatchesRegularExpression($pattern, $actual);
     }
-
-    /**
-     * @covers \PHPCore\Request
-     *
-     * @testWith []
-     */
-    public function testRequestParam(): void
-    {
-        $this->markTestSkipped('Not built');
-    }
-
-    /**
-     * @covers \PHPCore\Request
-     *
-     * @testWith []
-     */
-    public function testRequestSegment(): void
-    {
-        $this->markTestSkipped('Not built');
-    }
 }
 
-// EOF /////////////////////////////////////////////////////////////////////////////////////////////
+// EOF /////////////////////////////////////////////////////////////////////////

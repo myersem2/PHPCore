@@ -24,7 +24,25 @@ $phpcore_runtime_config = [
 
 //$_SERVER['HTTP_USER_AGENT'] = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0";
 
-var_dump($_SERVER);exit;
+
+$uri = '/test/another/index.php?test=123';
+$offset = 1;
+
+$path = explode('.', parse_url($uri, PHP_URL_PATH))[0];
+$parts = explode('/', substr($path, 1));
+$adj = array_slice($parts, $offset);
+
+
+var_dump($uri);
+var_dump($path);
+var_dump($parts);
+var_dump($adj);
+
+
+
+var_dump(parse_url($uri, PHP_URL_PATH));exit;
+
+var_dump(explode('/', strtok(strtok(substr($uri, 1), '?'), '.')));exit;
 
 include getenv('PHPCORE_BOOTSTRAP');
 

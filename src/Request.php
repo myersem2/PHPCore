@@ -87,6 +87,10 @@ final class Request
                 'xml',
             ],
         ],
+        'request.segment_offset' => [
+            'type'      => 'int',
+            'default'   => '0',
+        ],
         'request.ip_server_params' => [
             'type'      => 'array',
             'default'   => [
@@ -135,11 +139,11 @@ final class Request
      * Get request agent capabilities
      *
      * Attempts to determine the capabilities of the user's browser by looking
-     * up the browser's information in the browscap.ini file. If the options
-     * **$key** is not provides the entire capabilities object will be returned.
+     * up the browser's information in the browscap.ini file. If the optional
+     * **$key** is not provided the entire capabilities object will be returned.
      *
      * @note Returns ``null`` if get_browser() fails or requested capability is
-     * unknown.
+     *       unknown.
      *
      * @example Get request agent capabilities
      * <code linenos="true" emphasize-lines="9,10">
@@ -189,9 +193,10 @@ final class Request
     /**
      * Get data from HTTP cookie
      *
-     * Will return data from cookie by a given **$key** for data passed via HTTP
-     * Cookies. The option **$filter** and **$options** parameters may be given
-     * to invoke ``filter_var()`` before the value is returned.
+     * Will return data from the HTTP cookie for a given **$key** using the
+     * ``$_HEADER`` superglobal varable. The optional **$filter** and
+     * **$options** parameters may be given to invoke ``filter_var()`` before
+     * the value is returned.
      *
      * @seealso `PHP Types of filters`_ - List of available filters and options.
      * @seealso `PHP Filter Variable`_ - Information on the operation of the
@@ -214,7 +219,7 @@ final class Request
      * @param ?int $filter The ID of the filter to apply.
      * @param array|int $options Associative array of options or bitwise
      *                           disjunction of flags.
-     * @return mixed The requested cookie or ``null` if it does not exist.
+     * @return mixed The requested cookie or ``null`` if it does not exist.
      */
     public static function getCookie(
         string $key,
@@ -227,10 +232,10 @@ final class Request
     /**
      * Get format from request
      *
-     * This will return the format from an HTTP request by first looking at the
-     * requested ``CONTENT_TYPE``, if unknown then it will attempt to determine
-     * it by using the ``REQUEST_URI`` (i.e. 'resource.json' => 'json'). If
-     * format cannot be determine then the ``request.default_format`` declared
+     * Will return the format from an HTTP request by first looking at the
+     * the ``$_HEADER`` superglobal varable for first the ``CONTENT_TYPE`` and
+     * then the ``REQUEST_URI`` to determine the requested format. If format
+     * cannot be determine then the ``request.default_format`` declared
      * in the phpcore.ini will be used.
      *
      * @example Get format from request
@@ -240,7 +245,7 @@ final class Request
      * use \PHPCore\Config;
      *
      * Config.set('request.default_format', 'text');
-     * Config.set('request.supported_formats', ['text', 'xml', 'json']);
+     * Config.set('request.supported_formats', [ 'text', 'xml', 'json' ]);
      *
      * $_SERVER['REQUEST_URI'] = '/';
      * $_SERVER['CONTENT_TYPE'] = null;
@@ -292,14 +297,15 @@ final class Request
     /**
      * Get data from request header
      *
-     * Will return data from the HTTP request headers for a given **$key**. The
-     * option **$filter** and **$options** parameters may be given to invoke
-     * ``filter_var()`` before the value is returned.
+     * Will return data from the HTTP request headers for a given **$key** using
+     * the ``$_HEADER`` superglobal varable. The optional **$filter** and
+     * **$options** parameters may be given to invoke ``filter_var()`` before
+     * the value is returned.
      *
-     * The key will be searched for both without then with the prefix "X-" to be
-     * compatiable with older conventions. Therfore there is no need include the
-     * prefix "X-" in your code moving forward. If both are present the one
-     * without the "X-" will be returned.
+     * The **$key** will be searched for both without then with the prefix "X-"
+     * to be compatiable with older conventions. Therfore there is no need
+     * include the prefix "X-" in your code moving forward. If both are present
+     * the one without the "X-" will be returned.
      *
      * @note Do not include the "HTTP_" prefix to the **$key**.
      *
@@ -308,22 +314,17 @@ final class Request
      * ``filter_var()`` function.
      *
      * @example Get data from request header
-     * <code linenos="true" emphasize-lines="14,15,16,18">
+     * <code linenos="true" emphasize-lines="9-11">
      *
      * use \PHPCore\Request;
      *
-     * // Request Headers
-     * //   Accept-Encoding: gzip, deflate
-     * //   Accept-Language: en-US,en;q=0.9
-     * //   ...
-     * //   x-custom-header-1: Random Text
-     * //   x-custom-header-2: 12345
+     * $_SERVER['HTTP_ACCEPT_ENCODING'] = 'gzip, deflate';
+     * $_SERVER['HTTP_CUSTOM_HEADER'] = '1';
+     * $_SERVER['HTTP_X_CUSTOM_HEADER'] = '2';
      *
-     * echo Request::header('accept-encoding'); // 'gzip, deflate'
-     * echo Request::header('custom-header-1'); // 'Random Text'
-     * echo Request::header('x-custom-header-1'); // 'Random Text'
-     *
-     * var_dump(Request::header('custom-header-2', FILTER_VALIDATE_INT)); // 12345
+     * echo Request::getHeader('accept-encoding'); // 'gzip, deflate'
+     * echo Request::getHeader('custom-header'); // '1'
+     * var_dump(Request::getHeader('x-custom-header', FILTER_VALIDATE_INT)); // 1
      *
      * </code>
      *
@@ -331,7 +332,7 @@ final class Request
      * @param ?int $filter The ID of the filter to apply.
      * @param array|int $options Associative array of options or bitwise
      *                           disjunction of flags.
-     * @return mixed The requested header  or ``null` if it does not exist.
+     * @return mixed The requested header  or ``null`` if it does not exist.
      */
     public static function getHeader(
         string $key,
@@ -342,7 +343,7 @@ final class Request
         $key = strtoupper($key);
 
         $search = ["HTTP_$key"];
-        if (!empty($key) && $key[0] !== 'X') {
+        if (!empty($key) && strpos($key, 'X') !== 0) {
             $search[] = "HTTP_X_$key";
         }
         
@@ -406,6 +407,120 @@ final class Request
         $ip_address = explode(' ', $_SERVER[$ip_server_param] ?? '')[0];
 
         return empty($ip_address) ? null : $ip_address;
+    }
+
+    /**
+     * Get parameter from requested URI
+     *
+     * This method will return the variable passed to the current script via the
+     * URL parameters (aka. query string) by a given **$key** using ``$_GET``
+     * superglobal varable. If the optional **$key** is not provided then an
+     * array of all the URL parameters will be returned.
+     *
+     * @note If **$key** is not provided the **$filter** and **$options**
+     *       arguments will be ignored.
+     *
+     * @seealso `PHP Types of filters`_ - List of available filters and options.
+     * @seealso `PHP Filter Variable`_ - Information on the operation of the
+     *          ``filter_var()`` function.
+     *
+     * @example Get parameter from requested URI
+     * <code linenos="true" emphasize-lines="7-9">
+     *
+     * use \PHPCore\Request;
+     *
+     * $_SERVER['REQUEST_URI'] = '/index.php?text=abc&num=12345';
+     *
+     * var_dump(Request::getParameter()); // [ 'text' => 'abc', 'num' => '12345' ];
+     * var_dump(Request::getParameter('text')); // 'abc'
+     * var_dump(Request::getParameter('num', FILTER_VALIDATE_INT)); // 12345
+     *
+     * </code>
+     *
+     * @param ?string $key The key of the query parameter to retrieve.
+     * @param ?int $filter The ID of the filter to apply.
+     * @param array|int $options Associative array of options or bitwise
+     *                           disjunction of flags.
+     * @return mixed The requested query item or ``null`` if it does not exist.
+     */
+    public static function getParameter(
+        ?string $key = null,
+        ?int $filter = null,
+        array|int $options = 0
+    ): mixed {
+        if (isset($key)) {
+            return self::filterValue($_GET[$key] ?? null, $filter, $options);
+        } else {
+            return $_GET;
+        }
+    }
+
+    /**
+     * Get segment from requested URI
+     *
+     * This method will return a segment of the requested URI with a given
+     * **$pos** using the **REQUEST_URI** from the ``$_GET`` superglobal
+     * varable.
+     *
+     * @note If **$pos** is not passed the entire segment array will be returned
+     *       and the **$filter** and **$options** will be ignored.
+     *
+     * @seealso `PHP Types of filters`_ - List of available filters and options.
+     * @seealso `PHP Filter Variable`_ - Information on the operation of the
+     *          ``filter_var()`` function.
+     *
+     * @example Get segment from requested URI
+     * <code linenos="true" emphasize-lines="7-11,12">
+     *
+     * use \PHPCore\Request;
+     *
+     * $_SERVER['REQUEST_URI'] = '/sections/articles/12345.html';
+     *
+     * var_dump(Request::getSegment()); // [ "sections", "articles", "12345" ]
+     * var_dump(Request::getSegment(1)); // 'articles'
+     * var_dump(Request::getSegment(4)); // null
+     * var_dump(Request::getSegment(2, FILTER_VALIDATE_INT)); // 12345
+     * var_dump(Request::getSegment(1, FILTER_VALIDATE_INT)); // false
+     *
+     * Config.set('request.segment_offset', 1);
+     * var_dump(Request::segment(0)); // 'articles'
+     *
+     * </code>
+     *
+     * @param ?int      $pos     The pos index of the path to retrieve
+     * @param ?string $key The key of the query parameter to retrieve.
+     * @param ?int $filter The ID of the filter to apply.
+     * @param array|int $options Associative array of options or bitwise
+     *                           disjunction of flags.
+     * @return mixed The requested segment item or ``null`` if it does not
+     *               exist.
+     */
+    public static function getSegment(
+        ?int $pos = null,
+        ?int $filter = null,
+        array|int $options = 0
+    ): mixed {
+        $offset = Config::get('request.segment_offset');
+
+        $uri = $_SERVER['REQUEST_URI'];
+
+        $path = explode('.', parse_url($uri, PHP_URL_PATH))[0];
+        $parts = explode('/', substr($path, 1));
+        $segments = array_slice($parts, $offset);
+
+        if ($pos < 0) {
+            $pos = null;
+        }
+
+        if (isset($pos)) {
+            return self::filterValue(
+                $segments[$pos] ?? null,
+                $filter,
+                $options
+            );
+        } else {
+            return $segments;
+        }
     }
 
     // ---------------------------------------------------------------------
@@ -713,121 +828,6 @@ final class Request
         }
 
         return $request_files[$key];
-    }
-
-    /**
-     * Get parameter from requested URI
-     *
-     * This method will return the variable passed to the current script via the
-     * URL parameters (aka. query string) by a given **$key** using ``$_GET``
-     * superglobal varable. If the key is not passed then an array of all the
-     * variables will be returned.
-     *
-     * If **$key** is not passed the entire query be returned and the
-     * **$filter** and **$options** will be ignored.
-     *
-     * @seealso `PHP Types of filters`_ - List of available filters and options.
-     * @seealso `PHP Filter Variable`_ - Information on the operation of the
-     *          ``filter_var()`` function.
-     *
-     * @example Get parameter from requested URI
-     * <code linenos="true" emphasize-lines="7,9,10">
-     *
-     * use \PHPCore\Request;
-     *
-     * // $_SERVER['REQUEST_URI'] = '/index.php?text=abc&num=12345'
-     *
-     * var_dump(Request::param()); // [ "text" => "abc", "num" => "12345" ]
-     *
-     * var_dump(Request::param('text')); // 'abc'
-     * var_dump(Request::param('num', FILTER_VALIDATE_INT)); // 12345
-     *
-     * </code>
-     *
-     * @param ?string   $key     The key of the query to retrieve
-     * @param ?int      $filter  The ID of the filter to apply
-     * @param array|int $options Associative array of options or bitwise
-     *                           disjunction of flags
-     *
-     * @return mixed The requested query item
-     */
-    public function getParam(
-        ?string $key = null,
-        ?int $filter = null,
-        array|int $options = 0
-    ): mixed {
-        if (isset($key)) {
-            // TODO: create $this->Params and pull from there
-            $value = $_GET[$key] ?? null;
-            return $this->filterValue($value, $filter, $options);
-        } else {
-            return $_GET;
-        }
-    }
-
-    /**
-     * Get segment from requested URI
-     *
-     * This method will return a segment of the requested URI with a given
-     * **$pos** using the **REQUEST_URI**.
-     *
-     * If **$pos** is not passed the entire segment array will be returned and
-     * the **$filter** and **$options** will be ignored.
-     *
-     * @seealso `PHP Types of filters`_ - List of available filters and options.
-     * @seealso `PHP Filter Variable`_ - Information on the operation of the
-     *          ``filter_var()`` function.
-     *
-     * @example Get segment from requested URI
-     * <code linenos="true" emphasize-lines="7,9,10,13">
-     *
-     * use \PHPCore\Request;
-     *
-     * // $_SERVER['REQUEST_URI'] = '/sections/articles/12345.html'
-     *
-     * var_dump(Request::segment()); // [ "sections", "articles", "12345" ]
-     *
-     * var_dump(Request::segment(1)); // 'articles'
-     * var_dump(Request::segment(2, FILTER_VALIDATE_INT)); // 12345
-     *
-     * // phpcore.ini: request.segment_offset = 1
-     * var_dump(Request::segment(0)); // 'articles'
-     *
-     * </code>
-     *
-     * @param ?int      $pos     The pos index of the path to retrieve
-     * @param ?int      $filter  The ID of the filter to apply
-     * @param array|int $options Associative array of options or bitwise
-     *                           disjunction of flags
-     *
-     * @return mixed The requested segment item
-     */
-    public function getSegment(
-        ?int $pos = null,
-        ?int $filter = null,
-        array|int $options = 0
-    ): mixed {
-        static $pathArray;
-
-        if (!isset($pathArray)) {
-            $uri = $_SERVER['REQUEST_URI'];
-            if (strpos($uri, '/') === 0) {
-                $uri = substr($uri, 1);
-            }
-            $pathArray = explode('/', strtok(strtok($uri, '?'), '.'));
-
-            $segment_offset = phpcore_ini_get('request.segment_offset');
-            if (!empty($segment_offset)) {
-                $pathArray = array_slice($pathArray, intval($segment_offset));
-            }
-        }
-
-        if (isset($pos)) {
-            $value = $pathArray[$pos] ?? null;
-            return $this->filterValue($value, $filter, $options);
-        } else {
-            return $pathArray;
-        }
     }
 }
 
