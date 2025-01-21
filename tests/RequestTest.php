@@ -14,7 +14,7 @@
 
 use PHPUnit\Framework\TestCase;
 use PHPCore\Request;
-use PHPCore\RequestException;
+use PHPCore\Exceptions\RequestException;
 use PHPCore\Config;
 
 /**
@@ -38,53 +38,7 @@ final class RequestTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
-        /*
-        // Base PHP overrite for this test fixture
-        $_SERVER['DOCUMENT_ROOT'] = '/var/www/html/';
-        $_SERVER['PHP_SELF'] = '/test.php';
-        $_SERVER['SCRIPT_FILENAME'] = '/var/www/html/test.php';
-        $_SERVER['SCRIPT_NAME'] = '/test.php';
-
-        // Base Apache
-        $_SERVER['CONTEXT_DOCUMENT_ROOT'] = '/var/www/html/';
-        $_SERVER['CONTEXT_PREFIX'] = '';
-        $_SERVER['GATEWAY_INTERFACE'] = 'CGI/1.1';
-        $_SERVER['QUERY_STRING'] = '';
-        $_SERVER['REMOTE_ADDR'] = '10.0.0.2';
-        $_SERVER['REMOTE_PORT'] = '59494';
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_SCHEME'] = 'http';
-        $_SERVER['REQUEST_URI'] = '/test.php?limit=10';
-        $_SERVER['SERVER_ADDR'] = '10.0.0.1';
-        $_SERVER['SERVER_ADMIN'] = 'webmaster@domain.com';
-        $_SERVER['SERVER_NAME'] = 'domain.com';
-        $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
-        $_SERVER['SERVER_SIGNATURE'] = 'Apache/2.4.52 (Ubuntu) Server at domain.com Port 80';
-        $_SERVER['SERVER_SOFTWARE'] = 'Apache/2.4.52 (Ubuntu)';
-        */
-
-        // HTTP Heders
-        //$_SERVER['HTTP_ACCEPT'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7';
-        /** NOTE: this comment block is needed due to function list generator breaking on  /* above ***/
-        /*
-        $_SERVER['HTTP_ACCEPT_ENCODING'] = 'gzip, deflate';
-        $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US,en;q=0.9';
-        $_SERVER['HTTP_CONNECTION'] = 'keep-alive';
-        $_SERVER['HTTP_COOKIE'] = 'SessionID=TrGrgnCUeYaE0t5NM6yXrqN1NlbVEWJa';
-        $_SERVER['HTTP_HOST'] = 'domain.com';
-        $_SERVER['HTTP_UPGRADE_INSECURE_REQUESTS'] = '1';
-        $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0';
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = '10.0.0.3';
-        
-        // Custom for testing only
-        $_SERVER['REMOTE_ADDR_IPV6'] = 'fc00:0000:0000:0000:0000:0000:0000:0001';
-        $_SERVER['BAD_REMOTE_ADDR'] = 'NOT-A-VALID-IP';
-
-        self::$RequestInstance = new Request([
-            'php_sapi_name' => 'apache2handler', // NOTE: simulates HTTP request
-        ]);
-        */
+        // place holder
     }
 
     /**
@@ -94,7 +48,7 @@ final class RequestTest extends TestCase
      */
     public static function tearDownAfterClass(): void
     {
-        //self::$RequestInstance = null;
+        // place holder
     }
 
     /**
@@ -148,31 +102,145 @@ final class RequestTest extends TestCase
             );
         }
 
-        if (!empty($agent)) {
+        if ( ! empty($agent)) {
             $this->assertEquals(
                 $agent,
                 (array)Request::getAgent()
             );
         }
+
+        // tearDown()
+        unset($_SERVER['HTTP_USER_AGENT']);
+    }
+
+    /**
+     * @covers \PHPCore\Request
+     * @covers \PHPCore\Config
+     *
+     * @runInSeparateProcess
+     *
+     * @testWith
+     * [{"num":123, "text":"abc"}, "text", "", "", "abc"]
+     * [{"num":123, "text":"abc"}, "text", "FILTER_VALIDATE_INT", "", false]
+     * [{"num":123, "text":"abc"}, "num", "FILTER_VALIDATE_INT", "", 123]
+     * [{"num":123, "text":"abc"}, "unk", "", "", null]
+     * [{"num":123, "text":"abc"}, null, "", "", {"num":123, "text":"abc"}]
+     */
+    public function testBodyPost(
+        array $post,
+        ?string $key,
+        string $filter,
+        string $options,
+        mixed $expected
+    ): void
+    {
+        //$this->markTestSkipped('Need to look into.');
+
+        $_POST = $post;
+
+        if ( ! empty($filter)) {
+            $filter = constant($filter);
+        } else {
+            $filter = null;
+        }
+
+        if ( ! empty($options)) {
+            $options = constant($options);
+        } else {
+            $options = 0;
+        }
+
+        if (is_null($filter)) {
+            $this->assertEquals(
+                $expected,
+                Request::getBody($key),
+            );
+        } else {
+            $this->assertEquals(
+                $expected,
+                Request::getBody($key, $filter, $options)
+            );
+        }
+
+        // tearDown()
+        $_POST = [];
+    }
+
+    /**
+     * @covers \PHPCore\Request
+     * @covers \PHPCore\Config
+     * @covers ::csv_parse_file
+     *
+     * @runInSeparateProcess
+     *
+     * @testWith
+     * ["test.xml", "text/xml", "name", "", "", "Test"]
+     * ["test.json", "text/json", "name", "", "", "Test"]
+     * ["test.csv", "text/csv", "0", "", "", {"name":"Test","value":"123"}]
+     * ["test.csv", "text/csv", "1", "", "", {"name":"John","value":"456"}]
+     * ["test.yaml", "text/yaml", "name", "", "", "Test"]
+     */
+    public function testBodyInput(
+        string $file,
+        string $content_type,
+        ?string $key,
+        string $filter,
+        string $options,
+        mixed $expected
+    ): void
+    {
+        //$this->markTestSkipped('Need to look into.');
+
+        $_SERVER['CONTENT_TYPE'] = $content_type;
+
+        Config::set(
+            'request.input_stream',
+            __DIR__ . "/data/$file"
+        );
+
+        if ( ! empty($filter)) {
+            $filter = constant($filter);
+        } else {
+            $filter = null;
+        }
+
+        if ( ! empty($options)) {
+            $options = constant($options);
+        } else {
+            $options = 0;
+        }
+
+        if (is_null($filter)) {
+            $this->assertEquals(
+                $expected,
+                Request::getBody($key),
+            );
+        } else {
+            $this->assertEquals(
+                $expected,
+                Request::getBody($key, $filter, $options)
+            );
+        }
+
+        unset($_SERVER['CONTENT_TYPE']);
     }
 
     /**
      * @covers \PHPCore\Request
      *
      * @testWith
-     * [{"PaginationOffset":1, "PaginationOrder":"asc"}, {"PaginationOffset":1, "PaginationOrder":"asc"}]
-     * [{"PaginationOffset":"1"}, {"PaginationOffset":1}, "FILTER_VALIDATE_INT"]
-     * [{"PaginationOffset":"asc"}, {"PaginationOrder":false}, "FILTER_VALIDATE_INT"]
-     * [{"Referer":"https://google.com"}, {"Referer":"https://google.com"}, "FILTER_VALIDATE_URL"]
-     * [{"Referer":"https://google.com"}, {"Referer":false}, "FILTER_VALIDATE_URL", "FILTER_FLAG_QUERY_REQUIRED"]
-     * [{"PaginationOffset":"asc"}, {"NonExistant":null}]
-     * [{}, {"NonExistant":null}]
+     * [{"num":123, "text":"abc"}, "text", "", "", "abc"]
+     * [{"num":123, "text":"abc"}, "text", "FILTER_VALIDATE_INT", "", false]
+     * [{"num":123, "text":"abc"}, "num", "FILTER_VALIDATE_INT", "", 123]
+     * [{"num":123, "text":"abc"}, "unk", "", "", null]
+     * [{"num":123, "text":"abc"}, null, "", "", {"num":123, "text":"abc"}]
      */
     public function testCookie(
         array $cookies,
-        array $checks,
-        string $filter = "",
-        array|string $options = ""
+        ?string $key,
+        string $filter,
+        string $options,
+        mixed $expected
     ): void
     {
         //$this->markTestSkipped('Need to look into.');
@@ -185,19 +253,26 @@ final class RequestTest extends TestCase
             $filter = null;
         }
 
-        if (!empty($options) && !is_array($options)) {
+        if (!empty($options)) {
             $options = constant($options);
         } else {
             $options = 0;
         }
 
-        foreach ($checks as $key => $expected) {
+        if (is_null($filter)) {
             $this->assertEquals(
                 $expected,
-                Request::getCookie($key, $filter, $options),
-                "Key $key failed"
+                Request::getCookie($key),
+            );
+        } else {
+            $this->assertEquals(
+                $expected,
+                Request::getCookie($key, $filter, $options)
             );
         }
+
+        // tearDown()
+        $_COOKIE = [];
     }
 
     /**
@@ -235,6 +310,10 @@ final class RequestTest extends TestCase
             $expected ?? 'json',
             Request::getFormat()
         );
+
+        // tearDown()
+        unset($_SERVER['CONTENT_TYPE']);
+        unset($_SERVER['REQUEST_URI']);
     }
 
     /**
@@ -242,24 +321,24 @@ final class RequestTest extends TestCase
      * @covers ::array_find
      *
      * @testWith
-     * [{"HTTP_PAGINATION_OFFSET":1, "HTTP_PAGINATION_ORDER":"asc"}, {"PAGINATION_OFFSET":1, "PAGINATION_ORDER":"asc"}]
-     * [{"HTTP_PAGINATION_OFFSET":"1"}, {"PAGINATION_OFFSET":1}, "FILTER_VALIDATE_INT"]
-     * [{"HTTP_PAGINATION_OFFSET":"asc"}, {"PAGINATION_OFFSET":false}, "FILTER_VALIDATE_INT"]
-     * [{"HTTP_PAGINATION_OFFSET":1, "HTTP_X_PAGINATION_OFFSET":2}, {"PAGINATION_OFFSET":1}]
-     * [{"HTTP_PAGINATION_OFFSET":""}, {"NON_EXISTANT":null}]
-     * [{}, {"NON_EXISTANT":null}]
+     * [{"HTTP_PAGINATION_OFFSET":"1", "HTTP_PAGINATION_ORDER":"asc"}, "PAGINATION_OFFSET", "", "", "1"]
+     * [{"HTTP_PAGINATION_OFFSET":"1", "HTTP_PAGINATION_ORDER":"asc"}, "PAGINATION_OFFSET", "FILTER_VALIDATE_INT", "", 1]
+     * [{"HTTP_PAGINATION_OFFSET":"1", "HTTP_X_PAGINATION_OFFSET":"2"}, "PAGINATION_OFFSET", "FILTER_VALIDATE_INT", "", 1]
+     * [{"PAGINATION_OFFSET":"1"}, "PAGINATION_OFFSET", "", "", null]
+     * [{"HTTP_PAGINATION_OFFSET":"1"}, null, "", "", {"PAGINATION_OFFSET":"1"}]
      */
-    public function testHeader(
-        array $headers,
-        array $checks,
-        string $filter = "",
-        array|string $options = ""
+    public function testHttpHeader(
+        array $server_params,
+        ?string $key,
+        string $filter,
+        string $options,
+        mixed $expected
     ): void
     {
         //$this->markTestSkipped('Need to look into.');
 
-        foreach ($headers as $key => $value) {
-            $_SERVER[$key] = $value;
+        foreach ($server_params as $k => $v) {
+            $_SERVER[$k] = $v;
         }
 
         if (!empty($filter)) {
@@ -268,18 +347,26 @@ final class RequestTest extends TestCase
             $filter = null;
         }
 
-        if (!empty($options) && !is_array($options)) {
+        if (!empty($options)) {
             $options = constant($options);
         } else {
             $options = 0;
         }
 
-        foreach ($checks as $key => $expected) {
+        if (is_null($filter)) {
             $this->assertEquals(
                 $expected,
-                Request::getHeader($key, $filter, $options),
-                "Key $key failed"
+                Request::getHttpHeader($key),
             );
+        } else {
+            $this->assertEquals(
+                $expected,
+                Request::getHttpHeader($key, $filter, $options)
+            );
+        }
+
+        foreach ($server_params as $k => $v) {
+            unset($_SERVER[$k]);
         }
     }
 
@@ -287,78 +374,73 @@ final class RequestTest extends TestCase
      * @covers \PHPCore\Request
      *
      * @testWith
-     * [{"text":"abc","num":"12345"}, {"text":"abc", "num":"12345"}]
-     * [{"text":"abc","num":"12345"}, {"num":12345}, "FILTER_VALIDATE_INT"]
-     * [{"text":"abc","num":"12345"}, {"text":false}, "FILTER_VALIDATE_INT"]
-     * [{"text":"abc"}, {"non_existant":null}]
-     * [{}, {"non_existant":null}]
-     * [{"text":"abc","num":"12345"}, {"text":"abc","num":"12345"}, "ALL"]
+     * [{"text":"abc","num":"123"}, "text", "", "", "abc"]
+     * [{"text":"abc","num":"123"}, "num", "FILTER_VALIDATE_INT", "", 123]
+     * [{"text":"abc","num":"123"}, "text", "FILTER_VALIDATE_INT", "", false]
+     * [{"text":"abc","num":"123"}, "unk", "", "", null]
+     * [{"text":"abc","num":"123"}, null, "", "", {"text":"abc","num":"123"}]
      */
     public function testParameter(
         array $params,
-        array $checks,
-        string $filter = "",
-        array|string $options = ""
+        ?string $key,
+        string $filter,
+        string $options,
+        mixed $expected
     ): void
     {
         //$this->markTestSkipped('Need to look into.');
 
-        foreach ($params as $key => $value) {
-            $_GET[$key] = $value;
+        foreach ($params as $k => $v) {
+            $_GET[$k] = $v;
         }
 
-        if (!empty($filter) && $filter !== "ALL") {
+        if (!empty($filter)) {
             $filter = constant($filter);
         } else {
             $filter = null;
         }
 
-        if (!empty($options) && !is_array($options)) {
+        if (!empty($options)) {
             $options = constant($options);
         } else {
             $options = 0;
         }
 
-        foreach ($checks as $key => $expected) {
+        if (is_null($filter)) {
             $this->assertEquals(
                 $expected,
-                Request::getParameter($key, $filter, $options),
-                "Key $key failed"
+                Request::getParameter($key),
             );
-        }
-
-        if ($filter !== "ALL") {
+        } else {
             $this->assertEquals(
-                $params,
-                Request::getParameter(),
-                "Full array"
+                $expected,
+                Request::getParameter($key, $filter, $options)
             );
         }
-    }
 
+        // tearDown()
+        $_GET = [];
+    }
 
     /**
      * @covers \PHPCore\Request
      * @covers \PHPCore\Config
      *
      * @testWith
-     * ["/test/another/index.php?test=123", 0, "another", 1]
-     * ["/test/another/index.php?test=123", 1, "another", 0]
-     * ["/test/another/index.php?test=123", 0, "index", 2]
-     * ["/test/another/index.php?test=123", 0, null, 3]
-     * ["/test/another/index.php?test=123", 0, ["test","another","index"], -1]
-     * ["/test/another/index.php?test=123", 0, ["test","another","index"]]
-     * ["/", 0, null, 0]
-     * ["/test/123.php?test=123", 0, false, 0, "FILTER_VALIDATE_INT"]
-     * ["/test/123.php?test=123", 0, 123, 1, "FILTER_VALIDATE_INT"]
+     * ["/a/b/c.php?q=123", 0, 1, "", "", "b"]
+     * ["/a/b/c.php?q=123", 1, 1, "", "", "c"]
+     * ["/a/b/c.php?q=123", 0, null, "", "", ["a","b","c"]]
+     * ["/a/b/c.php?q=123", 1, -1, "", "", null]
+     * ["/a/123.php?q=123", 0, 0, "FILTER_VALIDATE_INT", "", false]
+     * ["/a/123.php?q=123", 0, 1, "FILTER_VALIDATE_INT", "", 123]
      */
     public function testSegment(
         string $uri,
         int $offset,
-        mixed $expected,
-        ?int $pos = null,
-        string $filter = "",
-        array|string $options = ""
+        ?int $pos,
+        string $filter,
+        string $options,
+        mixed $expected
     ): void
     {
         //$this->markTestSkipped('Need to look into.');
@@ -372,16 +454,26 @@ final class RequestTest extends TestCase
             $filter = null;
         }
 
-        if (!empty($options) && !is_array($options)) {
+        if (!empty($options)) {
             $options = constant($options);
         } else {
             $options = 0;
         }
 
-        $this->assertEquals(
-            $expected,
-            Request::getSegment($pos, $filter, $options),
-        );
+        if (is_null($filter)) {
+            $this->assertEquals(
+                $expected,
+                Request::getSegment($pos),
+            );
+        } else {
+            $this->assertEquals(
+                $expected,
+                Request::getSegment($pos, $filter, $options),
+            );
+        }
+
+        // tearDown()
+        unset($_SERVER['REQUEST_URI']);
     }
 
     /**
@@ -392,110 +484,123 @@ final class RequestTest extends TestCase
      * @runInSeparateProcess
      *
      * @testWith
-     * [{"HTTP_X_FORWARDED_FOR":null,"REMOTE_ADDR":null}, null]
-     * [{"HTTP_X_FORWARDED_FOR":null,"REMOTE_ADDR":"10.0.0.3"}, "10.0.0.3"]
-     * [{"HTTP_X_FORWARDED_FOR":"10.0.0.2","REMOTE_ADDR":"10.0.0.3"}, "10.0.0.2"]
-     * [{"SSH_CONNECTION":"10.0.0.1 48678 10.0.0.10 22","HTTP_X_FORWARDED_FOR":"10.0.0.2","REMOTE_ADDR":"10.0.0.3"}, "10.0.0.1"]
-     * [{"REMOTE_ADDR":"fc00:0000:0000:0000:0000:0000:0000:0001"}, "fc00:0000:0000:0000:0000:0000:0000:0001"]
-     * [{"NON_EXISTENT":"10.0.0.1"}, null, false]
-     * [{}, null]
+     * [{"HTTP_X_FORWARDED_FOR":"10.0.0.2","REMOTE_ADDR":"10.0.0.3"}, ["HTTP_X_FORWARDED_FOR","REMOTE_ADDR"], "10.0.0.2"]
+     * [{"HTTP_X_FORWARDED_FOR":"10.0.0.2","REMOTE_ADDR":"10.0.0.3"}, ["REMOTE_ADDR"], "10.0.0.3"]
+     * [{"HTTP_X_FORWARDED_FOR":"10.0.0.2","REMOTE_ADDR":"10.0.0.3"}, ["UNKNOWN"], null]
+     * [{"REMOTE_ADDR":"10.0.3"}, ["REMOTE_ADDR"], false]
+     * [[], [], null]
      */
-    public function testIp(
+    public function testIpAddress(
+        array $server_params,
         array $ip_server_params,
-        ?string $expected,
-        bool $server_set = true
+        mixed $expected
     ): void
     {
         //$this->markTestSkipped('Need to look into.');
 
-        if ($server_set) {
-            foreach ($ip_server_params as $key => $value) {
-                $_SERVER[$key] = $value;
-            }
-        }
-
-        if (empty($ip_server_params) && $server_set) {
-            $this->expectException(RequestException::class);
-            $this->expectExceptionMessage(
-                'Empty `request.ip_server_params` in phpcore.ini'
-            );
+        foreach ($server_params as $k => $v) {
+            $_SERVER[$k] = $v;
         }
 
         Config::set(
             'request.ip_server_params',
-            array_keys($ip_server_params)
+            $ip_server_params
         );
-        $first_ip = Request::getIpAddress();
-        $same_ip = Request::getIpAddress();
+
+        if (empty($server_params)) {
+            $code = RequestException::CONFIG_ERR_IP_SVR_PARM;
+            $this->expectException(RequestException::class);
+            $this->expectExceptionCode($code);
+        }
 
         $this->assertEquals(
             $expected,
-            $first_ip
+            Request::getIpAddress()
         );
 
-        $this->assertEquals(
-            $first_ip,
-            $same_ip,
-            "Second match"
-        );
+        foreach ($server_params as $k => $v) {
+            unset($_SERVER[$k]);
+        }
     }
 
     /**
      * @covers \PHPCore\Request
+     * @covers \PHPCore\RequestFile
+     * @covers \PHPCore\Config
      *
-     * @testWith []
-     */
-    public function testRequestBody(): void
-    {
-        $this->markTestSkipped('Not built');
-    }
-
-    /**
-     * @covers \PHPCore\Request
+     * @note You MUST use a different **$field** for each or the `static $files`
+     *       in the Request::getFile() will return the incorrect data
      *
-     * @testWith []
+     * @testWith
+     * ["test.csv","text/csv",0, 0, {"error":0}]
+     * ["test.csv","text/csv",3, 0, {"error":3,"contents":null}]
+     * ["test.csv","text/csv",0, 2, {"error":9,"error_message":"File was not uploaded via HTTP POST"}]
+     * ["test.json","text/json",0, 0, {"error":0,"contents":"{\"name\":\"Test\",\"value\":123}"}]
+     * ["test.csv","text/json",0, 4, {"error":10}]
+     * ["test.csv","text/json",0, 5, {"exception":true,"error":10}]
+     * ["test.csv","text/csv",0, 0, {"file_null":true}]
      */
-    public function testRequestFile(): void
+    public function testFile(
+        string $name,
+        string $type,
+        int $error,
+        int $flags,
+        array $result
+    ): void
     {
-        $this->markTestSkipped('Not built');
+        //$this->markTestSkipped('Need to look into.');
 
-/*
+        static $run = 0;
+        $run++;
 
-UPLOAD_ERR_CANT_WRITE (int)
-Failed to write file to disk. The value of the constant is 7.
-
-UPLOAD_ERR_EXTENSION (int)
-A PHP extension stopped the file upload. PHP does not provide a way to ascertain which extension caused the file upload to stop; examining the list of loaded extensions with phpinfo() may help. The value of the constant is 8.
-
-UPLOAD_ERR_FORM_SIZE (int)
-The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form. The value of the constant is 2.
-
-UPLOAD_ERR_INI_SIZE (int)
-The uploaded file exceeds the upload_max_filesize directive in php.ini. The value of the constant is 1.
-
-UPLOAD_ERR_NO_FILE (int)
-No file was uploaded. The value of the constant is 4.
-
-UPLOAD_ERR_NO_TMP_DIR (int)
-Missing a temporary folder. The value of the constant is 6.
-
-UPLOAD_ERR_OK (int)
-There is no error, the file uploaded with success. The value of the constant is 0.
-
-UPLOAD_ERR_PARTIAL (int)
-The uploaded file was only partially uploaded. The value of the constant is 3.
-
-*/
+        // TODO: Look into this https://dev.to/icolomina/testing-an-external-api-using-phpunit-m8j
 
         $_FILES = [
-            'some_name' => [
-                'error'    => UPLOAD_ERR_OK, // status from above
-                'name'     => 'test.test', // the name of the file
-                'size'     => 1, // any number greater that 0
-                'tmp_name' => __FILE__, // needs to be a real file path
-                'type'     => 'text/csv' // type of file
-            ]
+            "f$run" => [
+                'name'      => $name,
+                'full_path' => $name, // NOTE: New PHP 8.1 feature https://php.watch/versions/8.1/$_FILES-full-path
+                'type'      => $type,
+                'tmp_name'  => __DIR__ . "/data/$name",
+                'error'     => $error,
+                'size'      => 41,
+            ],
         ];
+
+        if ( ! empty($result['exception'])) {
+            $this->expectException(RequestException::class);
+            $this->expectExceptionCode($result['error']);
+        }
+
+        $key = empty($result['file_null']) ? "f$run" : 'unknown';
+        $fileObj = Request::getFile($key, $flags);
+
+        if ( ! empty($result['file_null'])) {
+            $this->assertNull($fileObj);
+            return;
+        }
+
+        $this->assertEquals(
+            $result['error'],
+            $fileObj->error
+        );
+
+        if (array_key_exists('contents', $result)) {
+            if ($result['contents'] === null) {
+                $this->assertNull($fileObj->getContents());
+            } else {
+                $this->assertEquals(
+                    $result['contents'],
+                    $fileObj->getContents()
+                );
+            }
+        }
+
+        if ( ! empty($result['error_message'])) {
+            $this->assertEquals(
+                $result['error_message'],
+                $fileObj->getErrorMessage()
+            );
+        }
 
         // tearDown()
         $_FILES = [];
@@ -503,44 +608,64 @@ The uploaded file was only partially uploaded. The value of the constant is 3.
 
     /**
      * @covers \PHPCore\Request
+     * @covers \PHPCore\RequestFile
+     * @covers \PHPCore\Config
      *
-     * @testWith []
-     */
-    public function testRequestFiles(): void
-    {
-        $this->markTestSkipped('Not built');
-    }
-
-    /**
-     * @covers \PHPCore\Request
-     * @covers ::core_ini_get
-     * @covers ::core_ini_set
+     * @note You MUST use a different **$field** for each or the `static $files`
+     *       in the Request::getFile() will return the incorrect data
      *
-     * @testWith [true]
-     *           [false]
+     * @testWith
+     * [{"name":"test.csv","type":"text/csv"},{"name":"test.json","type":"text/json"},{"count":2}]
+     * [{"name":"test.csv","type":"text/csv"},{"name":"test.json","type":"text/json"},{"file_null":true}]
      */
-    public function testRequestId(bool $new_request): void
+    public function testFiles(
+        array $file_a,
+        array $file_b,
+        array $result
+    ): void
     {
-        $this->markTestSkipped('Not built');
+        //$this->markTestSkipped('Need to look into.');
 
-        // Arrange
-        $pattern = '/^[a-f0-9]{32}$/';
-        if ($new_request) {
-            $new_instance = new Request([
-                'php_sapi_name' => 'apache2handler', // NOTE: simulates HTTP request
-                'ip_address'    => '10.0.0.4',
-            ]);
+        static $run = 0;
+        $run++;
+
+        // TODO: Look into this https://dev.to/icolomina/testing-an-external-api-using-phpunit-m8j
+
+        $_FILES = [
+            "f$run" => [
+                'name'      => [$file_a['name'],$file_b['name']],
+                'full_path' => [$file_a['name'],$file_b['name']],
+                'type'      => [$file_a['type'],$file_b['type']],
+                'tmp_name'  => [__DIR__ . "/data/{$file_a['name']}",__DIR__ . "/data/{$file_a['name']}"],
+                'error'     => [0,0],
+                'size'      => [41,41],
+            ],
+        ];
+
+        $key = empty($result['file_null']) ? "f$run" : 'unknown';
+        $files = Request::getFiles($key);
+
+        if ( ! empty($result['file_null'])) {
+            $this->assertNull($files);
+            return;
         }
 
-        // Act
-        if ($new_request) {
-            $actual = $new_instance->id();
-        } else {
-            $actual = self::$RequestInstance->id();
+        if (array_key_exists('count', $result)) {
+            $this->assertEquals(
+                $result['count'],
+                count($files)
+            );
         }
 
-        // Assert
-        $this->assertMatchesRegularExpression($pattern, $actual);
+        if (array_key_exists('count', $result)) {
+            $this->assertEquals(
+                $result['count'],
+                count($files)
+            );
+        }
+
+        // tearDown()
+        $_FILES = [];
     }
 }
 

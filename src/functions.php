@@ -138,10 +138,543 @@ if ( ! in_array('phpcore_ini_set', $disable_functions) ) {
 
 // -----------------------------------------------------------------------------
 
+/**
+ * Get request agent capabilities
+ *
+ * Attempts to determine the capabilities of the user's browser by looking
+ * up the browser's information in the browscap.ini file. If the optional
+ * **$key** is not provided the entire capabilities object will be returned.
+ *
+ * @note Returns ``null`` if get_browser() fails or requested capability is
+ *       unknown.
+ *
+ * @example Get request agent capabilities
+ * <code linenos="true" emphasize-lines="9,10">
+ *
+ * use \PHPCore\Request;
+ *
+ * $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'.
+ * ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+ *
+ * // Get by key
+ * echo Request::agent('platform'); // 'Win10'
+ * var_dump(Request::agent('ismobiledevice')); // false
+ *
+ * </code>
+ *
+ * @param ?string $key The key of the capability data item to retrieve.
+ * @return mixed The request capability or the entire capability object.
+ */
+if ( ! in_array('request_agent', $disable_functions) ) {
+    function request_agent(?string $key = null): mixed
+    {
+        return \PHPCore\Request::getAgent($key);
+    }
+}
+
+/**
+ * Get data from request body
+ *
+ * Will parsed the request body based on the format, then return data from
+ * the parsed body by a given **$key** for data passed via the HTTP POST
+ * method. The option **$filter** and **$options** parameters may be given
+ * to invoke ``filter_var()`` before the value is returned.
+ *
+ * @note If **$key** is not passed the request body be returned and the
+ *       **$filter** and **$options** will be ignored.
+ * @note The default for **$filter** is **FILTER_DEFAULT**, which is an
+ *       alias of **FILTER_UNSAFE_RAW**. This will result in no filtering
+ *       taking place by default.
+ *
+ * @seealso `PHP list of validate filters`_ - PHP list of validate filters.
+ * @seealso `PHP list of sanitize filters`_ - PHP list of sanitize filters.
+ * @seealso `PHP filter variable`_ - Information on the operation of the
+ *          PHP ``filter_var()`` function.
+ *
+ * @example Get data from request body
+ * <code linenos="true" emphasize-lines="5-7,12-13">
+ *
+ * $_POST = [ 'num' => 123, 'text' => 'abc'];
+ *
+ * var_dump(request_body('text')); // 'abc'
+ * var_dump(request_body('num')); // '123'
+ * var_dump(request_body()); // [ 'text' => 'abc', 'num' => '123' ]
+ *
+ * $_SERVER['CONTENT_TYPE'] = 'text/json';
+ * // php://input <= {"num":456, "text":"John"}
+ *
+ * var_dump(request_body('text')); // 'John'
+ * var_dump(request_body('num', FILTER_VALIDATE_INT)); // 456
+ * 
+ * </code>
+ *
+ * @param mixed $key Key of the body to retrieve.
+ * @param int $filter The filter to apply. Can be a validation filter by
+ *                    using one of the **FILTER_VALIDATE_*** constants, a
+ *                    sanitization filter by using one of the
+ *                    **FILTER_SANITIZE_*** or **FILTER_UNSAFE_RAW**, or a
+ *                    custom filter by using **FILTER_CALLBACK**.
+ * @param array|int $options Either an associative array of options, or a
+ *                           bitmask of filter flag constants
+ *                           **FILTER_FLAG_***. If the filter accepts
+ *                           options, flags can be provided by using the
+ *                           "flags" field of array.
+ * @return mixed The filtered value from the body or ``null`` if the **$key**
+ *               does not exist.
+ */
+if ( ! in_array('request_body', $disable_functions) ) {
+    function request_body(
+        mixed $key = null,
+        int $filter = FILTER_DEFAULT,
+        array|int $options = 0
+    ): mixed {
+        return \PHPCore\Request::getBody($key, $filter, $options);
+    }
+}
+
+/**
+ * Get data from HTTP cookie
+ *
+ * Will return data from the HTTP cookie for a given **$key** using the
+ * ``$_HEADER`` superglobal varable. The optional **$filter** and
+ * **$options** parameters may be given to invoke ``filter_var()`` before
+ * the value is returned.
+ *
+ * @note If **$key** is not passed the cookie array be returned and the
+ *       **$filter** and **$options** will be ignored.
+ * @note The default for **$filter** is **FILTER_DEFAULT**, which is an
+ *       alias of **FILTER_UNSAFE_RAW**. This will result in no filtering
+ *       taking place by default.
+ *
+ * @seealso `PHP list of validate filters`_ - PHP list of validate filters.
+ * @seealso `PHP list of sanitize filters`_ - PHP list of sanitize filters.
+ * @seealso `PHP filter variable`_ - Information on the operation of the
+ *          PHP ``filter_var()`` function.
+ *
+ * @example Get data from HTTP cookie
+ * <code linenos="true" emphasize-lines="5,6-7">
+ *
+ * $_COOKIE = [ 'PaginationOffset' => 1, 'PaginationOrder' => 'asc' ]
+ *
+ * echo request_cookie('PaginationOrder'); // 'asc'
+ * var_dump(request_cookie('PaginationOffset', FILTER_VALIDATE_INT)); // 1
+ * var_dump(request_cookie('PaginationOrder', FILTER_VALIDATE_INT)); // 1
+ *
+ * </code>
+ *
+ * @param ?string $key Key of the cookie to retrieve.
+ * @param int $filter The filter to apply. Can be a validation filter by
+ *                    using one of the **FILTER_VALIDATE_*** constants, a
+ *                    sanitization filter by using one of the
+ *                    **FILTER_SANITIZE_*** or **FILTER_UNSAFE_RAW**, or a
+ *                    custom filter by using **FILTER_CALLBACK**.
+ * @param array|int $options Either an associative array of options, or a
+ *                           bitmask of filter flag constants
+ *                           **FILTER_FLAG_***. If the filter accepts
+ *                           options, flags can be provided by using the
+ *                           "flags" field of array.
+ * @return mixed The filtered value from the cookie or ``null`` if the
+ *               **$key** does not exist.
+ */
+if ( ! in_array('request_cookie', $disable_functions) ) {
+    function request_cookie(
+        ?string $key = null,
+        int $filter = FILTER_DEFAULT,
+        array|int $options = 0
+    ): mixed {
+        return \PHPCore\Request::getCookie($key, $filter, $options);
+    }
+}
+
+/**
+ * Get file from request
+ *
+ * Will return the file by a given **$key** from the files that were
+ * uploaded via the HTTP POST method using the ``$_FILES`` superglobal
+ * variable.
+ *
+ * @example Get file from request
+ * <code linenos="true" emphasize-lines="14-18">
+ *
+ * $_FILE = [
+ *     'file_upload' => [
+ *         'name' => 'test.csv',
+ *         'full_path' => 'test.json',
+ *         'type' => 'text/csv',
+ *         'tmp_name' => '/data/test/test.csv',
+ *         'error' => 0,
+ *         'size' => 27
+ *     ]
+ * ];
+ *
+ * $file = request_file('file_upload');
+ * var_dump($file->getContents()); // '{"name":"Test","value":123}'
+ * var_dump($file->isTrueType()); // false
+ * var_dump($file->error); // 9
+ * var_dump($file->getErrorMessage()); // 'File was not uploaded via HTTP POST'
+ *
+ * </code>
+ *
+ * @param string $key The key of the file to retrieve.
+ * @param int $flags Bitwise flags for this method
+ * @return ?object RequestFile object or ``null`` if the **$key** does not
+ *                 exist.
+ */
+if ( ! in_array('request_file', $disable_functions) ) {
+    function request_file(string $key, int $flags = 0): ?object
+    {
+        return \PHPCore\Request::getFile($key, $filter, $options);
+    }
+}
+
+/**
+ * Get files from request
+ *
+ * Will return an array of files for a given **$key** that were uploaded via
+ * the HTTP POST method using the ``$_FILES`` superglobal variable.
+ *
+ * @example Get files from request
+ * <code linenos="true" emphasize-lines="32-35">
+ *
+ * $_FILE = [
+ *     'file_upload' => [
+ *         'name' => [
+ *             0 => 'test.csv',
+ *             1 => 'test.json'
+ *         ],
+ *         'full_path' => [
+ *             0 => 'test.csv',
+ *             1 => 'test.json'
+ *         ],
+ *         'type' => [
+ *             0 => 'text/csv',
+ *             1 => 'text/csv'
+ *         ]
+ *         'tmp_name' => [
+ *             0 => '/data/test/test.csv',
+ *             1 => '/tmp/phpAKmVxj'
+ *         ],
+ *         'error' => [
+ *             0 => 0,
+ *             0 => 0
+ *         ],
+ *         'size' => [
+ *             0 => 41,
+ *             0 => 27
+ *         ]
+ *     ]
+ * ];
+ *
+ * $files = request_files('file_upload');
+ * var_dump($files[1]->getContents()); // '{"name":"Test","value":123}'
+ * var_dump($files[0]->error); // 9
+ * var_dump($files[1]->error); // 0
+ *
+ * </code>
+ *
+ * @param string $key The key of the array of files to retrieve.
+ * @param int $flags Bitwise flags for this method
+ * @return ?array Array of RequestFile objects
+ */
+if ( ! in_array('request_files', $disable_functions) ) {
+    function request_files(string $key, int $flags = 0): ?array
+    {
+        return \PHPCore\Request::getFile($key, $filter, $options);
+    }
+}
+
+/**
+ * Get format from request
+ *
+ * Will return the format from an HTTP request by first looking at the
+ * the ``$_HEADER`` superglobal varable for first the ``CONTENT_TYPE`` and
+ * then the ``REQUEST_URI`` to determine the requested format. If format
+ * cannot be determine then the ``request.default_format`` declared
+ * in the phpcore.ini will be used.
+ *
+ * @example Get format from request
+ * <code linenos="true" emphasize-lines="9,12,15">
+ *
+ * phpcore_ini_set('request.default_format', 'text');
+ * phpcore_ini_set('request.supported_formats', [ 'text', 'xml', 'json' ]);
+ *
+ * $_SERVER['REQUEST_URI'] = '/';
+ * $_SERVER['CONTENT_TYPE'] = null;
+ *
+ * echo request_format(); // 'csv'
+ *
+ * $_SERVER['REQUEST_URI'] = '/resource.xml?query=test';
+ * echo request_format(); // 'xml'
+ *
+ * $_SERVER['CONTENT_TYPE'] = '/application/json';
+ * echo request_format(); // 'json'
+ *
+ * </code>
+ *
+ * @return ?string The format that was requested.
+ */
+if ( ! in_array('request_format', $disable_functions) ) {
+    function request_format(): ?string
+    {
+        return \PHPCore\Request::getFormat();
+    }
+}
+
+/**
+ * Get HTTP data from request header
+ *
+ * Will return data from the HTTP request headers for a given **$key** using
+ * the ``$_HEADER`` superglobal varable. The optional **$filter** and
+ * **$options** parameters may be given to invoke ``filter_var()`` before
+ * the value is returned.
+ *
+ * The **$key** will be searched for both without then with the prefix "X-"
+ * to be compatiable with older conventions. Therfore there is no need
+ * include the prefix "X-" in your code moving forward. If both are present
+ * the one without the "X-" will be returned.
+ *
+ * @note Do not include the "HTTP" prefix to the **$key**.
+ * @note The default for **$filter** is **FILTER_DEFAULT**, which is an
+ *       alias of **FILTER_UNSAFE_RAW**. This will result in no filtering
+ *       taking place by default.
+ *
+ * @seealso `PHP list of validate filters`_ - PHP list of validate filters.
+ * @seealso `PHP list of sanitize filters`_ - PHP list of sanitize filters.
+ * @seealso `PHP filter variable`_ - Information on the operation of the
+ *          PHP ``filter_var()`` function.
+ *
+ * @example Get data from request header
+ * <code linenos="true" emphasize-lines="7-9">
+ *
+ * $_SERVER['HTTP_ACCEPT_ENCODING'] = 'gzip, deflate';
+ * $_SERVER['HTTP_CUSTOM_HEADER'] = '1';
+ * $_SERVER['HTTP_X_CUSTOM_HEADER'] = '2';
+ *
+ * echo request_header('accept-encoding'); // 'gzip, deflate'
+ * echo request_header('custom-header'); // '1'
+ * var_dump(request_header('x-custom-header', FILTER_VALIDATE_INT)); // 1
+ *
+ * </code>
+ *
+ * @param ?string $key Key of the header to retrieve.
+ * @param int $filter The filter to apply. Can be a validation filter by
+ *                    using one of the **FILTER_VALIDATE_*** constants, a
+ *                    sanitization filter by using one of the
+ *                    **FILTER_SANITIZE_*** or **FILTER_UNSAFE_RAW**, or a
+ *                    custom filter by using **FILTER_CALLBACK**.
+ * @param array|int $options Either an associative array of options, or a
+ *                           bitmask of filter flag constants
+ *                           **FILTER_FLAG_***. If the filter accepts
+ *                           options, flags can be provided by using the
+ *                           "flags" field of array.
+ * @return mixed The filtered value from the header or ``null`` if the
+ *               **$key** does not exist.
+ */
+if ( ! in_array('request_header', $disable_functions) ) {
+    function request_header(
+        ?string $key = null,
+        int $filter = FILTER_DEFAULT,
+        array|int $options = 0
+    ): mixed {
+        return \PHPCore\Request::getHttpHeader($key, $filter, $options);
+    }
+}
+
+/**
+ * Get IP address
+ *
+ * Returns the requester's ip address by the designated ``$_SERVER`` param
+ * that contains the requester's IP Address. This is normally
+ * ``REMOTE_ADDR`` or ``HTTP_X_FORWARDED_FOR`` and can be configured in the
+ * phpcore.ini file via the ``request.ip_server_params`` option.
+ *
+ * @note Will return ``null`` if ``$_SERVER`` param is not set or ``false``
+ *       if the **$check_valid** is true and it does not pass the
+ *       ``FILTER_VALIDATE_IP`` check.
+ *
+ * @example Get data from HTTP cookie
+ * <code linenos="true" emphasize-lines="6,11-12">
+ *
+ * $_SERVER['REMOTE_ADDR'] = '10.0.0.1';
+ * $_SERVER['HTTP_X_FORWARDED_FOR'] = '10.0.0.2';
+ *
+ * echo request_ipaddress(); // '10.0.0.1'
+ *
+ * $_SERVER['REMOTE_ADDR'] = '10.0.1';
+ * $_SERVER['HTTP_X_FORWARDED_FOR'] = null;
+ *
+ * var_dump(request_ipaddress()); // '10.0.1'
+ * var_dump(request_ipaddress(true)); // false
+ *
+ * </code>
+ *
+ * @param bool $check_valid Check using ``FILTER_VALIDATE_IP`` filter.
+ * @return ?string IP address makeing request.
+ */
+if ( ! in_array('request_ipaddress', $disable_functions) ) {
+    function request_ipaddress($check_valid = true): mixed
+    {
+        return \PHPCore\Request::getIpAddress($check_valid);
+    }
+}
+
+/**
+ * Get parameter from requested URI
+ *
+ * This method will return the variable passed to the current script via the
+ * URL parameters (aka. query string) by a given **$key** using ``$_GET``
+ * superglobal varable. If the optional **$key** is not provided then an
+ * array of all the URL parameters will be returned.
+ *
+ * @note If **$key** is not provided the **$filter** and **$options**
+ *       arguments will be ignored.
+ * @note The default for **$filter** is **FILTER_DEFAULT**, which is an
+ *       alias of **FILTER_UNSAFE_RAW**. This will result in no filtering
+ *       taking place by default.
+ *
+ * @seealso `PHP list of validate filters`_ - PHP list of validate filters.
+ * @seealso `PHP list of sanitize filters`_ - PHP list of sanitize filters.
+ * @seealso `PHP filter variable`_ - Information on the operation of the
+ *          PHP ``filter_var()`` function.
+ *
+ * @example Get parameter from requested URI
+ * <code linenos="true" emphasize-lines="5-7">
+ *
+ * $_SERVER['REQUEST_URI'] = '/index.php?text=abc&num=12345';
+ *
+ * var_dump(request_param()); // [ 'text' => 'abc', 'num' => '12345' ]
+ * var_dump(request_param('text')); // 'abc'
+ * var_dump(request_param('num', FILTER_VALIDATE_INT)); // 12345
+ *
+ * </code>
+ *
+ * @param ?string $key Key of the query parameter to retrieve.
+ * @param int $filter The filter to apply. Can be a validation filter by
+ *                    using one of the **FILTER_VALIDATE_*** constants, a
+ *                    sanitization filter by using one of the
+ *                    **FILTER_SANITIZE_*** or **FILTER_UNSAFE_RAW**, or a
+ *                    custom filter by using **FILTER_CALLBACK**.
+ * @param array|int $options Either an associative array of options, or a
+ *                           bitmask of filter flag constants
+ *                           **FILTER_FLAG_***. If the filter accepts
+ *                           options, flags can be provided by using the
+ *                           "flags" field of array.
+ * @return mixed The filtered value from the query parameter or ``null`` if
+ *               the **$key** does not exist.
+ */
+if ( ! in_array('request_param', $disable_functions) ) {
+    function request_param(
+        ?string $key = null,
+        int $filter = FILTER_DEFAULT,
+        array|int $options = 0
+    ): mixed {
+        return \PHPCore\Request::getParameter($key, $filter, $options);
+    }
+}
+
+/**
+ * Get segment from requested URI
+ *
+ * This method will return a segment of the requested URI with a given
+ * **$pos** using the **REQUEST_URI** from the ``$_GET`` superglobal
+ * varable.
+ *
+ * @note If **$pos** is not passed the entire segment array will be returned
+ *       and the **$filter** and **$options** will be ignored.
+ * @note The default for **$filter** is **FILTER_DEFAULT**, which is an
+ *       alias of **FILTER_UNSAFE_RAW**. This will result in no filtering
+ *       taking place by default.
+ *
+ * @seealso `PHP list of validate filters`_ - PHP list of validate filters.
+ * @seealso `PHP list of sanitize filters`_ - PHP list of sanitize filters.
+ * @seealso `PHP filter variable`_ - Information on the operation of the
+ *          PHP ``filter_var()`` function.
+ *
+ * @example Get segment from requested URI
+ * <code linenos="true" emphasize-lines="5-9,12">
+ *
+ * $_SERVER['REQUEST_URI'] = '/sections/articles/12345.html';
+ *
+ * var_dump(request_segment()); // [ 'sections', 'articles', '12345' ]
+ * var_dump(request_segment(0)); // 'sections'
+ * var_dump(request_segment(4)); // null
+ * var_dump(request_segment(2, FILTER_VALIDATE_INT)); // 12345
+ * var_dump(request_segment(1, FILTER_VALIDATE_INT)); // false
+ *
+ * phpcore_ini_set('request.segment_offset', 1);
+ * var_dump(request_segment(0)); // 'articles'
+ *
+ * </code>
+ *
+ * @param ?int $pos The pos index of the path to retrieve.
+ * @param int $filter The filter to apply. Can be a validation filter by
+ *                    using one of the **FILTER_VALIDATE_*** constants, a
+ *                    sanitization filter by using one of the
+ *                    **FILTER_SANITIZE_*** or **FILTER_UNSAFE_RAW**, or a
+ *                    custom filter by using **FILTER_CALLBACK**.
+ * @param array|int $options Either an associative array of options, or a
+ *                           bitmask of filter flag constants
+ *                           **FILTER_FLAG_***. If the filter accepts
+ *                           options, flags can be provided by using the
+ *                           "flags" field of array.
+ * @return mixed The filtered value from the requested segment item or
+ *               ``null`` if the **$key** does not exist.
+ */
+if ( ! in_array('request_segment', $disable_functions) ) {
+    function request_segment(
+        ?int $pos = null,
+        int $filter = FILTER_DEFAULT,
+        array|int $options = 0
+    ): mixed {
+        return \PHPCore\Request::getSegment($pos, $filter, $options);
+    }
+}
+
+// -----------------------------------------------------------------------------
+
+// TODO: RBF
+function ________________CORE_FUNCTIONS________________(){}
+
+/**
+ * Parse a csv file
+ *
+ * Convert CSV file to a PHP variable.
+ *
+ * @param string $path The file path.
+ * @param bool $first_row_keys First row contains keys.
+ * @return mixed Data array for csv.
+ */
+if ( ! in_array('csv_parse_file', $disable_functions) ) {
+    function csv_parse_file(string $path, bool $first_row_keys = true): array
+    {
+        $data = [];
+        $keys = [];
+        if (($handle = fopen($path, 'r')) !== false) {
+            $row_cnt = 0;
+            while (($raw_row = fgetcsv($handle)) !== false) {
+                $row_cnt++;
+                if ($first_row_keys && $row_cnt === 1) {
+                    $keys = $raw_row;
+                    continue;
+                } elseif ($first_row_keys === false) {
+                    $data[] = $raw_row;
+                    continue;
+                }
+                $row = [];
+                foreach ($keys as $i => $key) {
+                    $row[$key] = $raw_row[$i];
+                }
+                $data[] = $row;
+            }
+            fclose($handle);
+        }
+        return $data;
+    }
+}
+
 // CLEAN CODE BELOW >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // TODO: RBF
 function ________________CLEAN_CODE_LINE________________(){}
-
 
 // TODO: document
 /*

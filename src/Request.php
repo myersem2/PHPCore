@@ -7,10 +7,11 @@
  * @copyright 2022-2025 Everett Myers
  * @license   MIT License
  * @link      https://PHPCore.org
- * @version   2025-01-05
+ * @version   2025-01-21
  */
 
 namespace PHPCore;
+use PHPCore\Exceptions\RequestException;
 
 // -----------------------------------------------------------------------------
 
@@ -25,8 +26,9 @@ namespace PHPCore;
  *
  * @refence PHPCore Request Class: ../classes/request.html
  * @refence PHPCore Request Functions: ../functions/request.html
- * @refence PHP Filter Variable:https://www.php.net/manual/en/function.filter-var.php
- * @refence PHP Types of filters: https://www.php.net/manual/en/filter.filters.php
+ * @refence PHP filter variable:https://www.php.net/manual/en/function.filter-var.php
+ * @refence PHP list of validate filters:https://www.php.net/manual/en/filter.constants.php#constant.filter-validate-bool
+ * @refence PHP list of sanitize filters:https://www.php.net/manual/en/filter.constants.php#constant.filter-sanitize-string
  */
 #[Test('tests/RequestTest.php')]
 #[Documentation('docs/classes/request.rst')]
@@ -98,40 +100,11 @@ final class Request
                 'REMOTE_ADDR',
             ],
         ],
+        'request.input_stream' => [
+            'type'      => 'string',
+            'default'   => 'php://input',
+        ],
     ];
-
-    // ---------------------------------------------------------------------
-
-    /**
-     * Request ID
-     *
-     * This is the the unique identifier that is assigned when the Request class
-     * is constructed.
-     *
-     * @example Get request ID
-     * <code linenos="true" emphasize-lines="10">
-     *
-     * use \PHPCore\Request;
-     * $request = Request::getRequest();
-     *
-     * // $_SERVER['REQUEST_TIME_FLOAT'] = 1681363597.2922
-     * // $_SERVER['REMOTE_ADDR'] = '10.0.0.101'
-     * // $_SERVER['REQUEST_URI'] = '/test.php'
-     *
-     * var_dump($request->RequestId); // '9e86384b69d5abe885fe33baff74bf37'
-     *
-     * </code>
-     *
-     * @prop ?string
-     */
-    public readonly ?string $RequestId;
-
-    /**
-     * Request Time Start
-     *
-     * @prop float
-     */
-    public readonly float $RequestTimeStart;
 
     // ---------------------------------------------------------------------
 
@@ -191,6 +164,106 @@ final class Request
     }
 
     /**
+     * Get data from request body
+     *
+     * Will parsed the request body based on the format, then return data from
+     * the parsed body by a given **$key** for data passed via the HTTP POST
+     * method. The option **$filter** and **$options** parameters may be given
+     * to invoke ``filter_var()`` before the value is returned.
+     *
+     * @note If **$key** is not passed the request body be returned and the
+     *       **$filter** and **$options** will be ignored.
+     * @note The default for **$filter** is **FILTER_DEFAULT**, which is an
+     *       alias of **FILTER_UNSAFE_RAW**. This will result in no filtering
+     *       taking place by default.
+     *
+     * @seealso `PHP list of validate filters`_ - PHP list of validate filters.
+     * @seealso `PHP list of sanitize filters`_ - PHP list of sanitize filters.
+     * @seealso `PHP filter variable`_ - Information on the operation of the
+     *          PHP ``filter_var()`` function.
+     *
+     * @example Get data from request body
+     * <code linenos="true" emphasize-lines="7-9,14-15">
+     *
+     * use \PHPCore\Request;
+     *
+     * $_POST = [ 'num' => 123, 'text' => 'abc'];
+     *
+     * var_dump(Request::getBody('text')); // 'abc'
+     * var_dump(Request::getBody('num')); // '123'
+     * var_dump(Request::getBody()); // [ 'text' => 'abc', 'num' => '123' ]
+     *
+     * $_SERVER['CONTENT_TYPE'] = 'text/json';
+     * // php://input <= {"num":456, "text":"John"}
+     *
+     * var_dump(Request::getBody('text')); // 'John'
+     * var_dump(Request::getBody('num', FILTER_VALIDATE_INT)); // 456
+     * 
+     * </code>
+     *
+     * @param ?string $key Key of the body to retrieve.
+     * @param int $filter The filter to apply. Can be a validation filter by
+     *                    using one of the **FILTER_VALIDATE_*** constants, a
+     *                    sanitization filter by using one of the
+     *                    **FILTER_SANITIZE_*** or **FILTER_UNSAFE_RAW**, or a
+     *                    custom filter by using **FILTER_CALLBACK**.
+     * @param array|int $options Either an associative array of options, or a
+     *                           bitmask of filter flag constants
+     *                           **FILTER_FLAG_***. If the filter accepts
+     *                           options, flags can be provided by using the
+     *                           "flags" field of array.
+     * @return mixed The filtered value from the body or ``null`` if the **$key**
+     *               does not exist.
+     */
+    public static function getBody(
+        ?string $key = null,
+        int $filter = FILTER_DEFAULT,
+        array|int $options = 0
+    ): mixed {
+        static $body;
+        $format = self::getFormat();
+
+        if ( ! isset($body)) {
+            if ( ! empty($_POST)) {
+                $body = $_POST;
+            } else {
+                $stream = Config::get('request.input_stream');
+                if ($format === 'csv') {
+                    $body = csv_parse_file($stream);
+                } elseif ($rawBody = @file_get_contents($stream)) {
+                    $body = match ($format) {
+                        'xml'   => @simplexml_load_string($rawBody),
+                        'json'  => @json_decode($rawBody),
+                        'yaml'  => @yaml_parse($rawBody),
+                        'csv'   => @str_getcsv($rawBody),
+                        default => null,
+                    };
+                }
+            }
+        }
+
+        if (isset($key)) {
+            if ($format === 'csv') {
+                return $body[$key] ?? null;
+            } else {
+                $value = match (true) {
+                    is_array($body)  => $body[$key] ?? null,
+                    is_object($body) => $body->$key ?? null,
+                    default          => null,
+                };
+            }
+        } else {
+            return $body;
+        }
+
+        if ( ! isset($value)) {
+            return null;
+        }
+
+        return filter_var($value, $filter, $options);
+    }
+
+    /**
      * Get data from HTTP cookie
      *
      * Will return data from the HTTP cookie for a given **$key** using the
@@ -198,9 +271,16 @@ final class Request
      * **$options** parameters may be given to invoke ``filter_var()`` before
      * the value is returned.
      *
-     * @seealso `PHP Types of filters`_ - List of available filters and options.
-     * @seealso `PHP Filter Variable`_ - Information on the operation of the
-     *          ``filter_var()`` function.
+     * @note If **$key** is not passed the cookie array be returned and the
+     *       **$filter** and **$options** will be ignored.
+     * @note The default for **$filter** is **FILTER_DEFAULT**, which is an
+     *       alias of **FILTER_UNSAFE_RAW**. This will result in no filtering
+     *       taking place by default.
+     *
+     * @seealso `PHP list of validate filters`_ - PHP list of validate filters.
+     * @seealso `PHP list of sanitize filters`_ - PHP list of sanitize filters.
+     * @seealso `PHP filter variable`_ - Information on the operation of the
+     *          PHP ``filter_var()`` function.
      *
      * @example Get data from HTTP cookie
      * <code linenos="true" emphasize-lines="7,8-9">
@@ -215,18 +295,165 @@ final class Request
      *
      * </code>
      *
-     * @param string $key The key of the cookie to retrieve.
-     * @param ?int $filter The ID of the filter to apply.
-     * @param array|int $options Associative array of options or bitwise
-     *                           disjunction of flags.
-     * @return mixed The requested cookie or ``null`` if it does not exist.
+     * @param ?string $key Key of the cookie to retrieve.
+     * @param int $filter The filter to apply. Can be a validation filter by
+     *                    using one of the **FILTER_VALIDATE_*** constants, a
+     *                    sanitization filter by using one of the
+     *                    **FILTER_SANITIZE_*** or **FILTER_UNSAFE_RAW**, or a
+     *                    custom filter by using **FILTER_CALLBACK**.
+     * @param array|int $options Either an associative array of options, or a
+     *                           bitmask of filter flag constants
+     *                           **FILTER_FLAG_***. If the filter accepts
+     *                           options, flags can be provided by using the
+     *                           "flags" field of array.
+     * @return mixed The filtered value from the cookie or ``null`` if the
+     *               **$key** does not exist.
      */
     public static function getCookie(
-        string $key,
-        ?int $filter = null,
+        ?string $key = null,
+        int $filter = FILTER_DEFAULT,
         array|int $options = 0
     ): mixed {
-        return self::filterValue($_COOKIE[$key] ?? null, $filter, $options);
+        if (is_null($key)) {
+            return $_COOKIE;
+        }
+        if ( ! isset($_COOKIE[$key])) {
+            return null;
+        }
+        return filter_var($_COOKIE[$key], $filter, $options);
+    }
+
+    /**
+     * Get file from request
+     *
+     * Will return the file by a given **$key** from the files that were
+     * uploaded via the HTTP POST method using the ``$_FILES`` superglobal
+     * variable.
+     *
+     * @example Get file from request
+     * <code linenos="true" emphasize-lines="18-22,24-28">
+     *
+     * use \PHPCore\Request;
+     * use \PHPCore\RequestFile;
+     * use \PHPCore\Exceptions\RequestException;
+     *
+     * $_FILE = [
+     *     'file_upload' => [
+     *         'name' => 'test.csv',
+     *         'full_path' => 'test.json',
+     *         'type' => 'text/csv',
+     *         'tmp_name' => '/data/test/test.csv',
+     *         'error' => 0,
+     *         'size' => 27
+     *     ]
+     * ];
+     *
+     * $file = Request::getFile('file_upload');
+     * var_dump($file->getContents()); // '{"name":"Test","value":123}'
+     * var_dump($file->isTrueType()); // false
+     * var_dump($file->error); // 9
+     * var_dump($file->getErrorMessage()); // 'File was not uploaded via HTTP POST'
+     *
+     * try {
+     *     $file = Request::getFile('file_upload', RequestFile::EXCEPTION_ON_ERROR);
+     * } catch (RequestException $e) {
+     *     var_dump($file->getErrorMessage()); // 9
+     * }
+     * </code>
+     *
+     * @param string $key The key of the file to retrieve.
+     * @param int $flags Bitwise flags for this method
+     * @return ?object RequestFile object or ``null`` if the **$key** does not
+     *                 exist.
+     */
+    public static function getFile(string $key, int $flags = 0): ?object
+    {
+        static $files = [];
+
+        if (empty($_FILES[$key])) {
+            return null;
+        }
+
+        if ( ! isset($files[$key])) {
+            $files[$key] = new RequestFile($_FILES[$key], $flags);
+        }
+
+        return $files[$key];
+    }
+
+    /**
+     * Get files from request
+     *
+     * Will return an array of files for a given **$key** that were uploaded via
+     * the HTTP POST method using the ``$_FILES`` superglobal variable.
+     *
+     * @example Get files from request
+     * <code linenos="true" emphasize-lines="34-37">
+     *
+     * use \PHPCore\Request;
+     *
+     * $_FILE = [
+     *     'file_upload' => [
+     *         'name' => [
+     *             0 => 'test.csv',
+     *             1 => 'test.json'
+     *         ],
+     *         'full_path' => [
+     *             0 => 'test.csv',
+     *             1 => 'test.json'
+     *         ],
+     *         'type' => [
+     *             0 => 'text/csv',
+     *             1 => 'text/csv'
+     *         ]
+     *         'tmp_name' => [
+     *             0 => '/data/test/test.csv',
+     *             1 => '/tmp/phpAKmVxj'
+     *         ],
+     *         'error' => [
+     *             0 => 0,
+     *             0 => 0
+     *         ],
+     *         'size' => [
+     *             0 => 41,
+     *             0 => 27
+     *         ]
+     *     ]
+     * ];
+     *
+     * $files = Request::getFiles('file_upload');
+     * var_dump($files[1]->getContents()); // '{"name":"Test","value":123}'
+     * var_dump($files[0]->error); // 9
+     * var_dump($files[1]->error); // 0
+     *
+     * </code>
+     *
+     * @param string $key The key of the array of files to retrieve.
+     * @param int $flags Bitwise flags for this method
+     * @return ?array Array of RequestFile objects
+     */
+    public static function getFiles(string $key, int $flags = 0): ?array
+    {
+        static $files = [];
+
+        if (empty($_FILES[$key])) {
+            return null;
+        }
+
+        if ( ! isset($files[$key])) {
+            $tmp_files = [];
+            foreach ($_FILES[$key] as $param => $items) {
+                foreach ($items as $index => $value) {
+                    $tmp_files[$index][$param] = $value;
+                }
+            }
+            foreach ($tmp_files as $index => $file) {
+                $files[$key][$index] = new RequestFile($file, $flags);
+            }
+            unset($tmp_files);
+        }
+
+        return $files[$key];
     }
 
     /**
@@ -267,10 +494,17 @@ final class Request
         $content_type = $_SERVER['CONTENT_TYPE'] ?? null;
 
         $format = match($content_type) {
+            'text/xml',
+            'application/xml',
             'application/x-www-form-urlencoded' => 'xml',
-            'text/json', 'application/json'     => 'json',
-            'text/yaml', 'application/x-yaml'   => 'yaml',
-            'text/csv'                          => 'csv',
+
+            'text/json',
+            'application/json' => 'json',
+
+            'text/yaml',
+            'application/x-yaml' => 'yaml',
+
+            'text/csv' => 'csv',
             null    => null,
             default => null,
         };
@@ -295,7 +529,7 @@ final class Request
     }
 
     /**
-     * Get data from request header
+     * Get HTTP data from request header
      *
      * Will return data from the HTTP request headers for a given **$key** using
      * the ``$_HEADER`` superglobal varable. The optional **$filter** and
@@ -307,11 +541,15 @@ final class Request
      * include the prefix "X-" in your code moving forward. If both are present
      * the one without the "X-" will be returned.
      *
-     * @note Do not include the "HTTP_" prefix to the **$key**.
+     * @note Do not include the "HTTP" prefix to the **$key**.
+     * @note The default for **$filter** is **FILTER_DEFAULT**, which is an
+     *       alias of **FILTER_UNSAFE_RAW**. This will result in no filtering
+     *       taking place by default.
      *
-     * @seealso `PHP Types of filters`_ - List of available filters and options.
-     * @seealso `PHP Filter Variable`_ - Information on the operation of the
-     * ``filter_var()`` function.
+     * @seealso `PHP list of validate filters`_ - PHP list of validate filters.
+     * @seealso `PHP list of sanitize filters`_ - PHP list of sanitize filters.
+     * @seealso `PHP filter variable`_ - Information on the operation of the
+     *          PHP ``filter_var()`` function.
      *
      * @example Get data from request header
      * <code linenos="true" emphasize-lines="9-11">
@@ -328,31 +566,56 @@ final class Request
      *
      * </code>
      *
-     * @param string $key The key of the header to retrieve.
-     * @param ?int $filter The ID of the filter to apply.
-     * @param array|int $options Associative array of options or bitwise
-     *                           disjunction of flags.
-     * @return mixed The requested header  or ``null`` if it does not exist.
+     * @param ?string $key Key of the header to retrieve.
+     * @param int $filter The filter to apply. Can be a validation filter by
+     *                    using one of the **FILTER_VALIDATE_*** constants, a
+     *                    sanitization filter by using one of the
+     *                    **FILTER_SANITIZE_*** or **FILTER_UNSAFE_RAW**, or a
+     *                    custom filter by using **FILTER_CALLBACK**.
+     * @param array|int $options Either an associative array of options, or a
+     *                           bitmask of filter flag constants
+     *                           **FILTER_FLAG_***. If the filter accepts
+     *                           options, flags can be provided by using the
+     *                           "flags" field of array.
+     * @return mixed The filtered value from the header or ``null`` if the
+     *               **$key** does not exist.
      */
-    public static function getHeader(
-        string $key,
-        ?int $filter = null,
+    public static function getHttpHeader(
+        ?string $key = null,
+        int $filter = FILTER_DEFAULT,
         array|int $options = 0
     ): mixed {
 
+        $raw_http_headers = array_filter(
+            $_SERVER,
+            fn($k) => str_starts_with($k, 'HTTP_'),
+            ARRAY_FILTER_USE_KEY
+        );
+        $http_headers = [];
+        foreach ($raw_http_headers as $k => $v) {
+            $http_headers[substr($k, 5)] = $v;
+        }
+
+        if (is_null($key)) {
+            return $http_headers;
+        }
+
         $key = strtoupper($key);
 
-        $search = ["HTTP_$key"];
-        if (!empty($key) && strpos($key, 'X') !== 0) {
-            $search[] = "HTTP_X_$key";
+        $search = [$key];
+        if (strpos($key, 'X_') !== 0) {
+            $search[] = "X_$key";
         }
-        
-        $key_2 = array_find(
+
+        $key_search = array_find(
             $search,
-            fn($v, $k) => isset($_SERVER[$v])
+            fn($v, $k) => isset($http_headers[$v])
         );
 
-        return self::filterValue($_SERVER[$key_2] ?? null, $filter, $options);
+        if ( ! isset($http_headers[$key_search])) {
+            return null;
+        }
+        return filter_var($http_headers[$key_search], $filter, $options);
     }
 
     /**
@@ -363,39 +626,37 @@ final class Request
      * ``REMOTE_ADDR`` or ``HTTP_X_FORWARDED_FOR`` and can be configured in the
      * phpcore.ini file via the ``request.ip_server_params`` option.
      *
-     * @note Will be **false** if ``$_SERVER`` param is not set or the value
-     *       does not pass the ``FILTER_VALIDATE_IP`` check.
-     *
-     * @seealso `PHP Types of filters`_ - List of available filters and options.
-     * @seealso `PHP Filter Variable`_ - Information on the operation of the
-     *          ``filter_var()`` function.
+     * @note Will return ``null`` if ``$_SERVER`` param is not set or ``false``
+     *       if the **$check_valid** is true and it does not pass the
+     *       ``FILTER_VALIDATE_IP`` check.
      *
      * @example Get data from HTTP cookie
-     * <code linenos="true" emphasize-lines="7,8">
+     * <code linenos="true" emphasize-lines="8,13-14">
      *
      * use \PHPCore\Request;
      *
-     * $_COOKIE = [ 'PaginationOffset' => 1, 'PaginationOrder' => 'asc' ]
+     * $_SERVER['REMOTE_ADDR'] = '10.0.0.1';
+     * $_SERVER['HTTP_X_FORWARDED_FOR'] = '10.0.0.2';
      *
-     * echo Request::getCookie('PaginationOrder'); // 'asc'
-     * var_dump(Request::getCookie('PaginationOffset', FILTER_VALIDATE_INT)); // 1
-     * var_dump(Request::getCookie('PaginationOrder', FILTER_VALIDATE_INT)); // 1
+     * echo Request::getIpAddress(); // '10.0.0.1'
+     *
+     * $_SERVER['REMOTE_ADDR'] = '10.0.1';
+     * $_SERVER['HTTP_X_FORWARDED_FOR'] = null;
+     *
+     * var_dump(Request::getIpAddress()); // '10.0.1'
+     * var_dump(Request::getIpAddress(true)); // false
      *
      * </code>
      *
+     * @param bool $check_valid Check using ``FILTER_VALIDATE_IP`` filter.
      * @return ?string IP address makeing request.
      */
-    public static function getIpAddress(): ?string {
-        static $ip_address;
-
-        if (isset($ip_address)) {
-            return $ip_address;
-        }
-
+    public static function getIpAddress($check_valid = true): mixed {
         $ip_server_params = Config::get('request.ip_server_params');
         if (empty($ip_server_params)) {
             throw new RequestException(
-                'Empty `request.ip_server_params` in phpcore.ini'
+                NULL,
+                RequestException::CONFIG_ERR_IP_SVR_PARM
             );
         }
 
@@ -406,7 +667,13 @@ final class Request
 
         $ip_address = explode(' ', $_SERVER[$ip_server_param] ?? '')[0];
 
-        return empty($ip_address) ? null : $ip_address;
+        if (empty($ip_address)) {
+            return null;
+        } elseif ($check_valid) {
+            return filter_var($ip_address, FILTER_VALIDATE_IP);
+        } else {
+            return $ip_address;
+        }
     }
 
     /**
@@ -419,10 +686,14 @@ final class Request
      *
      * @note If **$key** is not provided the **$filter** and **$options**
      *       arguments will be ignored.
+     * @note The default for **$filter** is **FILTER_DEFAULT**, which is an
+     *       alias of **FILTER_UNSAFE_RAW**. This will result in no filtering
+     *       taking place by default.
      *
-     * @seealso `PHP Types of filters`_ - List of available filters and options.
-     * @seealso `PHP Filter Variable`_ - Information on the operation of the
-     *          ``filter_var()`` function.
+     * @seealso `PHP list of validate filters`_ - PHP list of validate filters.
+     * @seealso `PHP list of sanitize filters`_ - PHP list of sanitize filters.
+     * @seealso `PHP filter variable`_ - Information on the operation of the
+     *          PHP ``filter_var()`` function.
      *
      * @example Get parameter from requested URI
      * <code linenos="true" emphasize-lines="7-9">
@@ -431,25 +702,36 @@ final class Request
      *
      * $_SERVER['REQUEST_URI'] = '/index.php?text=abc&num=12345';
      *
-     * var_dump(Request::getParameter()); // [ 'text' => 'abc', 'num' => '12345' ];
+     * var_dump(Request::getParameter()); // [ 'text' => 'abc', 'num' => '12345' ]
      * var_dump(Request::getParameter('text')); // 'abc'
      * var_dump(Request::getParameter('num', FILTER_VALIDATE_INT)); // 12345
      *
      * </code>
      *
-     * @param ?string $key The key of the query parameter to retrieve.
-     * @param ?int $filter The ID of the filter to apply.
-     * @param array|int $options Associative array of options or bitwise
-     *                           disjunction of flags.
-     * @return mixed The requested query item or ``null`` if it does not exist.
+     * @param ?string $key Key of the query parameter to retrieve.
+     * @param int $filter The filter to apply. Can be a validation filter by
+     *                    using one of the **FILTER_VALIDATE_*** constants, a
+     *                    sanitization filter by using one of the
+     *                    **FILTER_SANITIZE_*** or **FILTER_UNSAFE_RAW**, or a
+     *                    custom filter by using **FILTER_CALLBACK**.
+     * @param array|int $options Either an associative array of options, or a
+     *                           bitmask of filter flag constants
+     *                           **FILTER_FLAG_***. If the filter accepts
+     *                           options, flags can be provided by using the
+     *                           "flags" field of array.
+     * @return mixed The filtered value from the query parameter or ``null`` if
+     *               the **$key** does not exist.
      */
     public static function getParameter(
         ?string $key = null,
-        ?int $filter = null,
+        int $filter = FILTER_DEFAULT,
         array|int $options = 0
     ): mixed {
         if (isset($key)) {
-            return self::filterValue($_GET[$key] ?? null, $filter, $options);
+            if ( ! isset($_GET[$key])) {
+                return null;
+            }
+            return filter_var($_GET[$key], $filter, $options);
         } else {
             return $_GET;
         }
@@ -464,20 +746,25 @@ final class Request
      *
      * @note If **$pos** is not passed the entire segment array will be returned
      *       and the **$filter** and **$options** will be ignored.
+     * @note The default for **$filter** is **FILTER_DEFAULT**, which is an
+     *       alias of **FILTER_UNSAFE_RAW**. This will result in no filtering
+     *       taking place by default.
      *
-     * @seealso `PHP Types of filters`_ - List of available filters and options.
-     * @seealso `PHP Filter Variable`_ - Information on the operation of the
-     *          ``filter_var()`` function.
+     * @seealso `PHP list of validate filters`_ - PHP list of validate filters.
+     * @seealso `PHP list of sanitize filters`_ - PHP list of sanitize filters.
+     * @seealso `PHP filter variable`_ - Information on the operation of the
+     *          PHP ``filter_var()`` function.
      *
      * @example Get segment from requested URI
-     * <code linenos="true" emphasize-lines="7-11,12">
+     * <code linenos="true" emphasize-lines="8-12,15">
      *
      * use \PHPCore\Request;
+     * use \PHPCore\Config;
      *
      * $_SERVER['REQUEST_URI'] = '/sections/articles/12345.html';
      *
-     * var_dump(Request::getSegment()); // [ "sections", "articles", "12345" ]
-     * var_dump(Request::getSegment(1)); // 'articles'
+     * var_dump(Request::getSegment()); // [ 'sections', 'articles', '12345' ]
+     * var_dump(Request::getSegment(0)); // 'sections'
      * var_dump(Request::getSegment(4)); // null
      * var_dump(Request::getSegment(2, FILTER_VALIDATE_INT)); // 12345
      * var_dump(Request::getSegment(1, FILTER_VALIDATE_INT)); // false
@@ -487,17 +774,23 @@ final class Request
      *
      * </code>
      *
-     * @param ?int      $pos     The pos index of the path to retrieve
-     * @param ?string $key The key of the query parameter to retrieve.
-     * @param ?int $filter The ID of the filter to apply.
-     * @param array|int $options Associative array of options or bitwise
-     *                           disjunction of flags.
-     * @return mixed The requested segment item or ``null`` if it does not
-     *               exist.
+     * @param ?int $pos The pos index of the path to retrieve.
+     * @param int $filter The filter to apply. Can be a validation filter by
+     *                    using one of the **FILTER_VALIDATE_*** constants, a
+     *                    sanitization filter by using one of the
+     *                    **FILTER_SANITIZE_*** or **FILTER_UNSAFE_RAW**, or a
+     *                    custom filter by using **FILTER_CALLBACK**.
+     * @param array|int $options Either an associative array of options, or a
+     *                           bitmask of filter flag constants
+     *                           **FILTER_FLAG_***. If the filter accepts
+     *                           options, flags can be provided by using the
+     *                           "flags" field of array.
+     * @return mixed The filtered value from the requested segment item or
+     *               ``null`` if the **$key** does not exist.
      */
     public static function getSegment(
         ?int $pos = null,
-        ?int $filter = null,
+        int $filter = FILTER_DEFAULT,
         array|int $options = 0
     ): mixed {
         $offset = Config::get('request.segment_offset');
@@ -508,351 +801,15 @@ final class Request
         $parts = explode('/', substr($path, 1));
         $segments = array_slice($parts, $offset);
 
-        if ($pos < 0) {
-            $pos = null;
-        }
-
-        if (isset($pos)) {
-            return self::filterValue(
-                $segments[$pos] ?? null,
-                $filter,
-                $options
-            );
-        } else {
+        if (is_null($pos)) {
             return $segments;
         }
-    }
 
-    // ---------------------------------------------------------------------
-
-    /**
-     * Filter value
-     *
-     * This method will return a filtere value if a filter is specified. If no
-     * filter is specified the orginal value will be returned. 
-     *
-     * @seealso `PHP Types of filters`_ - List of available filters and options.
-     * @seealso `PHP Filter Variable`_ - Information on the operation of the
-     *          ``filter_var()`` function.
-     *
-     * @param mixed     $value   Value to be filtered .
-     * @param ?int      $filter  The ID of the filter to apply.
-     * @param array|int $options Associative array of options or bitwise
-     *                           disjunction of flags.
-     * @return mixed The filtered value.
-     */
-    private static function filterValue(
-        mixed $value,
-        ?int $filter = null,
-        array|int $options = 0
-    ): mixed {
-        if (isset($filter)) {
-            return filter_var($value, $filter, $options);
-        } else {
-            return $value;
-        }
-    }
-
-    // ---------------------------------------------------------------------
-
-    /**
-     * Get request object
-     *
-     * This method is used to retrive a previously constructed request instance
-     * by a given `$request_id`.
-     *
-     * @throw  Exception('Error string')
-     *
-     * @param  ?string $request_id Request ID
-     * @return ?PHPCore\Request Request instance
-     */
-    public static function &zGetRequest(?string $request_id = null): ?Request
-    {
-        if (empty(self::$Instances)) {
-            $method = __METHOD__;
-            throw new Exception(
-                "$method cannot be invoked because no Request instances exist."
-            );
-        }
-
-        if (!isset($request_id)) {
-            if (count(self::$Instances) > 1) {
-                $method = __METHOD__;
-                throw new Exception(
-                    "$method cannot be invoked without the request_id parameter with mutiple Request instances."
-                );
-            }
-            $request_id = array_keys(self::$Instances)[0];
-        }
-
-        if (!isset(self::$Instances[$request_id])) {
-            throw new Exception(
-                "Request ID `$request_id` was not found."
-            );
-        }
-
-        return self::$Instances[$request_id];
-    }
-
-    // ---------------------------------------------------------------------
-
-    /**
-     * Constructor
-     *
-     * Used to construct the instance and it by reference into the
-     * self::$Instances for later use.
-     *
-     * @param  array $params Parameters for request
-     * @return void
-     */
-    public function __construct(array $params = [])
-    {
-        // Time Start
-        if (!isset($params['request_time'])) {
-            $params['request_time'] = $_SERVER['REQUEST_TIME_FLOAT'];
-        }
-        $this->RequestTimeStart = $params['request_time'] ?? microtime(true);
-
-        // Cookies
-        if (!isset($params['cookies']) && isset($_COOKIE)) {
-            $params['cookies'] = $_COOKIE;
-        }
-        $this->Cookies = $params['cookies'] ?? [];
-
-        // Headers
-        if (!isset($params['headers']) && function_exists('getallheaders')) {
-            $params['headers'] = getallheaders();
-        }
-        $this->Headers = $params['headers'] ?? [];
-
-        // Format
-        if (!isset($params['format'])) {
-            $params['format'] = $this->getRequestedFormat();
-        }
-        $this->Format = $params['format'] ?? 'json';
-
-        // Requester's IP address
-        $ip_srv_params = phpcore_ini_get('request.ip_server_params');
-        if (!isset($params['ip_address'])) {
-            $ip_srv_param = array_find(
-                $ip_srv_params,
-                fn($i) => isset($_SERVER[$i])
-            );
-        }
-        $this->IpAddress = $_SERVER[$ip_srv_param] ?? false;
-
-        // Request ID
-        if (!isset($params['request_id'])) {
-            $time = strval($this->RequestTimeStart);
-            $params['request_id'] = md5("{$time}{$ip_address}");
-        }
-        $this->requestId = $request_id;
-
-        // Duplicate request instance with same request ID
-        if (isset(self::$Instances[$this->requestId])) {
-            $method = __METHOD__;
-            trigger_error(
-                "$method failed, Request ID already exists."
-            , E_USER_WARNING);
-        }
-
-        self::$Instances[$this->requestId] =& $this;
-    }
-
-    // ---------------------------------------------------------------------
-
-    /**
-     * Get data from request body
-     *
-     * Will parsed the request body based on the format, then return data from
-     * the parsed body by a given **$key** for data passed via the HTTP POST
-     * method. The option **$filter** and **$options** parameters may be given
-     * to invoke ``filter_var()`` before the value is returned.
-     *
-     * If **$key** is not passed the request body be returned and the
-     * **$filter** and **$options** will be ignored.
-     *
-     * @seealso `PHP Types of filters`_ - List of available filters and options.
-     * @seealso `PHP Filter Variable`_ - Information on the operation of the
-     *          ``filter_var()`` function.
-     *
-     * @example Get data from request body
-     * <code linenos="true" emphasize-lines="8,9">
-     *
-     * use \PHPCore\Request;
-     *
-     * // $_POST = '{ "name": "Smith", "age": "22" }'
-     *
-     * // Get by key
-     * echo Request::body('name'); // 'Smith'
-     * var_dump(Request::body('name', FILTER_VALIDATE_INT)); // 22
-     *
-     * </code>
-     *
-     * @param ?string   $key     The key of the body's data to retrieve
-     * @param ?int      $filter  The ID of the filter to apply
-     * @param array|int $options Associative array of options or bitwise
-     *                           disjunction of flags
-     *
-     * @return mixed The requested data item
-     */
-    public function getBody(
-        ?string $key = null,
-        ?int $filter = null,
-        array|int $options = 0
-    ): mixed {
-        // todo get ride of static due to mutiple request instance creations
-        static $body;
-
-        if (!isset($body)) {
-            if ($rawBody = @file_get_contents('php:/' . '/input')) {
-                $body = match ($this->format()) {
-                    'xml'   => @simplexml_load_string($rawBody),
-                    'json'  => @json_decode($rawBody),
-                    'yaml'  => @yaml_parse($rawBody),
-                    // BUG: Need NULL due to but see - https://github.com/php/php-src/issues/11134
-                    null    => null,
-                    default => null,
-                } ?? $_POST;
-            }
-        }
-
-        if (isset($key)) {
-            $value = match (true) {
-                is_array($body)  => $body[$key] ?? null,
-                is_object($body) => $body->$key ?? null,
-                // BUG: NULL Need due to but see - https://github.com/php/php-src/issues/11134
-                null             => null,
-                default          => null,
-            };
-        } else {
-            return $body;
-        }
-
-        return $this->filterValue($value, $filter, $options);
-    }
-
-    /**
-     * Get file from request
-     *
-     * Will return the file by a given **$key** for the files that was uploaded
-     * via the HTTP POST method using the ``$_FILES`` superglobal variable.
-     *
-     * @example Get file from request
-     * <code linenos="true" emphasize-lines="14,15">
-     *
-     * use \PHPCore\Request;
-     *
-     * // $_FILES['test'] = [
-     * //     'name'      => 'sample.pdf.png',
-     * //     'full_path' => 'sample.pdf.png',
-     * //     'type'      => 'image/png',
-     * //     'tmp_name'  => '/tmp/php059gDH',
-     * //     'error'     => 0,
-     * //     'size'      => 3028
-     * // ];
-     *
-     * echo Request::file('test')->type; // 'image/png'
-     * echo Request::file('test')->trueType(); // 'application/pdf'
-     *
-     * </code>
-     *
-     * @param string $key The key of the file to retrieve
-     *
-     * @return ?object RequestFile object
-     */
-    public function getFile(string $key): ?object
-    {
-        // todo get ride of static due to mutiple request instance creations
-        static $request_files;
-
-        if (empty($_FILES[$key])) {
+        if ($pos < 0 || ! isset($segments[$pos])) {
             return null;
         }
 
-        if (!isset($request_files[$key])) {
-            $request_files[$key] = new RequestFile($_FILES[$key]);
-        }
-
-        return $request_files[$key];
-    }
-
-    /**
-     * Get files from request
-     *
-     * Will return an array of files for a given **$key** that were uploaded via
-     * the HTTP POST method using the ``$_FILES`` superglobal variable.
-     *
-     * @example Get files from request
-     * <code linenos="true" emphasize-lines="14,15">
-     *
-     * use \PHPCore\Request;
-     *
-     * // $_FILES['test'] = [
-     * //     'name'      => [ 'sample_1.pdf.png', 'sample_2.csv' ],
-     * //     'full_path' => [ 'sample_1.pdf.png', 'sample_2.csv' ],
-     * //     'type'      => [ 'image/png', text/csv', ],
-     * //     'tmp_name'  => [ '/tmp/php059gDH', '/tmp/phpWGy7GA' ],
-     * //     'error'     => [ 0, 0 ],
-     * //     'size'      => [ 3028, 1037 ],
-     * // ];
-     *
-     * echo Request::file('test')[0]->name; // 'sample_1.pdf.png'
-     * echo Request::file('test')[1]->name; // 'sample_2.csv'
-     *
-     * </code>
-     *
-     * @param string $key The key of the array of files to retrieve
-     *
-     * @return array Array of RequestFile objects
-     */
-    public function getFiles(string $key): array
-    {
-        // todo get ride of static due to mutiple request instance creations
-        static $request_files;
-
-        if (empty($_FILES[$key])) {
-            return [];
-        }
-
-        if (!isset($request_files[$key])) {
-            $files = [];
-            foreach ($_FILES[$key] as $param => $items) {
-                foreach ($items as $index => $value) {
-                    $files[$index][$param] = $value;
-                }
-            }
-            foreach ($files as $index => $file) {
-                $request_files[$key][$index] = new RequestFile($file);
-            }
-        }
-
-        return $request_files[$key];
-    }
-}
-
-// -----------------------------------------------------------------------------
-
-/**
- * Request Exception Class
- *
- * The Exception class is used to throw exceptions in the Request class.
- *
- * @codeCoverageIgnore
- */
-final class RequestException extends \Exception
-{
-    /**
-     * To string
-     *
-     * This method is get the description of the exception.
-     *
-     * @ignore
-     * @return string Exception description
-     */
-    public function __toString(): string
-    {
-        return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+        return filter_var($segments[$pos], $filter, $options);
     }
 }
 

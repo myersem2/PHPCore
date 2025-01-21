@@ -175,26 +175,17 @@
 <h2>Request Class Synopsis<a class="headerlink" href="#request-class-synopsis" title="Permalink to this headline"></a></h2>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">final</span> <span class="k">class</span> <span class="nc">Request</span> <span class="p">{</span>
 
-    <span class="cm">/* Properties */</span>
-    <span class="k">public</span> <span class="o">?</span><span class="nx">string</span> <span class="nv">$RequestId</span><span class="p">;</span>
-    <span class="k">public</span> <span class="nx">float</span> <span class="nv">$RequestTimeStart</span><span class="p">;</span>
-
-    <span class="cm">/* Methods */</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="k">array</span> <span class="nv">$params</span> <span class="o">=</span> <span class="p">[])</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">getBody</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">getFile</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">object</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">getFiles</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
-
     <span class="cm">/* Static Methods */</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getAgent</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getCookie</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getBody</span><span class="p">(</span><span class="nx">mixed</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="mi">516</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getCookie</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="mi">516</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getFile</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">object</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getFiles</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="k">array</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getFormat</span><span class="p">()</span><span class="o">:</span> <span class="o">?</span><span class="nx">string</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getHeader</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$key</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getHttpHeader</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="mi">516</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getIpAddress</span><span class="p">()</span><span class="o">:</span> <span class="o">?</span><span class="nx">string</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getParameter</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getSegment</span><span class="p">(</span><span class="o">?</span><span class="nx">int</span> <span class="nv">$pos</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">private</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">filterValue</span><span class="p">(</span><span class="nx">mixed</span> <span class="nv">$value</span><span class="p">,</span> <span class="o">?</span><span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">zGetRequest</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$request_id</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">PHPCore\Request</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getParameter</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$key</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="mi">516</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getSegment</span><span class="p">(</span><span class="o">?</span><span class="nx">int</span> <span class="nv">$pos</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$filter</span> <span class="o">=</span> <span class="mi">516</span><span class="p">,</span> <span class="k">array</span><span class="o">|</span><span class="nx">int</span> <span class="nv">$options</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span> <span class="nx">mixed</span>
 
 <span class="p">}</span>
 </pre></div>
@@ -204,18 +195,15 @@
 <h2>Request Class Table of Contents<a class="headerlink" href="#request-class-table-of-contents" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="#request-method-getagent"><span class="std std-ref">Request::getAgent</span></a> - Get request agent capabilities</p></li>
+<li><p><a class="reference internal" href="#request-method-getbody"><span class="std std-ref">Request::getBody</span></a> - Get data from request body</p></li>
 <li><p><a class="reference internal" href="#request-method-getcookie"><span class="std std-ref">Request::getCookie</span></a> - Get data from HTTP cookie</p></li>
+<li><p><a class="reference internal" href="#request-method-getfile"><span class="std std-ref">Request::getFile</span></a> - Get file from request</p></li>
+<li><p><a class="reference internal" href="#request-method-getfiles"><span class="std std-ref">Request::getFiles</span></a> - Get files from request</p></li>
 <li><p><a class="reference internal" href="#request-method-getformat"><span class="std std-ref">Request::getFormat</span></a> - Get format from request</p></li>
-<li><p><a class="reference internal" href="#request-method-getheader"><span class="std std-ref">Request::getHeader</span></a> - Get data from request header</p></li>
+<li><p><a class="reference internal" href="#request-method-gethttpheader"><span class="std std-ref">Request::getHttpHeader</span></a> - Get HTTP data from request header</p></li>
 <li><p><a class="reference internal" href="#request-method-getipaddress"><span class="std std-ref">Request::getIpAddress</span></a> - Get IP address</p></li>
 <li><p><a class="reference internal" href="#request-method-getparameter"><span class="std std-ref">Request::getParameter</span></a> - Get parameter from requested URI</p></li>
 <li><p><a class="reference internal" href="#request-method-getsegment"><span class="std std-ref">Request::getSegment</span></a> - Get segment from requested URI</p></li>
-<li><p><a class="reference internal" href="#request-method-filtervalue"><span class="std std-ref">Request::filterValue</span></a> - Filter value</p></li>
-<li><p><a class="reference internal" href="#request-method-zgetrequest"><span class="std std-ref">Request::zGetRequest</span></a> - Get request object</p></li>
-<li><p><a class="reference internal" href="#request-method-construct"><span class="std std-ref">Request::__construct</span></a> - Constructor</p></li>
-<li><p><a class="reference internal" href="#request-method-getbody"><span class="std std-ref">Request::getBody</span></a> - Get data from request body</p></li>
-<li><p><a class="reference internal" href="#request-method-getfile"><span class="std std-ref">Request::getFile</span></a> - Get file from request</p></li>
-<li><p><a class="reference internal" href="#request-method-getfiles"><span class="std std-ref">Request::getFiles</span></a> - Get files from request</p></li>
 </ul>
 </section>
 <section id="request-class-methods">
@@ -260,32 +248,98 @@
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="request-method-getcookie"></span><dl class="php method">
+<span class="target" id="request-method-getbody"></span><dl class="php method">
 <dt class="sig sig-object php">
-<span class="sig-name descname"><span class="pre">getCookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
-<dd><p>Get data from HTTP cookie</p>
-<p>Will return data from the HTTP cookie for a given <strong>$key</strong> using the <code class="docutils literal notranslate"><span class="pre">$_HEADER</span></code> superglobal varable. The optional <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
+<span class="sig-name descname"><span class="pre">getBody</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">mixed</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">516</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Get data from request body</p>
+<p>Will parsed the request body based on the format, then return data from the parsed body by a given <strong>$key</strong> for data passed via the HTTP POST method. The option <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.</p></li>
-<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-validate-bool">PHP list of validate filters</a> - PHP list of validate filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-sanitize-string">PHP list of sanitize filters</a> - PHP list of sanitize filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP filter variable</a> - Information on the operation of the PHP <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>If <strong>$key</strong> is not passed the request body be returned and the <strong>$filter</strong> and <strong>$options</strong> will be ignored.</p></li>
+<li><p>The default for <strong>$filter</strong> is <strong>FILTER_DEFAULT</strong>, which is an alias of <strong>FILTER_UNSAFE_RAW</strong>. This will result in no filtering taking place by default.</p></li>
 </ul>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the cookie to retrieve.</p></li>
-<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?int</span></code></span>) – The ID of the filter to apply.</p></li>
-<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags.</p></li>
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">mixed</span></code></span>) – Key of the body to retrieve.</p></li>
+<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – The filter to apply. Can be a validation filter by using one of the <strong>FILTER_VALIDATE_*</strong> constants, a sanitization filter by using one of the <strong>FILTER_SANITIZE_*</strong> or <strong>FILTER_UNSAFE_RAW</strong>, or a custom filter by using <strong>FILTER_CALLBACK</strong>.</p></li>
+<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Either an associative array of options, or a bitmask of filter flag constants <strong>FILTER_FLAG_*</strong>. If the filter accepts options, flags can be provided by using the “flags” field of array.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested cookie or <code class="docutils literal notranslate"><span class="pre">null</span></code> if it does not exist.</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The filtered value from the body or <code class="docutils literal notranslate"><span class="pre">null</span></code> if the <strong>$key</strong> does not exist.</p>
 </dd>
 </dl>
 <div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-number">Example 16 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-number">Example 16 </span><span class="caption-text">Get data from request body</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="nv">$_POST</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;num&#39;</span> <span class="o">=&gt;</span> <span class="mi">123</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;abc&#39;</span><span class="p">];</span>
+<span class="linenos"> 6</span>
+<span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getBody</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">));</span> <span class="c1">// &#39;abc&#39;</span>
+</span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getBody</span><span class="p">(</span><span class="s1">&#39;num&#39;</span><span class="p">));</span> <span class="c1">// &#39;123&#39;</span>
+</span><span class="hll"><span class="linenos"> 9</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getBody</span><span class="p">());</span> <span class="c1">// [ &#39;text&#39; =&gt; &#39;abc&#39;, &#39;num&#39; =&gt; &#39;123&#39; ]</span>
+</span><span class="linenos">10</span>
+<span class="linenos">11</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;CONTENT_TYPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;text/json&#39;</span><span class="p">;</span>
+<span class="linenos">12</span><span class="c1">// php://input &lt;= {&quot;num&quot;:456, &quot;text&quot;:&quot;John&quot;}</span>
+<span class="linenos">13</span>
+<span class="hll"><span class="linenos">14</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getBody</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">));</span> <span class="c1">// &#39;John&#39;</span>
+</span><span class="hll"><span class="linenos">15</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getBody</span><span class="p">(</span><span class="s1">&#39;num&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 456</span>
+</span><span class="linenos">16</span>
+<span class="linenos">17</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-getcookie"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getCookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">516</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Get data from HTTP cookie</p>
+<p>Will return data from the HTTP cookie for a given <strong>$key</strong> using the <code class="docutils literal notranslate"><span class="pre">$_HEADER</span></code> superglobal varable. The optional <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-validate-bool">PHP list of validate filters</a> - PHP list of validate filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-sanitize-string">PHP list of sanitize filters</a> - PHP list of sanitize filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP filter variable</a> - Information on the operation of the PHP <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>If <strong>$key</strong> is not passed the cookie array be returned and the <strong>$filter</strong> and <strong>$options</strong> will be ignored.</p></li>
+<li><p>The default for <strong>$filter</strong> is <strong>FILTER_DEFAULT</strong>, which is an alias of <strong>FILTER_UNSAFE_RAW</strong>. This will result in no filtering taking place by default.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?string</span></code></span>) – Key of the cookie to retrieve.</p></li>
+<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – The filter to apply. Can be a validation filter by using one of the <strong>FILTER_VALIDATE_*</strong> constants, a sanitization filter by using one of the <strong>FILTER_SANITIZE_*</strong> or <strong>FILTER_UNSAFE_RAW</strong>, or a custom filter by using <strong>FILTER_CALLBACK</strong>.</p></li>
+<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Either an associative array of options, or a bitmask of filter flag constants <strong>FILTER_FLAG_*</strong>. If the filter accepts options, flags can be provided by using the “flags” field of array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The filtered value from the cookie or <code class="docutils literal notranslate"><span class="pre">null</span></code> if the <strong>$key</strong> does not exist.</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-number">Example 17 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
@@ -304,6 +358,124 @@
 </dd></dl>
 
 <hr class="docutils" />
+<span class="target" id="request-method-getfile"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">int</span> <span class="pre">$flags</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Get file from request</p>
+<p>Will return the file by a given <strong>$key</strong> from the files that were uploaded via the HTTP POST method using the <code class="docutils literal notranslate"><span class="pre">$_FILES</span></code> superglobal variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the file to retrieve.</p></li>
+<li><p><strong>$flags</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – Bitwise flags for this method</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">?object</span></code> RequestFile object or <code class="docutils literal notranslate"><span class="pre">null</span></code> if the <strong>$key</strong> does not exist.</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-number">Example 18 </span><span class="caption-text">Get file from request</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 4</span><span class="k">use</span> <span class="nx">\PHPCore\RequestFile</span><span class="p">;</span>
+<span class="linenos"> 5</span><span class="k">use</span> <span class="nx">\PHPCore\Exceptions\RequestException</span><span class="p">;</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="nv">$_FILE</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos"> 8</span><span class="s1">&#39;file_upload&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<span class="linenos"> 9</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;test.csv&#39;</span><span class="p">,</span>
+<span class="linenos">10</span><span class="s1">&#39;full_path&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;test.json&#39;</span><span class="p">,</span>
+<span class="linenos">11</span><span class="s1">&#39;type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">,</span>
+<span class="linenos">12</span><span class="s1">&#39;tmp_name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;/data/test/test.csv&#39;</span><span class="p">,</span>
+<span class="linenos">13</span><span class="s1">&#39;error&#39;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos">14</span><span class="s1">&#39;size&#39;</span> <span class="o">=&gt;</span> <span class="mi">27</span>
+<span class="linenos">15</span><span class="p">]</span>
+<span class="linenos">16</span><span class="p">];</span>
+<span class="linenos">17</span>
+<span class="hll"><span class="linenos">18</span><span class="nv">$file</span> <span class="o">=</span> <span class="nx">Request</span><span class="o">::</span><span class="na">getFile</span><span class="p">(</span><span class="s1">&#39;file_upload&#39;</span><span class="p">);</span>
+</span><span class="hll"><span class="linenos">19</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$file</span><span class="o">-&gt;</span><span class="na">getContents</span><span class="p">());</span> <span class="c1">// &#39;{&quot;name&quot;:&quot;Test&quot;,&quot;value&quot;:123}&#39;</span>
+</span><span class="hll"><span class="linenos">20</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$file</span><span class="o">-&gt;</span><span class="na">isTrueType</span><span class="p">());</span> <span class="c1">// false</span>
+</span><span class="hll"><span class="linenos">21</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$file</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">);</span> <span class="c1">// 9</span>
+</span><span class="hll"><span class="linenos">22</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$file</span><span class="o">-&gt;</span><span class="na">getErrorMessage</span><span class="p">());</span> <span class="c1">// &#39;File was not uploaded via HTTP POST&#39;</span>
+</span><span class="linenos">23</span>
+<span class="hll"><span class="linenos">24</span><span class="k">try</span> <span class="p">{</span>
+</span><span class="hll"><span class="linenos">25</span><span class="nv">$file</span> <span class="o">=</span> <span class="nx">Request</span><span class="o">::</span><span class="na">getFile</span><span class="p">(</span><span class="s1">&#39;file_upload&#39;</span><span class="p">,</span> <span class="nx">RequestFile</span><span class="o">::</span><span class="na">EXCEPTION_ON_ERROR</span><span class="p">);</span>
+</span><span class="hll"><span class="linenos">26</span><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">RequestException</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="hll"><span class="linenos">27</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$file</span><span class="o">-&gt;</span><span class="na">getErrorMessage</span><span class="p">());</span> <span class="c1">// 9</span>
+</span><span class="hll"><span class="linenos">28</span><span class="p">}</span>
+</span><span class="linenos">29</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="request-method-getfiles"></span><dl class="php method">
+<dt class="sig sig-object php">
+<span class="sig-name descname"><span class="pre">getFiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">int</span> <span class="pre">$flags</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Get files from request</p>
+<p>Will return an array of files for a given <strong>$key</strong> that were uploaded via the HTTP POST method using the <code class="docutils literal notranslate"><span class="pre">$_FILES</span></code> superglobal variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the array of files to retrieve.</p></li>
+<li><p><strong>$flags</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – Bitwise flags for this method</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">?array</span></code> Array of RequestFile objects</p>
+</dd>
+</dl>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-number">Example 19 </span><span class="caption-text">Get files from request</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="nv">$_FILE</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos"> 6</span><span class="s1">&#39;file_upload&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<span class="linenos"> 7</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<span class="linenos"> 8</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="s1">&#39;test.csv&#39;</span><span class="p">,</span>
+<span class="linenos"> 9</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="s1">&#39;test.json&#39;</span>
+<span class="linenos">10</span><span class="p">],</span>
+<span class="linenos">11</span><span class="s1">&#39;full_path&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<span class="linenos">12</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="s1">&#39;test.csv&#39;</span><span class="p">,</span>
+<span class="linenos">13</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="s1">&#39;test.json&#39;</span>
+<span class="linenos">14</span><span class="p">],</span>
+<span class="linenos">15</span><span class="s1">&#39;type&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<span class="linenos">16</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">,</span>
+<span class="linenos">17</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="s1">&#39;text/csv&#39;</span>
+<span class="linenos">18</span><span class="p">]</span>
+<span class="linenos">19</span><span class="s1">&#39;tmp_name&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<span class="linenos">20</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="s1">&#39;/data/test/test.csv&#39;</span><span class="p">,</span>
+<span class="linenos">21</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="s1">&#39;/tmp/phpAKmVxj&#39;</span>
+<span class="linenos">22</span><span class="p">],</span>
+<span class="linenos">23</span><span class="s1">&#39;error&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<span class="linenos">24</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos">25</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+<span class="linenos">26</span><span class="p">],</span>
+<span class="linenos">27</span><span class="s1">&#39;size&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+<span class="linenos">28</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="mi">41</span><span class="p">,</span>
+<span class="linenos">29</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="mi">27</span>
+<span class="linenos">30</span><span class="p">]</span>
+<span class="linenos">31</span><span class="p">]</span>
+<span class="linenos">32</span><span class="p">];</span>
+<span class="linenos">33</span>
+<span class="hll"><span class="linenos">34</span><span class="nv">$files</span> <span class="o">=</span> <span class="nx">Request</span><span class="o">::</span><span class="na">getFiles</span><span class="p">(</span><span class="s1">&#39;file_upload&#39;</span><span class="p">);</span>
+</span><span class="hll"><span class="linenos">35</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$files</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">getContents</span><span class="p">());</span> <span class="c1">// &#39;{&quot;name&quot;:&quot;Test&quot;,&quot;value&quot;:123}&#39;</span>
+</span><span class="hll"><span class="linenos">36</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">);</span> <span class="c1">// 9</span>
+</span><span class="hll"><span class="linenos">37</span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$files</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">);</span> <span class="c1">// 0</span>
+</span><span class="linenos">38</span>
+<span class="linenos">39</span><span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
+</dd></dl>
+
+<hr class="docutils" />
 <span class="target" id="request-method-getformat"></span><dl class="php method">
 <dt class="sig sig-object php">
 <span class="sig-name descname"><span class="pre">getFormat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
@@ -314,8 +486,8 @@
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">?string</span></code> The format that was requested.</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-number">Example 17 </span><span class="caption-text">Get format from request</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-number">Example 20 </span><span class="caption-text">Get format from request</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
@@ -343,37 +515,41 @@
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="request-method-getheader"></span><dl class="php method">
+<span class="target" id="request-method-gethttpheader"></span><dl class="php method">
 <dt class="sig sig-object php">
-<span class="sig-name descname"><span class="pre">getHeader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
-<dd><p>Get data from request header</p>
+<span class="sig-name descname"><span class="pre">getHttpHeader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">516</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Get HTTP data from request header</p>
 <p>Will return data from the HTTP request headers for a given <strong>$key</strong> using the <code class="docutils literal notranslate"><span class="pre">$_HEADER</span></code> superglobal varable. The optional <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
 <p>The <strong>$key</strong> will be searched for both without then with the prefix “X-” to be compatiable with older conventions. Therfore there is no need include the prefix “X-” in your code moving forward. If both are present the one without the “X-” will be returned.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.</p></li>
-<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-validate-bool">PHP list of validate filters</a> - PHP list of validate filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-sanitize-string">PHP list of sanitize filters</a> - PHP list of sanitize filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP filter variable</a> - Information on the operation of the PHP <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
 </ul>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Do not include the “<a href="#id11"><span class="problematic" id="id12">HTTP_</span></a>” prefix to the <strong>$key</strong>.</p>
+<ul class="simple">
+<li><p>Do not include the “HTTP” prefix to the <strong>$key</strong>.</p></li>
+<li><p>The default for <strong>$filter</strong> is <strong>FILTER_DEFAULT</strong>, which is an alias of <strong>FILTER_UNSAFE_RAW</strong>. This will result in no filtering taking place by default.</p></li>
+</ul>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the header to retrieve.</p></li>
-<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?int</span></code></span>) – The ID of the filter to apply.</p></li>
-<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags.</p></li>
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?string</span></code></span>) – Key of the header to retrieve.</p></li>
+<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – The filter to apply. Can be a validation filter by using one of the <strong>FILTER_VALIDATE_*</strong> constants, a sanitization filter by using one of the <strong>FILTER_SANITIZE_*</strong> or <strong>FILTER_UNSAFE_RAW</strong>, or a custom filter by using <strong>FILTER_CALLBACK</strong>.</p></li>
+<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Either an associative array of options, or a bitmask of filter flag constants <strong>FILTER_FLAG_*</strong>. If the filter accepts options, flags can be provided by using the “flags” field of array.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested header or <code class="docutils literal notranslate"><span class="pre">null</span></code> if it does not exist.</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The filtered value from the header or <code class="docutils literal notranslate"><span class="pre">null</span></code> if the <strong>$key</strong> does not exist.</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-number">Example 18 </span><span class="caption-text">Get data from request header</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-number">Example 21 </span><span class="caption-text">Get data from request header</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
@@ -402,8 +578,9 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.</p></li>
-<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-validate-bool">PHP list of validate filters</a> - PHP list of validate filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-sanitize-string">PHP list of sanitize filters</a> - PHP list of sanitize filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP filter variable</a> - Information on the operation of the PHP <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
 </ul>
 </div>
 <div class="admonition note">
@@ -415,8 +592,8 @@
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">?string</span></code> IP address makeing request.</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-number">Example 19 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-number">Example 22 </span><span class="caption-text">Get data from HTTP cookie</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
@@ -425,8 +602,8 @@
 <span class="linenos"> 6</span>
 <span class="hll"><span class="linenos"> 7</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">getCookie</span><span class="p">(</span><span class="s1">&#39;PaginationOrder&#39;</span><span class="p">);</span> <span class="c1">// &#39;asc&#39;</span>
 </span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getCookie</span><span class="p">(</span><span class="s1">&#39;PaginationOffset&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
-</span><span class="linenos"> 9</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getCookie</span><span class="p">(</span><span class="s1">&#39;PaginationOrder&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
-<span class="linenos">10</span>
+</span><span class="hll"><span class="linenos"> 9</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getCookie</span><span class="p">(</span><span class="s1">&#39;PaginationOrder&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 1</span>
+</span><span class="linenos">10</span>
 <span class="linenos">11</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
@@ -437,41 +614,45 @@
 <hr class="docutils" />
 <span class="target" id="request-method-getparameter"></span><dl class="php method">
 <dt class="sig sig-object php">
-<span class="sig-name descname"><span class="pre">getParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
+<span class="sig-name descname"><span class="pre">getParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">516</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Get parameter from requested URI</p>
 <p>This method will return the variable passed to the current script via the URL parameters (aka. query string) by a given <strong>$key</strong> using <code class="docutils literal notranslate"><span class="pre">$_GET</span></code> superglobal varable. If the optional <strong>$key</strong> is not provided then an array of all the URL parameters will be returned.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.</p></li>
-<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-validate-bool">PHP list of validate filters</a> - PHP list of validate filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-sanitize-string">PHP list of sanitize filters</a> - PHP list of sanitize filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP filter variable</a> - Information on the operation of the PHP <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
 </ul>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If <strong>$key</strong> is not provided the <strong>$filter</strong> and <strong>$options</strong> arguments will be ignored.</p>
+<ul class="simple">
+<li><p>If <strong>$key</strong> is not provided the <strong>$filter</strong> and <strong>$options</strong> arguments will be ignored.</p></li>
+<li><p>The default for <strong>$filter</strong> is <strong>FILTER_DEFAULT</strong>, which is an alias of <strong>FILTER_UNSAFE_RAW</strong>. This will result in no filtering taking place by default.</p></li>
+</ul>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?string</span></code></span>) – The key of the query parameter to retrieve.</p></li>
-<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?int</span></code></span>) – The ID of the filter to apply.</p></li>
-<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags.</p></li>
+<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?string</span></code></span>) – Key of the query parameter to retrieve.</p></li>
+<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – The filter to apply. Can be a validation filter by using one of the <strong>FILTER_VALIDATE_*</strong> constants, a sanitization filter by using one of the <strong>FILTER_SANITIZE_*</strong> or <strong>FILTER_UNSAFE_RAW</strong>, or a custom filter by using <strong>FILTER_CALLBACK</strong>.</p></li>
+<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Either an associative array of options, or a bitmask of filter flag constants <strong>FILTER_FLAG_*</strong>. If the filter accepts options, flags can be provided by using the “flags” field of array.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested query item or <code class="docutils literal notranslate"><span class="pre">null</span></code> if it does not exist.</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The filtered value from the query parameter or <code class="docutils literal notranslate"><span class="pre">null</span></code> if the <strong>$key</strong> does not exist.</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-number">Example 20 </span><span class="caption-text">Get parameter from requested URI</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-number">Example 23 </span><span class="caption-text">Get parameter from requested URI</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;REQUEST_URI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;/index.php?text=abc&amp;num=12345&#39;</span><span class="p">;</span>
 <span class="linenos"> 6</span>
-<span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getParameter</span><span class="p">());</span> <span class="c1">// [ &#39;text&#39; =&gt; &#39;abc&#39;, &#39;num&#39; =&gt; &#39;12345&#39; ];</span>
+<span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getParameter</span><span class="p">());</span> <span class="c1">// [ &#39;text&#39; =&gt; &#39;abc&#39;, &#39;num&#39; =&gt; &#39;12345&#39; ]</span>
 </span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getParameter</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">));</span> <span class="c1">// &#39;abc&#39;</span>
 </span><span class="hll"><span class="linenos"> 9</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getParameter</span><span class="p">(</span><span class="s1">&#39;num&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 12345</span>
 </span><span class="linenos">10</span>
@@ -485,243 +666,54 @@
 <hr class="docutils" />
 <span class="target" id="request-method-getsegment"></span><dl class="php method">
 <dt class="sig sig-object php">
-<span class="sig-name descname"><span class="pre">getSegment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?int</span> <span class="pre">$pos</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
+<span class="sig-name descname"><span class="pre">getSegment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?int</span> <span class="pre">$pos</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">516</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Get segment from requested URI</p>
 <p>This method will return a segment of the requested URI with a given <strong>$pos</strong> using the <strong>REQUEST_URI</strong> from the <code class="docutils literal notranslate"><span class="pre">$_GET</span></code> superglobal varable.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.</p></li>
-<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-validate-bool">PHP list of validate filters</a> - PHP list of validate filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.constants.php#constant.filter-sanitize-string">PHP list of sanitize filters</a> - PHP list of sanitize filters.</p></li>
+<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP filter variable</a> - Information on the operation of the PHP <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
 </ul>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If <strong>$pos</strong> is not passed the entire segment array will be returned and the <strong>$filter</strong> and <strong>$options</strong> will be ignored.</p>
+<ul class="simple">
+<li><p>If <strong>$pos</strong> is not passed the entire segment array will be returned and the <strong>$filter</strong> and <strong>$options</strong> will be ignored.</p></li>
+<li><p>The default for <strong>$filter</strong> is <strong>FILTER_DEFAULT</strong>, which is an alias of <strong>FILTER_UNSAFE_RAW</strong>. This will result in no filtering taking place by default.</p></li>
+</ul>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>$pos</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?int</span></code></span>) – The pos index of the path to retrieve</p></li>
-<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?int</span></code></span>) – The ID of the filter to apply.</p></li>
-<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags.</p></li>
+<li><p><strong>$pos</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?int</span></code></span>) – The pos index of the path to retrieve.</p></li>
+<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">int</span></code></span>) – The filter to apply. Can be a validation filter by using one of the <strong>FILTER_VALIDATE_*</strong> constants, a sanitization filter by using one of the <strong>FILTER_SANITIZE_*</strong> or <strong>FILTER_UNSAFE_RAW</strong>, or a custom filter by using <strong>FILTER_CALLBACK</strong>.</p></li>
+<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Either an associative array of options, or a bitmask of filter flag constants <strong>FILTER_FLAG_*</strong>. If the filter accepts options, flags can be provided by using the “flags” field of array.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested segment item or <code class="docutils literal notranslate"><span class="pre">null</span></code> if it does not exist.</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The filtered value from the requested segment item or <code class="docutils literal notranslate"><span class="pre">null</span></code> if the <strong>$key</strong> does not exist.</p>
 </dd>
 </dl>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-number">Example 21 </span><span class="caption-text">Get segment from requested URI</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-number">Example 24 </span><span class="caption-text">Get segment from requested URI</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;REQUEST_URI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;/sections/articles/12345.html&#39;</span><span class="p">;</span>
 <span class="linenos"> 6</span>
-<span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getSegment</span><span class="p">());</span> <span class="c1">// [ &quot;sections&quot;, &quot;articles&quot;, &quot;12345&quot; ]</span>
+<span class="hll"><span class="linenos"> 7</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getSegment</span><span class="p">());</span> <span class="c1">// [ &#39;sections&#39;, &#39;articles&#39;, &#39;12345&#39; ]</span>
 </span><span class="hll"><span class="linenos"> 8</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getSegment</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span> <span class="c1">// &#39;articles&#39;</span>
 </span><span class="hll"><span class="linenos"> 9</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getSegment</span><span class="p">(</span><span class="mi">4</span><span class="p">));</span> <span class="c1">// null</span>
 </span><span class="hll"><span class="linenos">10</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getSegment</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 12345</span>
 </span><span class="hll"><span class="linenos">11</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">getSegment</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// false</span>
-</span><span class="hll"><span class="linenos">12</span>
-</span><span class="linenos">13</span><span class="nx">Config</span><span class="o">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;request.segment_offset&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-<span class="linenos">14</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">segment</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span> <span class="c1">// &#39;articles&#39;</span>
-<span class="linenos">15</span>
+</span><span class="linenos">12</span>
+<span class="linenos">13</span><span class="nx">Config</span><span class="o">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;request.segment_offset&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="hll"><span class="linenos">14</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">segment</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span> <span class="c1">// &#39;articles&#39;</span>
+</span><span class="linenos">15</span>
 <span class="linenos">16</span><span class="cp">?&gt;</span><span class="x"></span>
-</pre></div>
-</div>
-</div>
-<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="request-method-filtervalue"></span><dl class="php method">
-<dt class="sig sig-object php">
-<span class="sig-name descname"><span class="pre">filterValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">mixed</span> <span class="pre">$value</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
-<dd><p>Filter value</p>
-<p>This method will return a filtere value if a filter is specified. If no filter is specified the orginal value will be returned.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.</p></li>
-<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>$value</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">mixed</span></code></span>) – Value to be filtered .</p></li>
-<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?int</span></code></span>) – The ID of the filter to apply.</p></li>
-<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The filtered value.</p>
-</dd>
-</dl>
-<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="request-method-zgetrequest"></span><dl class="php method">
-<dt class="sig sig-object php">
-<span class="sig-name descname"><span class="pre">zGetRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$request_id</span> <span class="pre">=</span> <span class="pre">null</span></em><span class="sig-paren">)</span></dt>
-<dd><p>Get request object</p>
-<p>This method is used to retrive a previously constructed request instance by a given <cite>$request_id</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>$request_id</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?string</span></code></span>) – Request ID</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">?PHPCore\Request</span></code> Request instance</p>
-</dd>
-</dl>
-<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="request-method-construct"></span><dl class="php method">
-<dt class="sig sig-object php">
-<span class="sig-name descname"><span class="pre">__construct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">array</span> <span class="pre">$params</span> <span class="pre">=</span> <span class="pre">[]</span></em><span class="sig-paren">)</span></dt>
-<dd><p>Constructor</p>
-<p>Used to construct the instance and it by reference into the self::$Instances for later use.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>$params</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array</span></code></span>) – Parameters for request</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
-</dd>
-</dl>
-<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="request-method-getbody"></span><dl class="php method">
-<dt class="sig sig-object php">
-<span class="sig-name descname"><span class="pre">getBody</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">?string</span> <span class="pre">$key</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">?int</span> <span class="pre">$filter</span> <span class="pre">=</span> <span class="pre">null</span></em>, <em class="sig-param"><span class="pre">array|int</span> <span class="pre">$options</span> <span class="pre">=</span> <span class="pre">0</span></em><span class="sig-paren">)</span></dt>
-<dd><p>Get data from request body</p>
-<p>Will parsed the request body based on the format, then return data from the parsed body by a given <strong>$key</strong> for data passed via the HTTP POST method. The option <strong>$filter</strong> and <strong>$options</strong> parameters may be given to invoke <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> before the value is returned.</p>
-<p>If <strong>$key</strong> is not passed the request body be returned and the <strong>$filter</strong> and <strong>$options</strong> will be ignored.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.php.net/manual/en/filter.filters.php">PHP Types of filters</a> - List of available filters and options.</p></li>
-<li><p><a class="reference external" href="https://www.php.net/manual/en/function.filter-var.php">PHP Filter Variable</a> - Information on the operation of the <code class="docutils literal notranslate"><span class="pre">filter_var()</span></code> function.</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?string</span></code></span>) – The key of the body’s data to retrieve</p></li>
-<li><p><strong>$filter</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">?int</span></code></span>) – The ID of the filter to apply</p></li>
-<li><p><strong>$options</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">array|int</span></code></span>) – Associative array of options or bitwise disjunction of flags</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mixed</span></code> The requested data item</p>
-</dd>
-</dl>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-number">Example 22 </span><span class="caption-text">Get data from request body</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="c1">// $_POST = &#39;{ &quot;name&quot;: &quot;Smith&quot;, &quot;age&quot;: &quot;22&quot; }&#39;</span>
-<span class="linenos"> 6</span>
-<span class="linenos"> 7</span><span class="c1">// Get by key</span>
-<span class="hll"><span class="linenos"> 8</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">body</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">);</span> <span class="c1">// &#39;Smith&#39;</span>
-</span><span class="hll"><span class="linenos"> 9</span><span class="nb">var_dump</span><span class="p">(</span><span class="nx">Request</span><span class="o">::</span><span class="na">body</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_INT</span><span class="p">));</span> <span class="c1">// 22</span>
-</span><span class="linenos">10</span>
-<span class="linenos">11</span><span class="cp">?&gt;</span><span class="x"></span>
-</pre></div>
-</div>
-</div>
-<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="request-method-getfile"></span><dl class="php method">
-<dt class="sig sig-object php">
-<span class="sig-name descname"><span class="pre">getFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span></dt>
-<dd><p>Get file from request</p>
-<p>Will return the file by a given <strong>$key</strong> for the files that was uploaded via the HTTP POST method using the <code class="docutils literal notranslate"><span class="pre">$_FILES</span></code> superglobal variable.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the file to retrieve</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">?object</span></code> RequestFile object</p>
-</dd>
-</dl>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-number">Example 23 </span><span class="caption-text">Get file from request</span><a class="headerlink" href="#id9" title="Permalink to this code"></a></div>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="c1">// $_FILES[&#39;test&#39;] = [</span>
-<span class="linenos"> 6</span><span class="c1">//     &#39;name&#39;      =&gt; &#39;sample.pdf.png&#39;,</span>
-<span class="linenos"> 7</span><span class="c1">//     &#39;full_path&#39; =&gt; &#39;sample.pdf.png&#39;,</span>
-<span class="linenos"> 8</span><span class="c1">//     &#39;type&#39;      =&gt; &#39;image/png&#39;,</span>
-<span class="linenos"> 9</span><span class="c1">//     &#39;tmp_name&#39;  =&gt; &#39;/tmp/php059gDH&#39;,</span>
-<span class="linenos">10</span><span class="c1">//     &#39;error&#39;     =&gt; 0,</span>
-<span class="linenos">11</span><span class="c1">//     &#39;size&#39;      =&gt; 3028</span>
-<span class="linenos">12</span><span class="c1">// ];</span>
-<span class="linenos">13</span>
-<span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">type</span><span class="p">;</span> <span class="c1">// &#39;image/png&#39;</span>
-</span><span class="hll"><span class="linenos">15</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">trueType</span><span class="p">();</span> <span class="c1">// &#39;application/pdf&#39;</span>
-</span><span class="linenos">16</span>
-<span class="linenos">17</span><span class="cp">?&gt;</span><span class="x"></span>
-</pre></div>
-</div>
-</div>
-<p class="wy-text-right"><a class="reference internal" href="#request-class-table-of-contents"><span class="std std-ref">Back to list</span></a></p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="request-method-getfiles"></span><dl class="php method">
-<dt class="sig sig-object php">
-<span class="sig-name descname"><span class="pre">getFiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">string</span> <span class="pre">$key</span></em><span class="sig-paren">)</span></dt>
-<dd><p>Get files from request</p>
-<p>Will return an array of files for a given <strong>$key</strong> that were uploaded via the HTTP POST method using the <code class="docutils literal notranslate"><span class="pre">$_FILES</span></code> superglobal variable.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>$key</strong> (<span><code class="xref php php-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – The key of the array of files to retrieve</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">array</span></code> Array of RequestFile objects</p>
-</dd>
-</dl>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-number">Example 24 </span><span class="caption-text">Get files from request</span><a class="headerlink" href="#id10" title="Permalink to this code"></a></div>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="k">use</span> <span class="nx">\PHPCore\Request</span><span class="p">;</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="c1">// $_FILES[&#39;test&#39;] = [</span>
-<span class="linenos"> 6</span><span class="c1">//     &#39;name&#39;      =&gt; [ &#39;sample_1.pdf.png&#39;, &#39;sample_2.csv&#39; ],</span>
-<span class="linenos"> 7</span><span class="c1">//     &#39;full_path&#39; =&gt; [ &#39;sample_1.pdf.png&#39;, &#39;sample_2.csv&#39; ],</span>
-<span class="linenos"> 8</span><span class="c1">//     &#39;type&#39;      =&gt; [ &#39;image/png&#39;, text/csv&#39;, ],</span>
-<span class="linenos"> 9</span><span class="c1">//     &#39;tmp_name&#39;  =&gt; [ &#39;/tmp/php059gDH&#39;, &#39;/tmp/phpWGy7GA&#39; ],</span>
-<span class="linenos">10</span><span class="c1">//     &#39;error&#39;     =&gt; [ 0, 0 ],</span>
-<span class="linenos">11</span><span class="c1">//     &#39;size&#39;      =&gt; [ 3028, 1037 ],</span>
-<span class="linenos">12</span><span class="c1">// ];</span>
-<span class="linenos">13</span>
-<span class="hll"><span class="linenos">14</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;sample_1.pdf.png&#39;</span>
-</span><span class="hll"><span class="linenos">15</span><span class="k">echo</span> <span class="nx">Request</span><span class="o">::</span><span class="na">file</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span> <span class="c1">// &#39;sample_2.csv&#39;</span>
-</span><span class="linenos">16</span>
-<span class="linenos">17</span><span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>
